@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { usePersonalityStore } from '../../stores/personalityStore';
-import { useAuth } from '../../contexts/AuthContext';
+import { usePersonalityStore } from '../../../stores/personalityStore';
+import { useAuth } from '../../../contexts/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCog, faPlus, faCheck, faPen, faEye } from '@fortawesome/free-solid-svg-icons';
 import { PersonalitySettingsModal } from '../modals/PersonalitySettingsModal';
-import { Avatar } from '../ui/atoms/Avatar';
+import { Avatar } from '../../../components/ui/atoms/Avatar';
 
-import { useRoleStore } from '../../stores/team';
-import type { TeamRole } from '../../types/team';
+import { useRoleStore } from '../../../stores/team';
+import type { TeamRole } from '../../../types/team';
 
 export function PersonalityDropdown() {
     const { user } = useAuth();

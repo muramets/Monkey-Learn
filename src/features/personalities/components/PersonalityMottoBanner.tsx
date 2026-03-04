@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import { usePersonalityStore } from '../../stores/personalityStore';
+import { usePersonalityStore } from '../../../stores/personalityStore';
 
 export function PersonalityMottoBanner() {
     const { activePersonalityId } = usePersonalityStore();

@@ -17,9 +17,9 @@ import { faUsers, faPlus, faLink } from '@fortawesome/free-solid-svg-icons';
 import { ADMIN_EMAILS } from '../../../../config/adminList';
 
 // Modals
-import { TeamSettingsModal } from '../../../../components/modals/TeamSettingsModal';
-import { RoleSettingsModal } from '../../../../components/modals/RoleSettingsModal';
-import { JoinTeamModal } from '../../../../components/modals/JoinTeamModal';
+import { TeamSettingsModal } from '../../modals/TeamSettingsModal';
+import { RoleSettingsModal } from '../../modals/RoleSettingsModal';
+import { JoinTeamModal } from '../../modals/JoinTeamModal';
 
 // Sub-components
 import { TeamItem } from './TeamItem';

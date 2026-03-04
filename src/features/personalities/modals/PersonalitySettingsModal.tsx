@@ -1,12 +1,12 @@
-import { Modal } from '../ui/molecules/Modal';
-import { Input } from '../ui/molecules/Input';
-import { Button } from '../ui/atoms/Button';
-import { Avatar } from '../ui/atoms/Avatar';
+import { Modal } from '../../../components/ui/molecules/Modal';
+import { Input } from '../../../components/ui/molecules/Input';
+import { Button } from '../../../components/ui/atoms/Button';
+import { Avatar } from '../../../components/ui/atoms/Avatar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faExclamationTriangle, faUser } from '@fortawesome/free-solid-svg-icons';
-import { ColorPicker } from '../ui/molecules/ColorPicker';
-import { ImageCropper } from '../ui/molecules/ImageCropper';
-import { usePersonalityForm } from '../../features/personalities/hooks/usePersonalityForm';
+import { ColorPicker } from '../../../components/ui/molecules/ColorPicker';
+import { ImageCropper } from '../../../components/ui/molecules/ImageCropper';
+import { usePersonalityForm } from '../hooks/usePersonalityForm';
 
 // Moved outside to avoid recreating on each render
 const InputLabel = ({ label }: { label: string }) => (

@@ -5,7 +5,7 @@ import { useAuth } from '../../../contexts/AuthContext';
 import { usePersonalityStore } from '../../../stores/personalityStore';
 import { faComment } from '@fortawesome/free-solid-svg-icons';
 import { createPortal } from 'react-dom';
-import { Input } from './Input';
+import { Input } from '../../../components/ui/molecules/Input';
 
 export function CommentInputOverlay() {
     const { commentOverlay, closeCommentOverlay, showToast } = useUIStore();

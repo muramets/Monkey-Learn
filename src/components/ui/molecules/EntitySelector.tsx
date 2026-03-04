@@ -3,7 +3,7 @@ import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { CollapsibleSection } from '../molecules/CollapsibleSection';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '../atoms/Tooltip';
 import { Input } from '../molecules/Input';
-import { RichTextViewer } from '../RichTextViewer';
+import { RichTextViewer } from '../RichTextEditor/RichTextViewer';
 
 export interface EntityItem {
     id: string | number;

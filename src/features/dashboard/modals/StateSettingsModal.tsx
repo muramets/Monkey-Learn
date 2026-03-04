@@ -1,14 +1,14 @@
 
-import { Modal } from '../ui/molecules/Modal';
-import { Input } from '../ui/molecules/Input';
-import { Button } from '../ui/atoms/Button';
+import { Modal } from '../../../components/ui/molecules/Modal';
+import { Input } from '../../../components/ui/molecules/Input';
+import { Button } from '../../../components/ui/atoms/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
-import { useStateForm } from '../../features/dashboard/hooks/useStateForm';
-import { ColorPicker } from '../ui/molecules/ColorPicker';
-import { IconPicker } from '../ui/molecules/IconPicker';
-import { EntitySelector } from '../ui/organisms/EntitySelector';
-import { AppIcon } from '../ui/atoms/AppIcon';
+import { useStateForm } from '../hooks/useStateForm';
+import { ColorPicker } from '../../../components/ui/molecules/ColorPicker';
+import { IconPicker } from '../../../components/ui/molecules/IconPicker';
+import { EntitySelector } from '../../../components/ui/molecules/EntitySelector';
+import { AppIcon } from '../../../components/ui/atoms/AppIcon';
 
 interface StateSettingsModalProps {
     isOpen: boolean;

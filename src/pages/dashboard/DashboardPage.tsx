@@ -2,7 +2,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { UserProfile } from '../../features/dashboard/components/UserProfile';
 import { StatesGrid } from '../../features/dashboard/components/StatesGrid';
 import { QuickActionsGrid } from '../../features/dashboard/components/QuickActionsGrid';
-import { StateSettingsModal } from '../../components/modals/StateSettingsModal';
+import { StateSettingsModal } from '../../features/dashboard/modals/StateSettingsModal';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { AddQuickActionModal } from '../../features/dashboard/components/AddQuickActionModal';

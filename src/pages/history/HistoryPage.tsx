@@ -1,129 +1,54 @@
-import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useLocation, useSearchParams } from 'react-router-dom';
 
 import { useMetadataStore } from '../../stores/metadataStore';
 import { useHistoryFeed } from '../../features/history/hooks/useHistoryFeed';
-import { format, isToday, isYesterday, parseISO, startOfWeek, startOfMonth } from 'date-fns';
+import { useHistoryFilters } from '../../features/history/hooks/useHistoryFilters';
+import { useHistoryClientFilter, getDateLabel } from '../../features/history/hooks/useHistoryClientFilter';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-    faSearch
-} from '@fortawesome/free-solid-svg-icons';
-import { HistoryFilter } from './components/HistoryFilter';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { HistoryFilter } from '../../features/history/components/HistoryFilter';
 import { Input } from '../../components/ui/molecules/Input';
 import { Button } from '../../components/ui/atoms/Button';
 import { ActiveFiltersList } from '../../components/ui/molecules/ActiveFiltersList';
-import { HistoryEvent } from './components/HistoryEvent';
+import { HistoryEvent } from '../../features/history/components/HistoryEvent';
 import { MonkeyTypeLoader } from '../../components/ui/molecules/MonkeyTypeLoader';
-import type { TimeFilter, TypeFilter, EffectFilter } from './components/HistoryFilter';
 import type { HistoryRecord } from '../../types/history';
 import { useConditionalSearch } from '../../hooks/useConditionalSearch';
 
 export default function HistoryPage() {
     const { innerfaces, protocols, states, groupsMetadata } = useMetadataStore();
-    const location = useLocation();
-
-    const [searchParams, setSearchParams] = useSearchParams();
 
     // Content ref for conditional search
     const contentRef = useRef<HTMLDivElement>(null);
     const { searchQuery, setSearchQuery, shouldShowSearch } = useConditionalSearch(contentRef);
 
-    // Filters state
-    // Time filter still uses state (defaults to All time)
-    const [timeFilter, setTimeFilter] = useState<TimeFilter>(() => {
-        return (location.state as HistoryPageState)?.filterTime || (searchParams.get('time') as TimeFilter) || 'All time';
-    });
-    const [typeFilter, setTypeFilter] = useState<TypeFilter>('All types');
-    const [effectFilter, setEffectFilter] = useState<EffectFilter>('All effects');
+    // Filter state (URL + local)
+    const {
+        timeFilter, setTimeFilter,
+        typeFilter, setTypeFilter,
+        effectFilter, setEffectFilter,
+        selectedProtocolIds, setSelectedProtocolIds,
+        selectedInnerfaceIds, setSelectedInnerfaceIds,
+        selectedStateIds, setSelectedStateIds,
+        serverFilters,
+        hasActiveFilters,
+        clearFilters: clearFilterState
+    } = useHistoryFilters();
 
-    // Derived from URL
-    const selectedProtocolIds = useMemo(() => searchParams.getAll('protocolId'), [searchParams]);
-    const selectedInnerfaceIds = useMemo(() => searchParams.getAll('innerfaceId'), [searchParams]);
-    const selectedStateIds = useMemo(() => searchParams.getAll('stateId'), [searchParams]);
-
-    interface HistoryPageState {
-        filterStateId?: string;
-        filterInnerfaceId?: string;
-        filterTime?: TimeFilter;
-    }
-
-    const setSelectedProtocolIds = useCallback((ids: string[]) => {
-        setSearchParams((prev: URLSearchParams) => {
-            const newParams = new URLSearchParams(prev);
-            newParams.delete('protocolId');
-            ids.forEach(id => newParams.append('protocolId', id));
-            return newParams;
-        });
-    }, [setSearchParams]);
-
-    const setSelectedInnerfaceIds = useCallback((ids: string[]) => {
-        setSearchParams((prev: URLSearchParams) => {
-            const newParams = new URLSearchParams(prev);
-            newParams.delete('innerfaceId');
-            ids.forEach(id => newParams.append('innerfaceId', id));
-            return newParams;
-        });
-    }, [setSearchParams]);
-
-    const setSelectedStateIds = useCallback((ids: string[]) => {
-        setSearchParams((prev: URLSearchParams) => {
-            const newParams = new URLSearchParams(prev);
-            newParams.delete('stateId');
-            ids.forEach(id => newParams.append('stateId', id));
-            return newParams;
-        });
-    }, [setSearchParams]);
-
-    // Derived Server-Side Filters
-    const serverFilters = useMemo(() => {
-        // 1. Time Range
-        let timeRange: { start: Date; end: Date } | null = null;
-        if (timeFilter !== 'All time') {
-            const now = new Date();
-            if (timeFilter === 'Today') {
-                // Start of today
-                const start = new Date(now);
-                start.setHours(0, 0, 0, 0);
-                timeRange = { start, end: now };
-            } else if (timeFilter === 'This week') {
-                const start = startOfWeek(now, { weekStartsOn: 1 });
-                timeRange = { start, end: now };
-            } else if (timeFilter === 'This month') {
-                const start = startOfMonth(now);
-                timeRange = { start, end: now };
-            }
-        }
-
-        // 2. Protocols
-        // Note: We only pass explicit protocol IDs.
-        // If State filter is used, we derived protocol IDs from it.
-        let protocolIdsToFilter: string[] | undefined = undefined;
-        if (selectedProtocolIds.length > 0) {
-            protocolIdsToFilter = selectedProtocolIds;
-        }
-
-        // 3. Innerfaces (Explicit + Derived from State)
-        const stateDerivedInnerfaceIds = states
-            .filter(s => selectedStateIds.includes(s.id))
-            .flatMap(s => s.innerfaceIds || [])
-            .map(String);
-
-        const combinedInnerfaceIds = Array.from(new Set([
-            ...selectedInnerfaceIds,
-            ...stateDerivedInnerfaceIds
-        ]));
-
-        return {
-            protocolIds: protocolIdsToFilter,
-            innerfaceIds: combinedInnerfaceIds.length > 0 ? combinedInnerfaceIds : undefined,
-            type: typeFilter,
-            timeRange
-        };
-    }, [timeFilter, typeFilter, selectedProtocolIds, selectedInnerfaceIds, selectedStateIds, states]);
-
-    // Pass filters to hook (Triggers Server-Side Fetch)
+    // Server-side data
     const { history, isLoading, isLoadingMore, hasMore, loadMore, deleteEvent } = useHistoryFeed(serverFilters);
+
+    // Client-side filtering + grouping
+    const { filteredHistory, groupedHistory } = useHistoryClientFilter({
+        history,
+        searchQuery,
+        typeFilter,
+        effectFilter,
+        selectedInnerfaceIds,
+        selectedStateIds,
+        states
+    });
 
     // Infinite Scroll Observer
     const observerTarget = useRef(null);
@@ -151,139 +76,12 @@ export default function HistoryPage() {
         };
     }, [observerTarget, hasMore, isLoadingMore, loadMore]);
 
-    // Initialize from location state (fallback for complex navigations not using URL)
-    // Initialize from location state (fallback for complex navigations not using URL)
-    useEffect(() => {
-        const state = location.state as HistoryPageState;
-        if (state?.filterStateId) {
-            const sid = state.filterStateId;
-            if (!selectedStateIds.includes(sid)) {
-                setSelectedStateIds([sid]);
-            }
-        }
-        // Note: filterInnerfaceId etc handled by URL ideally, but if legacy state passed:
-        if (state?.filterInnerfaceId) {
-            const iid = state.filterInnerfaceId;
-            if (!selectedInnerfaceIds.includes(iid.toString())) {
-                setSelectedInnerfaceIds([iid.toString()]);
-            }
-        }
-    }, [location.state, selectedStateIds, selectedInnerfaceIds, setSelectedStateIds, setSelectedInnerfaceIds]);
-
-    const filteredHistory = useMemo(() => {
-        return history.filter(event => {
-            // Search filter (Client Side)
-            if (searchQuery.trim()) {
-                const query = searchQuery.toLowerCase();
-                const matchesSearch =
-                    event.protocolName.toLowerCase().includes(query) ||
-                    Object.keys(event.changes).some(id => id.toString().toLowerCase().includes(query));
-                if (!matchesSearch) return false;
-            }
-
-            // Time & Type & Protocol Filter checks REMOVED (Handled Server-Side)
-            // Note: We keep them here mostly for safety if server returns wider set, 
-            // but effectively server handles primary filtering. 
-            // EXCEPT: If we have complex logic that server couldn't handle (e.g. >10 protocols),
-            // current server impl limits to 10. If we had 11 selected, server ignores filter (safely?), 
-            // so we SHOULD technically keep client filter as fallback.
-
-            // Re-applying Type filter client-side just in case
-            if (typeFilter !== 'All types') {
-                if (typeFilter === 'Actions' && event.type !== 'protocol') return false;
-                if (typeFilter === 'Manual' && event.type !== 'manual_adjustment') return false;
-                if (typeFilter === 'System' && event.type !== 'system') return false;
-                if (typeFilter === 'Decay' && event.type !== 'decay') return false;
-            }
-
-            // Effect filter (Client Side Only)
-            if (effectFilter !== 'All effects') {
-                const isPositive = event.weight > 0;
-
-                if (effectFilter === 'Positive') {
-                    if (!isPositive) return false;
-                }
-
-                if (effectFilter === 'Negative') {
-                    // 1. Exclude System Events from "Negative Effect"
-                    // (System events are neutral/contextual, typically not "Negative Impact")
-                    if (event.type === 'system') return false;
-
-                    // 2. Strict Negative Check (weight < 0)
-                    // If weight is positive OR zero, exclude it.
-                    if (event.weight >= 0) return false;
-                }
-            }
-
-            // Innerface filter (Client Side Only - too complex for standard index)
-            if (selectedInnerfaceIds.length > 0) {
-                const eventInnerfaces = Object.keys(event.changes || {});
-                const hasMatchingInnerface = selectedInnerfaceIds.some((id: string) => eventInnerfaces.includes(id));
-                if (!hasMatchingInnerface) return false;
-            }
-
-            // State filter (Client Side Logic)
-            if (selectedStateIds.length > 0) {
-                // ... (Logic for states requires matching either protocol set OR innerface set)
-                // This is hard to fully server-side without Denormalization.
-                const relatedStates = states.filter(s => selectedStateIds.includes(s.id));
-                const validInnerfaceIds = relatedStates.flatMap(s => s.innerfaceIds || []).map(String);
-
-                const eventInnerfaces = Object.keys(event.changes || {});
-                const matchesInnerface = eventInnerfaces.some(id => validInnerfaceIds.includes(id));
-
-                if (!matchesInnerface) return false;
-            }
-
-            return true;
-        });
-    }, [history, searchQuery, typeFilter, effectFilter, selectedInnerfaceIds, selectedStateIds, states]);
-
-    const groupedHistory = useMemo(() => {
-        const groups: Record<string, typeof filteredHistory> = {};
-
-        filteredHistory.forEach(event => {
-            const date = parseISO(event.timestamp);
-            const dateKey = format(date, 'yyyy-MM-dd');
-
-            if (!groups[dateKey]) {
-                groups[dateKey] = [];
-            }
-            groups[dateKey].push(event);
-        });
-
-        return Object.entries(groups).sort((a, b) => b[0].localeCompare(a[0]));
-    }, [filteredHistory]);
-
-    const getDateLabel = (dateStr: string) => {
-        const date = parseISO(dateStr + 'T00:00:00');
-        if (isToday(date)) return 'Today';
-        if (isYesterday(date)) return 'Yesterday';
-        return format(date, 'MMMM d, yyyy');
-    };
-
-    const hasActiveFilters = searchQuery.trim() !== '' ||
-        timeFilter !== 'All time' ||
-        typeFilter !== 'All types' ||
-        effectFilter !== 'All effects' ||
-        selectedProtocolIds.length > 0 ||
-        selectedInnerfaceIds.length > 0 ||
-        selectedStateIds.length > 0;
-
     const clearFilters = () => {
         setSearchQuery('');
-        setTimeFilter('All time');
-        setTypeFilter('All types');
-        setEffectFilter('All effects');
-
-        setSearchParams(prev => {
-            const newParams = new URLSearchParams(prev);
-            newParams.delete('protocolId');
-            newParams.delete('innerfaceId');
-            newParams.delete('stateId');
-            return newParams;
-        });
+        clearFilterState();
     };
+
+    const combinedHasActiveFilters = hasActiveFilters || searchQuery.trim() !== '';
 
     return (
         <div className="flex flex-col gap-8 w-full pb-12">
@@ -316,7 +114,7 @@ export default function HistoryPage() {
                             innerfaces={innerfaces}
                             states={states}
                             groupsMetadata={groupsMetadata}
-                            hasActiveFilters={hasActiveFilters}
+                            hasActiveFilters={combinedHasActiveFilters}
                             clearFilters={clearFilters}
                         />
                     </div>
@@ -387,60 +185,59 @@ export default function HistoryPage() {
                         onRemove: () => setSelectedStateIds(selectedStateIds.filter((sid: string) => sid !== id))
                     }))
                 ]}
-                onClearAll={hasActiveFilters ? clearFilters : undefined}
+                onClearAll={combinedHasActiveFilters ? clearFilters : undefined}
             />
 
-            {/* List */}
             {/* History Feed */}
             {(isLoading && history.length === 0) ? (
                 <MonkeyTypeLoader />
-            ) : (
-                <div ref={contentRef} className="flex flex-col gap-8">
-                    {groupedHistory.map(([dateKey, events]) => (
-                        <div key={dateKey} className="flex flex-col gap-4">
-                            <h2 className="text-text-secondary font-mono text-sm pl-1 flex items-baseline">
-                                {getDateLabel(dateKey)}<span className="opacity-50">: {events.length}</span>
-                            </h2>
-                            <div className="flex flex-col gap-2">
-                                <AnimatePresence mode="popLayout">
-                                    {events.map((event: HistoryRecord) => {
-                                        const protocol = protocols.find(p => p.id.toString() === event.protocolId.toString());
-                                        return (
-                                            <motion.div
-                                                key={event.id}
-                                                layout
-                                                initial={{ opacity: 0, y: 20 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                exit={{
-                                                    opacity: 0,
-                                                    x: -50,
-                                                    height: 0,
-                                                    marginBottom: 0,
-                                                    filter: 'blur(4px)'
+            ) : null}
+
+            <div ref={contentRef} className="flex flex-col gap-8" style={isLoading && history.length === 0 ? { display: 'none' } : undefined}>
+                {groupedHistory.map(([dateKey, events]) => (
+                    <div key={dateKey} className="flex flex-col gap-4">
+                        <h2 className="text-text-secondary font-mono text-sm pl-1 flex items-baseline">
+                            {getDateLabel(dateKey)}<span className="opacity-50">: {events.length}</span>
+                        </h2>
+                        <div className="flex flex-col gap-2">
+                            <AnimatePresence mode="popLayout">
+                                {events.map((event: HistoryRecord) => {
+                                    const protocol = protocols.find(p => p.id.toString() === event.protocolId.toString());
+                                    return (
+                                        <motion.div
+                                            key={event.id}
+                                            layout
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{
+                                                opacity: 0,
+                                                x: -50,
+                                                height: 0,
+                                                marginBottom: 0,
+                                                filter: 'blur(4px)'
+                                            }}
+                                            transition={{ duration: 0.3 }}
+                                        >
+                                            <HistoryEvent
+                                                event={event}
+                                                innerfaces={innerfaces}
+                                                protocolColor={protocol?.color}
+                                                onDelete={deleteEvent}
+                                                onFilterInnerface={(id) => setSelectedInnerfaceIds([...selectedInnerfaceIds, id])}
+                                                onFilterProtocol={(id) => {
+                                                    if (!selectedProtocolIds.includes(id)) {
+                                                        setSelectedProtocolIds([...selectedProtocolIds, id]);
+                                                    }
                                                 }}
-                                                transition={{ duration: 0.3 }}
-                                            >
-                                                <HistoryEvent
-                                                    event={event}
-                                                    innerfaces={innerfaces}
-                                                    protocolColor={protocol?.color}
-                                                    onDelete={deleteEvent}
-                                                    onFilterInnerface={(id) => setSelectedInnerfaceIds([...selectedInnerfaceIds, id])}
-                                                    onFilterProtocol={(id) => {
-                                                        if (!selectedProtocolIds.includes(id)) {
-                                                            setSelectedProtocolIds([...selectedProtocolIds, id]);
-                                                        }
-                                                    }}
-                                                />
-                                            </motion.div>
-                                        );
-                                    })}
-                                </AnimatePresence>
-                            </div>
+                                            />
+                                        </motion.div>
+                                    );
+                                })}
+                            </AnimatePresence>
                         </div>
-                    ))}
-                </div>
-            )}
+                    </div>
+                ))}
+            </div>
 
             {/* Loading Indicator / Sentinel */}
             {hasMore && (

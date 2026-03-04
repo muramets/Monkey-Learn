@@ -1,14 +1,14 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Modal as UIModal } from '../ui/molecules/Modal';
-import { Input } from '../ui/molecules/Input';
-import { Button } from '../ui/atoms/Button';
-import { AppIcon } from '../ui/atoms/AppIcon';
+import { Modal as UIModal } from '../../../components/ui/molecules/Modal';
+import { Input } from '../../../components/ui/molecules/Input';
+import { Button } from '../../../components/ui/atoms/Button';
+import { AppIcon } from '../../../components/ui/atoms/AppIcon';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faExclamationTriangle, faLink, faCopy, faCheck } from '@fortawesome/free-solid-svg-icons';
-import { useRoleForm } from '../../features/teams/hooks/useRoleForm';
-import { ColorPicker } from '../ui/molecules/ColorPicker';
-import { IconPicker } from '../ui/molecules/IconPicker';
-import { EntitySelector } from '../ui/organisms/EntitySelector';
+import { useRoleForm } from '../hooks/useRoleForm';
+import { ColorPicker } from '../../../components/ui/molecules/ColorPicker';
+import { IconPicker } from '../../../components/ui/molecules/IconPicker';
+import { EntitySelector } from '../../../components/ui/molecules/EntitySelector';
 import * as Tabs from '@radix-ui/react-tabs';
 
 interface RoleSettingsModalProps {

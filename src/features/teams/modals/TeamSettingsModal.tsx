@@ -6,16 +6,16 @@
  */
 
 import { useState, useEffect } from 'react';
-import { Modal } from '../ui/molecules/Modal';
-import { Input } from '../ui/molecules/Input';
-import { Button } from '../ui/atoms/Button';
-import { useAuth } from '../../contexts/AuthContext';
-import { useTeamStore } from '../../stores/team';
+import { Modal } from '../../../components/ui/molecules/Modal';
+import { Input } from '../../../components/ui/molecules/Input';
+import { Button } from '../../../components/ui/atoms/Button';
+import { useAuth } from '../../../contexts/AuthContext';
+import { useTeamStore } from '../../../stores/team';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faExclamationTriangle, faUsers } from '@fortawesome/free-solid-svg-icons';
-import { ColorPicker } from '../ui/molecules/ColorPicker';
-import { IconPicker } from '../ui/molecules/IconPicker';
-import { getIcon } from '../../config/iconRegistry';
+import { ColorPicker } from '../../../components/ui/molecules/ColorPicker';
+import { IconPicker } from '../../../components/ui/molecules/IconPicker';
+import { getIcon } from '../../../config/iconRegistry';
 
 interface TeamSettingsModalProps {
     isOpen: boolean;

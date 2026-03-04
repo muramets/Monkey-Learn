@@ -3,9 +3,9 @@ import { format, parseISO } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock, faTrash, faGear, faComment, faHourglassHalf } from '@fortawesome/free-solid-svg-icons';
 import { AppIcon } from '../../../components/ui/atoms/AppIcon';
-import { PowerIcon } from '../../../features/innerfaces/components/PowerIcon';
+import { PowerIcon } from '../../innerfaces/components/PowerIcon';
 import type { HistoryRecord } from '../../../types/history';
-import type { Innerface } from '../../../features/innerfaces/types';
+import type { Innerface } from '../../innerfaces/types';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../components/ui/atoms/Tooltip';
 import { motion, useAnimation, type PanInfo, useMotionValue, useTransform } from 'framer-motion';
 

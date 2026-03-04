@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useMemo, useRef } from 'react';
 import { useScoreContext } from '../../../contexts/ScoreContext';
-import { InnerfaceSettingsModal } from '../../../components/modals/InnerfaceSettingsModal';
+import { InnerfaceSettingsModal } from '../modals/InnerfaceSettingsModal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faChevronDown, faGripVertical, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { GroupSettingsModal } from '../../../features/groups/components/GroupSettingsModal';

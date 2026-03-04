@@ -9,7 +9,7 @@ import {
     faCheck
 } from '@fortawesome/free-solid-svg-icons';
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
-import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '../ui/atoms/Tooltip';
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '../atoms/Tooltip';
 
 interface FilterDropdownProps {
     trigger: (isOpen: boolean, hasActiveFilters: boolean) => ReactNode;

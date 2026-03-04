@@ -1,16 +1,16 @@
-import { Modal } from '../ui/molecules/Modal';
-import { Input } from '../ui/molecules/Input';
-import { Button } from '../ui/atoms/Button';
-import { ConfirmButton } from '../ui/molecules/ConfirmButton';
+import { Modal } from '../../../components/ui/molecules/Modal';
+import { Input } from '../../../components/ui/molecules/Input';
+import { Button } from '../../../components/ui/atoms/Button';
+import { ConfirmButton } from '../../../components/ui/molecules/ConfirmButton';
 
-import { useInnerfaceForm } from '../../features/innerfaces/hooks/useInnerfaceForm';
-import { ColorPicker } from '../ui/molecules/ColorPicker';
-import { IconPicker } from '../ui/molecules/IconPicker';
-import { EntitySelector } from '../ui/organisms/EntitySelector';
-import { AppIcon } from '../ui/atoms/AppIcon';
-import { InnerfaceGroupSelector } from '../../features/innerfaces/components/InnerfaceGroupSelector';
-import { PowerIcon } from '../../features/innerfaces/components/PowerIcon';
-import { RichTextEditor } from '../ui/RichTextEditor';
+import { useInnerfaceForm } from '../hooks/useInnerfaceForm';
+import { ColorPicker } from '../../../components/ui/molecules/ColorPicker';
+import { IconPicker } from '../../../components/ui/molecules/IconPicker';
+import { EntitySelector } from '../../../components/ui/molecules/EntitySelector';
+import { AppIcon } from '../../../components/ui/atoms/AppIcon';
+import { InnerfaceGroupSelector } from '../components/InnerfaceGroupSelector';
+import { PowerIcon } from '../components/PowerIcon';
+import { RichTextEditor } from '../../../components/ui/RichTextEditor';
 
 interface InnerfaceSettingsModalProps {
     isOpen: boolean;

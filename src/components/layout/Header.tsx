@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { PersonalityDropdown } from './PersonalityDropdown';
+import { PersonalityDropdown } from '../../features/personalities/components/PersonalityDropdown';
 import { TeamsDropdown } from '../../features/teams/components/TeamsDropdown';
 
 import { LogOut, Settings } from 'lucide-react';

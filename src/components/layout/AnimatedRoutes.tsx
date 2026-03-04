@@ -5,7 +5,7 @@ import { PAGE_ORDER } from '../../constants/navigation';
 
 // Pages
 import Dashboard from '../../pages/dashboard/DashboardPage';
-import { ProtocolsList } from '../../pages/protocols';
+import { ProtocolsList } from '../../features/protocols/components/ProtocolsList';
 import InnerfacesPage from '../../pages/innerfaces/InnerfacesPage';
 import HistoryPage from '../../pages/history/HistoryPage';
 import JoinInvitePage from '../../pages/JoinInvitePage';

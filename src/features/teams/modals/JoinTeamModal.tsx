@@ -7,15 +7,15 @@
  */
 
 import { useState, useEffect } from 'react';
-import { Modal } from '../ui/molecules/Modal';
-import { Input } from '../ui/molecules/Input';
-import { Button } from '../ui/atoms/Button';
-import { useAuth } from '../../contexts/AuthContext';
-import { useInviteStore } from '../../stores/team';
-import { usePersonalityStore } from '../../stores/personalityStore';
+import { Modal } from '../../../components/ui/molecules/Modal';
+import { Input } from '../../../components/ui/molecules/Input';
+import { Button } from '../../../components/ui/atoms/Button';
+import { useAuth } from '../../../contexts/AuthContext';
+import { useInviteStore } from '../../../stores/team';
+import { usePersonalityStore } from '../../../stores/personalityStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLink, faCheck, faSpinner, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
-import { getIcon } from '../../config/iconRegistry';
+import { getIcon } from '../../../config/iconRegistry';
 
 interface JoinTeamModalProps {
     isOpen: boolean;

@@ -8,11 +8,11 @@ import { StoreSync } from './stores/StoreSync';
 import { TooltipProvider } from './components/ui/atoms/Tooltip';
 import { GlobalLoader } from './components/ui/molecules/GlobalLoader';
 import { Toast } from './components/ui/molecules/Toast';
-import { ThemeController } from './components/logic/ThemeController';
+import { ThemeController } from './components/layout/ThemeController';
 import { useUIStore } from './stores/uiStore';
 import { initTheme } from './utils/themeManager';
 import { AnimatedRoutes } from './components/layout/AnimatedRoutes';
-import { CommentInputOverlay } from './components/ui/molecules/CommentInputOverlay';
+import { CommentInputOverlay } from './features/comments/components/CommentInputOverlay';
 
 function AppContent() {
   const { loading: authLoading } = useAuth();

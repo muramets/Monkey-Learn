@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import type { Innerface } from '../../innerfaces/types';
 import { MonkeyTypeLoader } from '../../../components/ui/molecules/MonkeyTypeLoader';
 import { getIcon } from '../../../config/iconRegistry';
-import { ProtocolSettingsModal } from '../../../components/modals/ProtocolSettingsModal';
+import { ProtocolSettingsModal } from '../modals/ProtocolSettingsModal';
 import { useScoreContext } from '../../../contexts/ScoreContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';

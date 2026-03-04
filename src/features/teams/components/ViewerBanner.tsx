@@ -11,7 +11,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { usePersonalityStore } from '../../stores/personalityStore';
+import { usePersonalityStore } from '../../../stores/personalityStore';
 
 export function ViewerBanner() {
     const { activeContext, exitViewerMode } = usePersonalityStore();

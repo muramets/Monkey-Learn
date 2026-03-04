@@ -1,17 +1,17 @@
-import { Modal } from '../ui/molecules/Modal';
-import { Input } from '../ui/molecules/Input';
-import { Button } from '../ui/atoms/Button';
-import { ConfirmButton } from '../ui/molecules/ConfirmButton';
-import { AppIcon } from '../ui/atoms/AppIcon';
+import { Modal } from '../../../components/ui/molecules/Modal';
+import { Input } from '../../../components/ui/molecules/Input';
+import { Button } from '../../../components/ui/atoms/Button';
+import { ConfirmButton } from '../../../components/ui/molecules/ConfirmButton';
+import { AppIcon } from '../../../components/ui/atoms/AppIcon';
 
-import { useProtocolForm } from '../../features/protocols/hooks/useProtocolForm';
-import { ColorPicker } from '../ui/molecules/ColorPicker';
-import { IconPicker } from '../ui/molecules/IconPicker';
-import { EntitySelector } from '../ui/organisms/EntitySelector';
-import { ProtocolGroupSelector } from '../../features/protocols/components/ProtocolGroupSelector';
-import { ProtocolXpSelector } from '../../features/protocols/components/ProtocolXpSelector';
-import { ProtocolInstructionInput } from '../../features/protocols/components/ProtocolInstructionInput';
-import { RichTextEditor } from '../ui/RichTextEditor';
+import { useProtocolForm } from '../hooks/useProtocolForm';
+import { ColorPicker } from '../../../components/ui/molecules/ColorPicker';
+import { IconPicker } from '../../../components/ui/molecules/IconPicker';
+import { EntitySelector } from '../../../components/ui/molecules/EntitySelector';
+import { ProtocolGroupSelector } from '../components/ProtocolGroupSelector';
+import { ProtocolXpSelector } from '../components/ProtocolXpSelector';
+import { ProtocolInstructionInput } from '../components/ProtocolInstructionInput';
+import { RichTextEditor } from '../../../components/ui/RichTextEditor';
 
 interface ProtocolSettingsModalProps {
     isOpen: boolean;

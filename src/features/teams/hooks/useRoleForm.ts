@@ -214,7 +214,9 @@ export function useRoleForm({ teamId, roleId, onClose, isOpen }: UseRoleFormProp
 
             const filteredInnerfaceGroupOrder: Record<string, string[]> = {};
             Object.entries(innerfaceGroupOrder).forEach(([cat, order]) => {
-                filteredInnerfaceGroupOrder[cat] = order.filter(group => usedGroupNames.has(group));
+                if (Array.isArray(order)) {
+                    filteredInnerfaceGroupOrder[cat] = order.filter(group => usedGroupNames.has(group));
+                }
             });
 
             const template: RoleTemplate = {

@@ -1,8 +1,8 @@
 import { useLocation } from 'react-router-dom';
 import { Header } from './Header';
 import { Navigation } from './Navigation';
-import { ViewerBanner } from './ViewerBanner';
-import { PersonalityMottoBanner } from './PersonalityMottoBanner';
+import { ViewerBanner } from '../../features/teams/components/ViewerBanner';
+import { PersonalityMottoBanner } from '../../features/personalities/components/PersonalityMottoBanner';
 import { useSwipeNavigation } from '../../hooks/useSwipeNavigation';
 
 export function Layout({ children }: { children: React.ReactNode }) {
