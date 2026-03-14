@@ -102,7 +102,7 @@ export const ProtocolGroup = React.memo(({
                                     ref={setActivatorNodeRef}
                                     {...listeners}
                                     {...attributes}
-                                    className="cursor-grab active:cursor-grabbing text-sub hover:text-text-primary active:text-text-primary px-1 -ml-2 opacity-0 group-hover:opacity-100 transition-all duration-200"
+                                    className="cursor-grab active:cursor-grabbing text-sub hover:text-text-primary active:text-text-primary px-1 -ml-2 opacity-0 group-hover:opacity-100 transition-[opacity,color,background-color] duration-200"
                                     title="Drag to reorder group"
                                     onPointerDown={(e) => {
                                         e.stopPropagation();

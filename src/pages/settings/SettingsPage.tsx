@@ -1,6 +1,6 @@
-import { useState, useMemo } from 'react';
-import { allThemes } from '../../styles/allThemes';
-import { setTheme, getCurrentTheme, hexToHSL, getFavorites, toggleFavorite } from '../../utils/themeManager';
+import { useState, useMemo, useEffect } from 'react';
+import { setTheme, getCurrentTheme, hexToHSL, getFavorites, toggleFavorite, getAllThemes } from '../../utils/themeManager';
+import type { Theme } from '../../utils/themeManager';
 import { ThemeButton } from './components/ThemeButton';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faPalette } from '@fortawesome/free-solid-svg-icons';
@@ -84,6 +84,11 @@ function SettingsContent({
     });
 
     const [searchQuery, setSearchQuery] = useState('');
+    const [themesMap, setThemesMap] = useState<Record<string, Theme>>({});
+
+    useEffect(() => {
+        void getAllThemes().then(setThemesMap);
+    }, []);
 
     const [favorites, setFavorites] = useState<string[]>(() => {
         if (themeEntity?.favThemes) return themeEntity.favThemes;
@@ -91,7 +96,7 @@ function SettingsContent({
     });
 
     const handleThemeChange = async (name: string) => {
-        setTheme(name);
+        await setTheme(name);
         setCurrentThemeName(name);
 
         if (user && activePersonality) {
@@ -128,7 +133,7 @@ function SettingsContent({
     };
 
     const sortedthemes = useMemo(() => {
-        return Object.values(allThemes).sort((a, b) => {
+        return Object.values(themesMap).sort((a, b) => {
             const l1 = hexToHSL(a.bgColor).l;
             const l2 = hexToHSL(b.bgColor).l;
             // Descending lightness (lightest first)
@@ -137,7 +142,7 @@ function SettingsContent({
             // If lightness is equal, sort alphabetically
             return a.name.localeCompare(b.name);
         });
-    }, []);
+    }, [themesMap]);
 
     const { favThemesList, otherThemesList } = useMemo(() => {
         const filtered = sortedthemes.filter(theme =>

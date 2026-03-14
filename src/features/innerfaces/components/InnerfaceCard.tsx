@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
+import { MARKDOWN_TOOLTIP_COMPONENTS } from '../../../utils/markdownComponents';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '../../../components/ui/atoms/Card';
 import type { Innerface } from '../types';
@@ -21,7 +22,7 @@ interface InnerfaceCardProps {
     hasGoal?: boolean;
 }
 
-export function InnerfaceCard({ innerface, onEdit, onPlanning, forceHover, hasGoal }: InnerfaceCardProps) {
+export const InnerfaceCard = React.memo(function InnerfaceCard({ innerface, onEdit, onPlanning, forceHover, hasGoal }: InnerfaceCardProps) {
     const navigate = useNavigate();
 
     const [isTapped, setIsTapped] = React.useState(false);
@@ -78,7 +79,7 @@ export function InnerfaceCard({ innerface, onEdit, onPlanning, forceHover, hasGo
     return (
         <Card
             onClick={handleCardClick}
-            className={`group relative overflow-hidden p-4 flex flex-col justify-between min-h-[105px] transition-all duration-300 border border-transparent text-left select-none cursor-grab active:cursor-grabbing ${shouldShowHover ? '-translate-y-[2px] shadow-lg' : '[@media(hover:hover)]:hover:-translate-y-[2px] [@media(hover:hover)]:hover:shadow-lg'}`}
+            className={`group relative overflow-hidden p-4 flex flex-col justify-between min-h-[105px] transition-[transform,box-shadow] duration-300 border border-transparent text-left select-none cursor-grab active:cursor-grabbing ${shouldShowHover ? '-translate-y-[2px] shadow-lg' : '[@media(hover:hover)]:hover:-translate-y-[2px] [@media(hover:hover)]:hover:shadow-lg'}`}
         >
             {/* 1. Dynamic Gradient from Tier Color */}
             <div
@@ -90,7 +91,7 @@ export function InnerfaceCard({ innerface, onEdit, onPlanning, forceHover, hasGo
 
             {/* Focused Glow */}
             <div
-                className={`absolute inset-x-0 top-0 h-24 opacity-0 transition-all duration-500 ease-out pointer-events-none ${shouldShowHover ? 'opacity-[0.05]' : '[@media(hover:hover)]:group-hover:opacity-[0.05]'}`}
+                className={`absolute inset-x-0 top-0 h-24 opacity-0 transition-opacity duration-500 ease-out pointer-events-none ${shouldShowHover ? 'opacity-[0.05]' : '[@media(hover:hover)]:group-hover:opacity-[0.05]'}`}
                 style={{
                     background: `linear-gradient(to bottom, ${tierColor}, transparent)`
                 }}
@@ -105,7 +106,7 @@ export function InnerfaceCard({ innerface, onEdit, onPlanning, forceHover, hasGo
                         color={innerface.color}
                         category={innerface.category}
                         size="w-10 h-10"
-                        className={`transition-all duration-300 ${shouldShowHover ? 'scale-105' : '[@media(hover:hover)]:group-hover:scale-105'}`}
+                        className={`transition-transform duration-300 ${shouldShowHover ? 'scale-105' : '[@media(hover:hover)]:group-hover:scale-105'}`}
                     />
 
                     {/* Title */}
@@ -121,7 +122,7 @@ export function InnerfaceCard({ innerface, onEdit, onPlanning, forceHover, hasGo
                                 {innerface.description && (
                                     <p
                                         ref={descRef}
-                                        className={`text-[10px] text-sub font-mono uppercase tracking-wider opacity-60 truncate mt-0.5 transition-all duration-300 w-full ${shouldShowHover ? 'opacity-100 text-text-primary' : '[@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-hover:text-text-primary'}`}
+                                        className={`text-[10px] text-sub font-mono uppercase tracking-wider opacity-60 truncate mt-0.5 transition-[opacity,color] duration-300 w-full ${shouldShowHover ? 'opacity-100 text-text-primary' : '[@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-hover:text-text-primary'}`}
                                     >
                                         {innerface.description}
                                     </p>
@@ -144,15 +145,7 @@ export function InnerfaceCard({ innerface, onEdit, onPlanning, forceHover, hasGo
                                     <div className="rich-text-viewer text-left text-xs">
                                         <ReactMarkdown
                                             rehypePlugins={[rehypeRaw]}
-                                            components={{
-                                                p: ({ ...props }) => <p className="mb-1 last:mb-0" {...props} />,
-                                                strong: ({ ...props }) => <strong className="font-bold text-text-primary" {...props} />,
-                                                em: ({ ...props }) => <em className="italic text-text-primary/80" {...props} />,
-                                                hr: ({ ...props }) => <hr className="my-2 border-t border-sub/10 w-full block" {...props} />,
-                                                ul: ({ ...props }) => <ul className="list-disc pl-4 mb-1 space-y-0.5" {...props} />,
-                                                ol: ({ ...props }) => <ol className="list-decimal pl-4 mb-1 space-y-0.5" {...props} />,
-                                                li: ({ ...props }) => <li className="pl-0.5" {...props} />,
-                                            }}>
+                                            components={MARKDOWN_TOOLTIP_COMPONENTS}>
                                             {innerface.hover}
                                         </ReactMarkdown>
                                     </div>
@@ -170,7 +163,7 @@ export function InnerfaceCard({ innerface, onEdit, onPlanning, forceHover, hasGo
                     {/* Target - always visible when goal set, otherwise on hover */}
                     <button
                         onClick={handlePlan}
-                        className={`w-7 h-7 flex items-center justify-start transition-all duration-200 
+                        className={`w-7 h-7 flex items-center justify-start transition-[opacity,color] duration-200
                             ${hasGoal
                                 ? 'opacity-100 text-main hover:text-white'
                                 : `opacity-0 text-sub hover:text-main ${shouldShowHover ? 'opacity-100' : '[@media(hover:hover)]:group-hover:opacity-100'}`
@@ -182,7 +175,7 @@ export function InnerfaceCard({ innerface, onEdit, onPlanning, forceHover, hasGo
                     {/* History - only on hover */}
                     <button
                         onClick={handleHistory}
-                        className={`w-7 h-7 flex items-center justify-start text-sub hover:text-main transition-all duration-200 opacity-0 ${shouldShowHover ? 'opacity-100' : '[@media(hover:hover)]:group-hover:opacity-100'}`}
+                        className={`w-7 h-7 flex items-center justify-start text-sub hover:text-main transition-[opacity,color] duration-200 opacity-0 ${shouldShowHover ? 'opacity-100' : '[@media(hover:hover)]:group-hover:opacity-100'}`}
                         title="View History"
                     >
                         <FontAwesomeIcon icon={faHistory} className="text-xs" />
@@ -190,7 +183,7 @@ export function InnerfaceCard({ innerface, onEdit, onPlanning, forceHover, hasGo
                     {/* Settings - only on hover */}
                     <button
                         onClick={handleEdit}
-                        className={`w-7 h-7 flex items-center justify-start text-sub hover:text-main transition-all duration-200 opacity-0 ${shouldShowHover ? 'opacity-100' : '[@media(hover:hover)]:group-hover:opacity-100'}`}
+                        className={`w-7 h-7 flex items-center justify-start text-sub hover:text-main transition-[opacity,color] duration-200 opacity-0 ${shouldShowHover ? 'opacity-100' : '[@media(hover:hover)]:group-hover:opacity-100'}`}
                         title="Settings"
                     >
                         <FontAwesomeIcon icon={faCog} className="text-xs" />
@@ -206,12 +199,12 @@ export function InnerfaceCard({ innerface, onEdit, onPlanning, forceHover, hasGo
                                     <FontAwesomeIcon icon={currentScore > innerface.initialScore ? faArrowUp : faArrowDown} />
                                 </span>
                             )}
-                            <span className={`text-[9px] font-mono text-sub uppercase tracking-widest opacity-40 mb-1 transition-all duration-300 block ${shouldShowHover ? 'text-text-primary opacity-100' : '[@media(hover:hover)]:group-hover:text-text-primary [@media(hover:hover)]:group-hover:opacity-100'}`}>
+                            <span className={`text-[9px] font-mono text-sub uppercase tracking-widest opacity-40 mb-1 transition-[opacity,color] duration-300 block ${shouldShowHover ? 'text-text-primary opacity-100' : '[@media(hover:hover)]:group-hover:text-text-primary [@media(hover:hover)]:group-hover:opacity-100'}`}>
                                 Lvl
                             </span>
                         </div>
                         <div
-                            className="font-medium font-mono leading-none tracking-tight transition-all duration-300"
+                            className="font-medium font-mono leading-none tracking-tight transition-colors duration-300"
                             style={{
                                 color: tierColor,
                                 fontSize: innerface.priority === 'low' ? '1.5rem' : (innerface.priority === 'high' ? '3.4rem' : '2.2rem'),
@@ -226,12 +219,12 @@ export function InnerfaceCard({ innerface, onEdit, onPlanning, forceHover, hasGo
 
             {/* Bottom: Progress Bar (XP to next level) */}
             <div className="relative z-10 w-full flex flex-col gap-0.5">
-                <div className={`text-[9px] font-mono text-sub ml-1 opacity-50 transition-all duration-300 ${shouldShowHover ? 'opacity-100 text-text-primary' : '[@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-hover:text-text-primary'}`}>
+                <div className={`text-[9px] font-mono text-sub ml-1 opacity-50 transition-[opacity,color] duration-300 ${shouldShowHover ? 'opacity-100 text-text-primary' : '[@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-hover:text-text-primary'}`}>
                     {100 - currentLevelXP} XP to next level
                 </div>
                 <div className="h-[4px] bg-bg-primary/50 w-full rounded-full overflow-hidden my-0.5">
                     <div
-                        className="h-full transition-all duration-300 ease-out rounded-full"
+                        className="h-full transition-[width] duration-300 ease-out rounded-full"
                         style={{
                             width: `${progress}%`,
                             backgroundColor: tierColor
@@ -239,7 +232,7 @@ export function InnerfaceCard({ innerface, onEdit, onPlanning, forceHover, hasGo
                     />
                 </div>
                 {/* XP Detail (Visible on hover or always small) */}
-                <div className={`flex justify-between items-center text-[9px] font-mono text-sub ml-1 opacity-50 transition-all duration-200 ${shouldShowHover ? 'opacity-100 text-text-primary' : '[@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-hover:text-text-primary'}`}>
+                <div className={`flex justify-between items-center text-[9px] font-mono text-sub ml-1 opacity-50 transition-[opacity,color] duration-200 ${shouldShowHover ? 'opacity-100 text-text-primary' : '[@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-hover:text-text-primary'}`}>
                     <span>{currentLevelXP} / 100 XP</span>
                     <span>{totalXP} Total</span>
                 </div>
@@ -247,4 +240,4 @@ export function InnerfaceCard({ innerface, onEdit, onPlanning, forceHover, hasGo
 
         </Card>
     );
-}
+});

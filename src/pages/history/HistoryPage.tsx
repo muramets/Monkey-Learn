@@ -269,7 +269,7 @@ export default function HistoryPage() {
                     <Button
                         variant="primary"
                         onClick={clearFilters}
-                        className="px-8 py-6 rounded-xl font-mono text-xs font-black uppercase tracking-[0.25em] transition-all hover:shadow-text-primary/20 shadow-xl shadow-main/20"
+                        className="px-8 py-6 rounded-xl font-mono text-xs font-black uppercase tracking-[0.25em] transition-shadow hover:shadow-text-primary/20 shadow-xl shadow-main/20"
                     >
                         Reset All Filters
                     </Button>

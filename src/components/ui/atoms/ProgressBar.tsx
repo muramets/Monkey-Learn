@@ -22,7 +22,7 @@ export function ProgressBar({
     return (
         <div className={`w-full rounded-full overflow-hidden ${trackColorClass} ${heightClass} ${className}`}>
             <div
-                className={`h-full transition-all duration-500 ease-out rounded-full ${!customColor ? colorClass : ''}`}
+                className={`h-full transition-[width,background-color,box-shadow] duration-500 ease-out rounded-full ${!customColor ? colorClass : ''}`}
                 style={{
                     width: `${percentage}%`,
                     ...(customColor ? {

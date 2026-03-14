@@ -124,7 +124,7 @@ export function RoleSettingsModal({ isOpen, onClose, teamId, roleId }: RoleSetti
                             onClick={handleDelete}
                             disabled={isLoading}
                             leftIcon={<FontAwesomeIcon icon={isConfirmingDelete ? faExclamationTriangle : faTrash} />}
-                            className="text-[10px] uppercase tracking-wider font-bold px-3 py-2 transition-all duration-200"
+                            className="text-[10px] uppercase tracking-wider font-bold px-3 py-2 transition-colors duration-200"
                         >
                             {isConfirmingDelete ? 'Are you sure?' : 'Delete'}
                         </Button>
@@ -238,7 +238,7 @@ export function RoleSettingsModal({ isOpen, onClose, teamId, roleId }: RoleSetti
                                 <Tabs.Trigger
                                     key={tab}
                                     value={tab}
-                                    className="flex-1 px-3 py-1.5 text-[10px] font-mono uppercase tracking-wider text-sub rounded-md transition-all data-[state=active]:bg-main data-[state=active]:text-bg-primary data-[state=active]:font-bold data-[state=active]:shadow-lg hover:text-text-primary outline-none"
+                                    className="flex-1 px-3 py-1.5 text-[10px] font-mono uppercase tracking-wider text-sub rounded-md transition-[color,background-color,font-weight,box-shadow] data-[state=active]:bg-main data-[state=active]:text-bg-primary data-[state=active]:font-bold data-[state=active]:shadow-lg hover:text-text-primary outline-none"
                                 >
                                     {tab}
                                 </Tabs.Trigger>

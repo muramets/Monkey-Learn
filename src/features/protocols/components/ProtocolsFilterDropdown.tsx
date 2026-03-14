@@ -60,12 +60,12 @@ export function ProtocolsFilterDropdown({
             </button>
 
             {/* Dropdown меню (показывается при hover) */}
-            <div className="absolute top-full right-0 mt-2 w-48 bg-sub-alt rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 p-2 transform origin-top-right border border-white/5">
+            <div className="absolute top-full right-0 mt-2 w-48 bg-sub-alt rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-[opacity,visibility] duration-200 z-50 p-2 transform origin-top-right border border-white/5">
                 <div className="flex flex-col">
                     {/* Опция "All actions" - сбрасывает все фильтры */}
                     <button
                         onClick={() => onToggleFilter('all')}
-                        className={`flex items-center gap-2 w-full text-left px-3 py-2.5 rounded-md transition-all group/item ${activeFilters.length === 0 ? 'bg-sub/30' : 'hover:bg-sub/20'
+                        className={`flex items-center gap-2 w-full text-left px-3 py-2.5 rounded-md transition-colors group/item ${activeFilters.length === 0 ? 'bg-sub/30' : 'hover:bg-sub/20'
                             }`}
                     >
                         <div className="w-4 flex items-center justify-center opacity-70">
@@ -90,7 +90,7 @@ export function ProtocolsFilterDropdown({
                             <button
                                 key={group}
                                 onClick={() => onToggleFilter(group)}
-                                className={`flex items-center gap-2 w-full text-left px-3 py-2.5 rounded-md transition-all group/item ${isActive ? 'bg-sub/30' : 'hover:bg-sub/20'
+                                className={`flex items-center gap-2 w-full text-left px-3 py-2.5 rounded-md transition-colors group/item ${isActive ? 'bg-sub/30' : 'hover:bg-sub/20'
                                     }`}
                             >
                                 {/* Иконка группы */}
@@ -119,7 +119,7 @@ export function ProtocolsFilterDropdown({
                     {hasUngrouped && (
                         <button
                             onClick={() => onToggleFilter('ungrouped')}
-                            className={`flex items-center gap-2 w-full text-left px-3 py-2.5 rounded-md transition-all group/item ${activeFilters.includes('ungrouped') ? 'bg-sub/30' : 'hover:bg-sub/20'
+                            className={`flex items-center gap-2 w-full text-left px-3 py-2.5 rounded-md transition-colors group/item ${activeFilters.includes('ungrouped') ? 'bg-sub/30' : 'hover:bg-sub/20'
                                 }`}
                         >
                             <div className="w-4 flex items-center justify-center">

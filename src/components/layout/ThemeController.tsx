@@ -21,7 +21,7 @@ export function ThemeController() {
 
         if (targetTheme && getCurrentTheme() !== targetTheme) {
             console.debug(`[ThemeController] Switching to theme: ${targetTheme}`);
-            setTheme(targetTheme);
+            void setTheme(targetTheme);
         }
     }, [activeContext, personalities, roles]);
 

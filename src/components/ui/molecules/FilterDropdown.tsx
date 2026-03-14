@@ -76,7 +76,7 @@ export function FilterDropdown({
         >
             {trigger(isOpen, hasActiveFilters)}
 
-            <div className={`absolute ${placement} mt-3 ${width} bg-sub-alt rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] transition-all duration-300 z-50 px-1 py-1 transform border border-white/5 divide-y divide-white/5 overflow-hidden ${isOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'}`}>
+            <div className={`absolute ${placement} mt-3 ${width} bg-sub-alt rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] transition-[opacity,visibility,transform] duration-300 z-50 px-1 py-1 transform border border-white/5 divide-y divide-white/5 overflow-hidden ${isOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'}`}>
                 <div className={`${maxHeight} overflow-y-auto custom-scrollbar`}>
                     {children}
                 </div>
@@ -156,7 +156,7 @@ export function Item({ label, isActive, onClick, onIndicatorClick, onIconClick, 
 
     return (
         <div
-            className={`flex items-center transition-all group/item-container rounded-lg mx-1 pl-3 ${isActive ? 'bg-sub/30 text-text-primary' : 'text-sub hover:bg-sub/20 hover:text-text-primary'} ${className}`}
+            className={`flex items-center transition-colors group/item-container rounded-lg mx-1 pl-3 ${isActive ? 'bg-sub/30 text-text-primary' : 'text-sub hover:bg-sub/20 hover:text-text-primary'} ${className}`}
             style={style}
         >
             {showIndicator && (
@@ -169,11 +169,11 @@ export function Item({ label, isActive, onClick, onIndicatorClick, onIconClick, 
                     }}
                     type="button"
                     disabled={!onIndicatorClick}
-                    className="w-4 h-6 flex items-center justify-center transition-all shrink-0 group/indicator cursor-default"
+                    className="w-4 h-6 flex items-center justify-center transition-colors shrink-0 group/indicator cursor-default"
                 >
-                    <div className="w-4 h-4 rounded-full flex items-center justify-center transition-all">
+                    <div className="w-4 h-4 rounded-full flex items-center justify-center transition-colors">
                         <div
-                            className={`w-2 h-2 rounded-full transition-all ${isActive
+                            className={`w-2 h-2 rounded-full transition-[background-color,box-shadow,transform] ${isActive
                                 ? 'bg-main shadow-[0_0_8px_var(--main-color)] scale-125'
                                 : 'bg-sub/20 border border-transparent group-hover/item-container:border-sub/40'
                                 }`}
@@ -236,7 +236,7 @@ export function NavButton({ title, icon, value, onClick, active, style }: NavBut
     return (
         <button
             onClick={onClick}
-            className={`w-full flex items-center justify-between px-3 py-3 rounded-lg text-[11px] font-mono transition-all group/nav ${active ? 'bg-sub/30 text-text-primary' : 'text-sub hover:bg-sub/20 hover:text-text-primary'}`}
+            className={`w-full flex items-center justify-between px-3 py-3 rounded-lg text-[11px] font-mono transition-colors group/nav ${active ? 'bg-sub/30 text-text-primary' : 'text-sub hover:bg-sub/20 hover:text-text-primary'}`}
             style={style}
         >
             <div className="flex items-center gap-3">

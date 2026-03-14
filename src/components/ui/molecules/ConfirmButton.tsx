@@ -61,7 +61,7 @@ export function ConfirmButton({
             disabled={disabled}
             leftIcon={isConfirming ? confirmIcon : defaultIcon}
             // Merge default className with any passed className, defaulting to the style used in modals
-            className={`transition-all duration-200 ${props.className || 'text-[10px] uppercase tracking-wider font-bold px-3 py-2'}`}
+            className={`transition-colors duration-200 ${props.className || 'text-[10px] uppercase tracking-wider font-bold px-3 py-2'}`}
             data-confirming={isConfirming}
             {...props}
         >

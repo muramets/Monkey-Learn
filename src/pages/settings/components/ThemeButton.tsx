@@ -17,7 +17,7 @@ export function ThemeButton({ theme, isActive, isFavorite, onClick, onToggleFavo
             onClick={() => onClick(theme.name)}
             className={`
                 group relative grid grid-cols-[1fr_auto_1fr] items-center gap-2
-                px-3 py-2 rounded-lg transition-all duration-150 ease-out
+                px-3 py-2 rounded-lg transition-[transform,box-shadow] duration-150 ease-out
                 hover:scale-110 hover:z-10
                 ${isActive ? 'scale-110 z-10' : ''}
             `}

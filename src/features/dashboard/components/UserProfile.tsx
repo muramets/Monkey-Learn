@@ -54,7 +54,7 @@ export function UserProfile() {
     const nextTierColor = getTierColor(nextTierFirstLevel);
 
     return (
-        <Card className="group flex flex-col md:flex-row items-center justify-between gap-0 md:gap-8 p-6 mb-8 bg-sub-alt rounded-lg shadow-sm border-none hover:scale-[1.02] hover:shadow-xl transition-all duration-300 overflow-hidden">
+        <Card className="group flex flex-col md:flex-row items-center justify-between gap-0 md:gap-8 p-6 mb-8 bg-sub-alt rounded-lg shadow-sm border-none hover:scale-[1.02] hover:shadow-xl transition-[transform,box-shadow] duration-300 overflow-hidden">
             {/* Desktop: Group User Info + Separator closely */}
             <div className="flex md:flex-row items-center gap-6 w-full md:w-auto">
                 {/* User Info Section */}
@@ -135,14 +135,14 @@ export function UserProfile() {
                                 >
                                     {level}
                                 </span>
-                                <span className="text-[9px] font-mono text-sub uppercase tracking-wider opacity-60 transition-all duration-300 group-hover:text-text-primary group-hover:opacity-100">Level</span>
+                                <span className="text-[9px] font-mono text-sub uppercase tracking-wider opacity-60 transition-[opacity,color] duration-300 group-hover:text-text-primary group-hover:opacity-100">Level</span>
                             </div>
 
                             {/* Progress Bar Container */}
                             <div className="flex flex-col gap-1.5 w-full max-w-[300px] min-w-[200px]">
                                 <div className="w-full h-[6px] bg-bg-primary rounded-[3px] overflow-hidden">
                                     <div
-                                        className="h-full transition-all duration-300 ease-out rounded-[3px]"
+                                        className="h-full transition-[width,background-color] duration-300 ease-out rounded-[3px]"
                                         style={{
                                             width: `${progress}%`,
                                             backgroundColor: tierColor
@@ -151,10 +151,10 @@ export function UserProfile() {
                                 </div>
                                 {/* XP Progress Value */}
                                 <div className="flex justify-between items-center text-[10px] font-mono text-sub leading-none w-full">
-                                    <span className="opacity-70 transition-all duration-300 group-hover:text-text-primary group-hover:opacity-100">
+                                    <span className="opacity-70 transition-[opacity,color] duration-300 group-hover:text-text-primary group-hover:opacity-100">
                                         {currentLevelXP} / 100 XP
                                     </span>
-                                    <span className="opacity-50 transition-all duration-300 tracking-wide group-hover:text-text-primary group-hover:opacity-100">
+                                    <span className="opacity-50 transition-[opacity,color] duration-300 tracking-wide group-hover:text-text-primary group-hover:opacity-100">
                                         {totalXP} Total
                                     </span>
                                 </div>

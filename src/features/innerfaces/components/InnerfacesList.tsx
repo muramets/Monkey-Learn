@@ -103,7 +103,7 @@ const CategorySection = React.memo(({
                     {/* Disable pointer events on content if ANY category is dragging (to allow drop on header) */}
                     {!isDragging && (
                         <div
-                            className={`overflow-hidden transition-all duration-300 ease-in-out ${isAnyCategoryDragging ? 'pointer-events-none' : ''
+                            className={`overflow-hidden transition-[opacity,max-height] duration-300 ease-in-out ${isAnyCategoryDragging ? 'pointer-events-none' : ''
                                 } ${!isCollapsed
                                     ? 'max-h-[5000px]'
                                     : 'opacity-0 max-h-0'
@@ -369,7 +369,7 @@ export function InnerfacesList() {
                                                 setLocalOpen(false);
                                                 handleCreate();
                                             }}
-                                            className="h-[46px] w-[36px] flex items-center justify-center rounded-lg text-sub hover:text-main transition-all cursor-pointer"
+                                            className="h-[46px] w-[36px] flex items-center justify-center rounded-lg text-sub hover:text-main transition-colors cursor-pointer"
                                         >
                                             <FontAwesomeIcon icon={faPlus} className="text-xl" />
                                         </button>
@@ -448,7 +448,7 @@ export function InnerfacesList() {
                         {innerfaces.length === 0 ? (
                             <button
                                 onClick={handleCreate}
-                                className="w-full min-h-[120px] border border-dashed border-sub/30 hover:border-sub rounded-xl flex flex-col items-center justify-center gap-3 text-sub hover:text-text-primary transition-all duration-200 group bg-sub-alt/5 hover:bg-sub-alt/10 py-6"
+                                className="w-full min-h-[120px] border border-dashed border-sub/30 hover:border-sub rounded-xl flex flex-col items-center justify-center gap-3 text-sub hover:text-text-primary transition-colors duration-200 group bg-sub-alt/5 hover:bg-sub-alt/10 py-6"
                             >
                                 <FontAwesomeIcon icon={faPlus} className="text-2xl" />
                                 <span className="font-mono text-xs">Add your first power</span>
@@ -475,6 +475,7 @@ export function InnerfacesList() {
                     >
                         <div
                             ref={contentRef}
+                            data-no-swipe
                             className={`flex flex-col gap-4 ${activeId ? 'drag-active-global' : ''}`}
                             style={{ minHeight: dragMinHeight ? `${dragMinHeight}px` : undefined }}
                         >

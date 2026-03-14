@@ -80,7 +80,7 @@ function WeeklyFocusRow({
                 <Tooltip>
                     <TooltipTrigger asChild>
                         <div
-                            className={`w-6 h-6 flex items-center justify-center rounded text-xs transition-all duration-300 flex-shrink-0
+                            className={`w-6 h-6 flex items-center justify-center rounded text-xs transition-[opacity,filter] duration-300 flex-shrink-0
                                 ${completed > 0 ? '' : 'grayscale opacity-50'}
                             `}
                             style={{
@@ -273,7 +273,7 @@ export function WeeklyFocus() {
 
             {/* Single Grid Container for entire calendar */}
             <div
-                className="grid gap-x-2 gap-y-0.5 w-full max-w-[320px] transition-all duration-300 items-center justify-center"
+                className="grid gap-x-2 gap-y-0.5 w-full max-w-[320px] transition-opacity duration-300 items-center justify-center"
                 style={{
                     gridTemplateColumns: '24px 1fr 52px',
                     gridTemplateRows: 'auto'
@@ -319,7 +319,7 @@ export function WeeklyFocus() {
                         >
                             {/* Visual Dot */}
                             <div
-                                className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ease-out
+                                className={`w-1.5 h-1.5 rounded-full transition-[background-color,transform] duration-300 ease-out
                                     ${i === currentPage
                                         ? 'bg-main scale-125'
                                         : 'bg-white/10 group-hover/dot:bg-text-primary group-hover/dot:scale-150'

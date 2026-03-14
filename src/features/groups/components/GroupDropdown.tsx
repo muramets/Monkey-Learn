@@ -41,7 +41,7 @@ export function GroupDropdown({
                     align="end"
                     sideOffset={12}
                     style={{ width: width === 'w-full' ? 'var(--radix-popover-trigger-width)' : undefined }}
-                    className={`z-[100] ${width === 'w-full' ? '' : width} bg-sub-alt rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] transition-all px-1 py-2 border border-white/5 divide-y divide-white/5 overflow-hidden animate-in fade-in zoom-in-95 duration-200`}
+                    className={`z-[100] ${width === 'w-full' ? '' : width} bg-sub-alt rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] transition-[opacity,transform] px-1 py-2 border border-white/5 divide-y divide-white/5 overflow-hidden animate-in fade-in zoom-in-95 duration-200`}
                 >
                     <div className={`${maxHeight} overflow-y-auto custom-scrollbar`}>
                         {children}
@@ -91,7 +91,7 @@ export function Item({
 }: ItemProps) {
     return (
         <div
-            className={`flex items-center rounded-xl transition-all group/item-container mx-0.5 ${isActive ? 'bg-sub/30 text-text-primary' : 'text-sub hover:bg-sub/20 hover:text-text-primary'} ${className}`}
+            className={`flex items-center rounded-xl transition-colors group/item-container mx-0.5 ${isActive ? 'bg-sub/30 text-text-primary' : 'text-sub hover:bg-sub/20 hover:text-text-primary'} ${className}`}
             style={style}
         >
             {showIndicator && (
@@ -104,11 +104,11 @@ export function Item({
                     }}
                     type="button"
                     disabled={!onIndicatorClick}
-                    className="w-8 h-8 flex items-center justify-center transition-all shrink-0 group/indicator cursor-pointer ml-1"
+                    className="w-8 h-8 flex items-center justify-center transition-colors shrink-0 group/indicator cursor-pointer ml-1"
                 >
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center transition-all ${isIndicatorActive ? 'bg-sub' : 'bg-sub-alt/60'} group-hover/indicator:bg-sub`}>
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center transition-colors ${isIndicatorActive ? 'bg-sub' : 'bg-sub-alt/60'} group-hover/indicator:bg-sub`}>
                         <div
-                            className={`w-3.5 h-3.5 rounded-full transition-all ${isActive
+                            className={`w-3.5 h-3.5 rounded-full transition-[background-color,box-shadow,border-color] ${isActive
                                 ? 'bg-main shadow-[0_0_8px_var(--main-color)]'
                                 : 'bg-sub/20 border border-transparent group-hover/item-container:border-sub/40'
                                 }`}

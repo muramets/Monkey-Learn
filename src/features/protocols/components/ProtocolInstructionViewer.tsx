@@ -166,7 +166,7 @@ export const ProtocolInstructionViewer = React.memo(({ instruction, isExpanded, 
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-10"
+                    className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/75 [@media(hover:hover)]:bg-black/60 [@media(hover:hover)]:backdrop-blur-sm p-10"
                     onClick={(e) => {
                         e.stopPropagation();
                         setIsZenMode(false);
@@ -221,11 +221,11 @@ export const ProtocolInstructionViewer = React.memo(({ instruction, isExpanded, 
                         <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                             <button
                                 onClick={(e) => {
-                                    console.log('Zen Mode Maximize clicked');
+                                    console.debug('Zen Mode Maximize clicked');
                                     e.stopPropagation();
                                     setIsZenMode(true);
                                 }}
-                                className="p-1.5 bg-sub-alt/80 backdrop-blur hover:bg-text-primary hover:text-bg-primary text-sub border border-white/10 rounded-md transition-all shadow-lg"
+                                className="p-1.5 bg-sub-alt [@media(hover:hover)]:bg-sub-alt/80 [@media(hover:hover)]:backdrop-blur hover:bg-text-primary hover:text-bg-primary text-sub border border-white/10 rounded-md transition-colors shadow-lg"
                                 title="Open in Zen Mode"
                             >
                                 <Maximize className="w-3.5 h-3.5" />

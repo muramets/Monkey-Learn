@@ -1,6 +1,7 @@
-import { useRef } from 'react';
+import React, { useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
+import { MARKDOWN_TOOLTIP_COMPONENTS } from '../../../utils/markdownComponents';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCog, faHistory, faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { useTruncation } from '../../../hooks/useTruncation';
@@ -21,7 +22,7 @@ interface StateCardProps {
     onHistory?: () => void;
 }
 
-export function StateCard({
+export const StateCard = React.memo(function StateCard({
     state,
     score = 0,
     yesterdayScore = 0,
@@ -61,12 +62,12 @@ export function StateCard({
     return (
         <div
             ref={cardRef}
-            className="group relative overflow-hidden rounded-2xl bg-sub-alt p-6 min-h-[180px] flex flex-col justify-between transition-all duration-300 cursor-pointer hover:-translate-y-[2px] hover:shadow-lg border border-transparent"
+            className="group relative overflow-hidden rounded-2xl bg-sub-alt p-6 min-h-[180px] flex flex-col justify-between transition-[transform,box-shadow] duration-300 cursor-pointer hover:-translate-y-[2px] hover:shadow-lg border border-transparent"
             onClick={onClick}
         >
             {/* Ambient Top Gradient - Anchors the color */}
             <div
-                className="absolute inset-x-0 top-0 h-40 opacity-0 group-hover:opacity-10 transition-all duration-500 ease-out"
+                className="absolute inset-x-0 top-0 h-40 opacity-0 group-hover:opacity-10 transition-opacity duration-500 ease-out"
                 style={{
                     background: `linear-gradient(to bottom, ${displayColor}, transparent)`
                 }}
@@ -74,7 +75,7 @@ export function StateCard({
 
             {/* Focused Glow - Moves slightly on hover */}
             <div
-                className="absolute -top-16 left-1/2 -translate-x-1/2 w-[60%] h-32 blur-[60px] transition-all duration-700 ease-in-out opacity-[0.10] group-hover:opacity-20 group-hover:scale-125 group-hover:-top-12"
+                className="absolute -top-16 left-1/2 -translate-x-1/2 w-[60%] h-32 blur-[60px] transition-[opacity,transform,top] duration-700 ease-in-out opacity-[0.10] group-hover:opacity-20 group-hover:scale-125 group-hover:-top-12"
                 style={{ backgroundColor: displayColor }}
             />
 
@@ -117,15 +118,7 @@ export function StateCard({
                                         <div className="rich-text-viewer text-left text-xs">
                                             <ReactMarkdown
                                                 rehypePlugins={[rehypeRaw]}
-                                                components={{
-                                                    p: ({ ...props }) => <p className="mb-1 last:mb-0" {...props} />,
-                                                    strong: ({ ...props }) => <strong className="font-bold text-text-primary" {...props} />,
-                                                    em: ({ ...props }) => <em className="italic text-text-primary/80" {...props} />,
-                                                    hr: ({ ...props }) => <hr className="my-2 border-t border-sub/10 w-full block" {...props} />,
-                                                    ul: ({ ...props }) => <ul className="list-disc pl-4 mb-1 space-y-0.5" {...props} />,
-                                                    ol: ({ ...props }) => <ol className="list-decimal pl-4 mb-1 space-y-0.5" {...props} />,
-                                                    li: ({ ...props }) => <li className="pl-0.5" {...props} />,
-                                                }}>
+                                                components={MARKDOWN_TOOLTIP_COMPONENTS}>
                                                 {state.hover}
                                             </ReactMarkdown>
                                         </div>
@@ -135,7 +128,7 @@ export function StateCard({
                         </Tooltip>
 
                         {displaySubtext && (
-                            <div className="text-[11px] text-sub font-medium uppercase tracking-wider opacity-60 group-hover:opacity-100 group-hover:text-text-primary transition-all duration-300 leading-tight font-mono truncate">
+                            <div className="text-[11px] text-sub font-medium uppercase tracking-wider opacity-60 group-hover:opacity-100 group-hover:text-text-primary transition-[opacity,color] duration-300 leading-tight font-mono truncate">
                                 {displaySubtext}
                             </div>
                         )}
@@ -149,7 +142,7 @@ export function StateCard({
             <div className="relative z-10 my-2 flex items-end justify-between w-full">
                 {/* Left: Level Display */}
                 <div className="flex items-end gap-2">
-                    <span className="text-[9px] font-mono text-sub uppercase tracking-widest opacity-40 mb-1.5 transition-all duration-300 group-hover:text-text-primary group-hover:opacity-100">
+                    <span className="text-[9px] font-mono text-sub uppercase tracking-widest opacity-40 mb-1.5 transition-[opacity,color] duration-300 group-hover:text-text-primary group-hover:opacity-100">
                         Lvl
                     </span>
                     <span
@@ -194,12 +187,12 @@ export function StateCard({
 
             {/* Progress Bar Section */}
             <div className="relative z-10 my-4 flex flex-col gap-1.5">
-                <div className="text-[0.75rem] text-sub font-mono ml-1 opacity-70 transition-all duration-300 group-hover:text-text-primary group-hover:opacity-100">
+                <div className="text-[0.75rem] text-sub font-mono ml-1 opacity-70 transition-[opacity,color] duration-300 group-hover:text-text-primary group-hover:opacity-100">
                     Level progress: {currentLevelXP}%
                 </div>
                 <div className="w-full h-[6px] bg-bg-primary/50 rounded-full overflow-hidden">
                     <div
-                        className="h-full transition-all duration-500 ease-out rounded-full"
+                        className="h-full transition-[width,box-shadow] duration-500 ease-out rounded-full"
                         style={{
                             width: `${progress}%`,
                             backgroundColor: displayColor,
@@ -210,9 +203,9 @@ export function StateCard({
             </div>
 
             {/* Details Footer */}
-            <div className="flex justify-between items-center text-[0.7rem] text-sub font-mono relative z-10 px-1 opacity-70 group-hover:opacity-100  transition-all duration-300 group-hover:text-text-primary">
+            <div className="flex justify-between items-center text-[0.7rem] text-sub font-mono relative z-10 px-1 opacity-70 group-hover:opacity-100  transition-[opacity,color] duration-300 group-hover:text-text-primary">
                 <span>{depText}</span>
             </div>
         </div>
     );
-}
+});

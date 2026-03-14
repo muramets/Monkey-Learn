@@ -184,7 +184,7 @@ export function TeamsDropdown() {
                 </button>
 
                 {/* Dropdown Menu */}
-                <div className="absolute top-full right-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 min-w-[26ch] z-[100] text-[0.75rem] pt-2">
+                <div className="absolute top-full right-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-[opacity,visibility] duration-150 min-w-[26ch] z-[100] text-[0.75rem] pt-2">
                     <div
                         className="flex flex-col rounded-[0.5rem] overflow-hidden"
                         style={{

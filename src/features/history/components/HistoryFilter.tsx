@@ -159,7 +159,7 @@ export function HistoryFilter({
         <FilterDropdown
             hasActiveFilters={hasActiveFilters}
             trigger={(isOpen, active) => (
-                <button className={`h-[46px] w-[36px] flex items-center justify-center rounded-lg transition-all cursor-pointer ${active ? 'text-main' : isOpen ? 'text-text-primary' : 'text-sub hover:text-text-primary'}`}>
+                <button className={`h-[46px] w-[36px] flex items-center justify-center rounded-lg transition-colors cursor-pointer ${active ? 'text-main' : isOpen ? 'text-text-primary' : 'text-sub hover:text-text-primary'}`}>
                     <div className="relative">
                         <FontAwesomeIcon icon={faFilter} className="text-xl" />
                         {active && (

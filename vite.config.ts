@@ -14,6 +14,23 @@ export default defineConfig({
   define: {
     '__APP_VERSION__': JSON.stringify(process.env.npm_package_version),
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('firebase')) return 'vendor-firebase';
+            if (id.includes('framer-motion')) return 'vendor-animation';
+            if (id.includes('@tiptap')) return 'vendor-editor';
+            if (id.includes('@radix-ui')) return 'vendor-ui';
+            if (id.includes('@fortawesome') || id.includes('lucide-react')) return 'vendor-icons';
+            if (id.includes('react-markdown') || id.includes('rehype-raw') || id.includes('marked') || id.includes('turndown')) return 'vendor-markdown';
+            return 'vendor-core';
+          }
+        },
+      },
+    },
+  },
   test: {
     globals: true,
     environment: 'jsdom',

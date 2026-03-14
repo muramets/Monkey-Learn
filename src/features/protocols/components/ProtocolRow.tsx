@@ -2,6 +2,7 @@ import React, { useState, useRef, useMemo, type MouseEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
+import { MARKDOWN_TOOLTIP_COMPONENTS } from '../../../utils/markdownComponents';
 import type { Protocol } from '../types';
 import type { Innerface } from '../../innerfaces/types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -184,9 +185,9 @@ export const ProtocolRow = React.memo(function ProtocolRow({ protocol, innerface
 
             {!isDisabled && (
                 <>
-                    <div className={`absolute inset-0 pointer-events-none transition-all duration-500 ease-out z-0 ${effectiveFeedbackType === 'plus' ? 'opacity-100' : 'opacity-0'}`}
+                    <div className={`absolute inset-0 pointer-events-none transition-opacity duration-500 ease-out z-0 ${effectiveFeedbackType === 'plus' ? 'opacity-100' : 'opacity-0'}`}
                         style={{ background: `radial-gradient(circle at 100% 50%, rgba(152, 195, 121, 0.3) 0%, transparent 70%)` }} />
-                    <div className={`absolute inset-0 pointer-events-none transition-all duration-500 ease-out z-0 ${effectiveFeedbackType === 'minus' ? 'opacity-100' : 'opacity-0'}`}
+                    <div className={`absolute inset-0 pointer-events-none transition-opacity duration-500 ease-out z-0 ${effectiveFeedbackType === 'minus' ? 'opacity-100' : 'opacity-0'}`}
                         style={{ background: `radial-gradient(circle at 0% 50%, rgba(202, 71, 84, 0.3) 0%, transparent 70%)` }} />
                 </>
             )}
@@ -199,10 +200,10 @@ export const ProtocolRow = React.memo(function ProtocolRow({ protocol, innerface
     const renderActionIndicators = () => (
         <>
             <div className="absolute inset-y-0 left-0 w-8 flex items-center justify-center pointer-events-none z-20">
-                <FontAwesomeIcon icon={faMinus} className={`transition-all duration-300 ${isTouchDevice && !isDisabled && !isReadOnly ? 'animate-pulse-soft' : ''} ${effectiveFeedbackType === 'minus' ? 'opacity-100 text-[#ca4754] scale-150' : (effectiveHoverSide === 'left' || (isTouchDevice && !isDisabled && !isReadOnly)) ? 'opacity-100 -translate-x-0 text-[#ca4754]' : 'opacity-0 -translate-x-4'}`} />
+                <FontAwesomeIcon icon={faMinus} className={`transition-[opacity,transform,color] duration-300 ${isTouchDevice && !isDisabled && !isReadOnly ? 'animate-pulse-soft' : ''} ${effectiveFeedbackType === 'minus' ? 'opacity-100 text-[#ca4754] scale-150' : (effectiveHoverSide === 'left' || (isTouchDevice && !isDisabled && !isReadOnly)) ? 'opacity-100 -translate-x-0 text-[#ca4754]' : 'opacity-0 -translate-x-4'}`} />
             </div>
             <div className="absolute inset-y-0 right-0 w-8 flex items-center justify-center pointer-events-none z-20">
-                <FontAwesomeIcon icon={faPlus} className={`transition-all duration-300 ${isTouchDevice && !isDisabled && !isReadOnly ? 'animate-pulse-soft' : ''} ${effectiveFeedbackType === 'plus' ? 'opacity-100 text-[#98c379] scale-150' : (effectiveHoverSide === 'right' || (isTouchDevice && !isDisabled && !isReadOnly)) ? 'opacity-100 translate-x-0 text-[#98c379]' : 'opacity-0 translate-x-4'}`} />
+                <FontAwesomeIcon icon={faPlus} className={`transition-[opacity,transform,color] duration-300 ${isTouchDevice && !isDisabled && !isReadOnly ? 'animate-pulse-soft' : ''} ${effectiveFeedbackType === 'plus' ? 'opacity-100 text-[#98c379] scale-150' : (effectiveHoverSide === 'right' || (isTouchDevice && !isDisabled && !isReadOnly)) ? 'opacity-100 translate-x-0 text-[#98c379]' : 'opacity-0 translate-x-4'}`} />
             </div>
         </>
     );
@@ -211,14 +212,13 @@ export const ProtocolRow = React.memo(function ProtocolRow({ protocol, innerface
      * RENDER HELPER: MAIN CONTENT
      */
     const renderMainContent = () => (
-        <motion.div layout={!isOverlay} className="relative z-10 grid grid-cols-[1.2fr_auto_1fr] items-center gap-4 px-4 h-full py-2">
+        <motion.div /* layout removed for perf */ className="relative z-10 grid grid-cols-[1.2fr_auto_1fr] items-center gap-4 px-4 h-full py-2">
             {renderBackgroundLayers()}
             {renderActionIndicators()}
 
             {/* Identity Group */}
-            <motion.div layout={!isOverlay} className={`flex items-center gap-3 min-w-0 pointer-events-none ${DEBUG_LAYOUT ? 'border border-blue-500' : ''}`}>
-                <motion.div layout={!isOverlay}
-                    className="flex items-center justify-center w-10 h-10 rounded-lg text-xl shrink-0"
+            <motion.div /* layout removed for perf */ className={`flex items-center gap-3 min-w-0 pointer-events-none ${DEBUG_LAYOUT ? 'border border-blue-500' : ''}`}>
+                <motion.div                    className="flex items-center justify-center w-10 h-10 rounded-lg text-xl shrink-0"
                     animate={{ marginLeft: (isHovered || (isTouchDevice && !isDisabled && !isReadOnly)) ? 16 : 0 }}
                     transition={{ duration: 0.3, ease: "easeOut" }}
                     style={{
@@ -243,7 +243,7 @@ export const ProtocolRow = React.memo(function ProtocolRow({ protocol, innerface
                             {protocol.description && (
                                 <p
                                     ref={descRef}
-                                    className={`text-[10px] text-sub font-mono transition-all duration-300 truncate block ${isHovered ? 'opacity-100 text-text-primary' : 'opacity-60'}`}
+                                    className={`text-[10px] text-sub font-mono transition-[opacity,color] duration-300 truncate block ${isHovered ? 'opacity-100 text-text-primary' : 'opacity-60'}`}
                                 >
                                     {protocol.description}
                                 </p>
@@ -266,15 +266,7 @@ export const ProtocolRow = React.memo(function ProtocolRow({ protocol, innerface
                                 <div className="rich-text-viewer text-left text-xs">
                                     <ReactMarkdown
                                         rehypePlugins={[rehypeRaw]}
-                                        components={{
-                                            p: ({ ...props }) => <p className="mb-1 last:mb-0" {...props} />,
-                                            strong: ({ ...props }) => <strong className="font-bold text-text-primary" {...props} />,
-                                            em: ({ ...props }) => <em className="italic text-text-primary/80" {...props} />,
-                                            hr: ({ ...props }) => <hr className="my-2 border-t border-sub/10 w-full block" {...props} />,
-                                            ul: ({ ...props }) => <ul className="list-disc pl-4 mb-1 space-y-0.5" {...props} />,
-                                            ol: ({ ...props }) => <ol className="list-decimal pl-4 mb-1 space-y-0.5" {...props} />,
-                                            li: ({ ...props }) => <li className="pl-0.5" {...props} />,
-                                        }}>
+                                        components={MARKDOWN_TOOLTIP_COMPONENTS}>
                                         {protocol.hover}
                                     </ReactMarkdown>
                                 </div>
@@ -285,8 +277,8 @@ export const ProtocolRow = React.memo(function ProtocolRow({ protocol, innerface
             </motion.div>
 
             {/* Weight Indicator */}
-            <motion.div layout={!isOverlay} className={`flex flex-col items-center justify-center pointer-events-none gap-1 ${DEBUG_LAYOUT ? 'border border-yellow-500' : ''}`}>
-                <span className={`font-lexend text-xs font-bold tracking-wider transition-all duration-300 ${effectiveFeedbackType === 'plus' ? 'text-[#98c379] opacity-100 scale-125' : effectiveFeedbackType === 'minus' ? 'text-[#ca4754] opacity-100 scale-125' : effectiveHoverSide === 'right' ? 'text-[#98c379] opacity-100 scale-110' : effectiveHoverSide === 'left' ? 'text-[#ca4754] opacity-100 scale-110' : isHovered ? 'text-text-primary opacity-100' : 'text-sub opacity-30'}`}>
+            <motion.div /* layout removed for perf */ className={`flex flex-col items-center justify-center pointer-events-none gap-1 ${DEBUG_LAYOUT ? 'border border-yellow-500' : ''}`}>
+                <span className={`font-lexend text-xs font-bold tracking-wider transition-[opacity,transform,color] duration-300 ${effectiveFeedbackType === 'plus' ? 'text-[#98c379] opacity-100 scale-125' : effectiveFeedbackType === 'minus' ? 'text-[#ca4754] opacity-100 scale-125' : effectiveHoverSide === 'right' ? 'text-[#98c379] opacity-100 scale-110' : effectiveHoverSide === 'left' ? 'text-[#ca4754] opacity-100 scale-110' : isHovered ? 'text-text-primary opacity-100' : 'text-sub opacity-30'}`}>
                     {Math.round(protocol.weight * 100)} XP
                 </span>
                 {protocol.instruction && (
@@ -294,7 +286,7 @@ export const ProtocolRow = React.memo(function ProtocolRow({ protocol, innerface
                         <TooltipTrigger asChild>
                             <button
                                 onClick={(e) => { e.stopPropagation(); setIsExpanded(!isExpanded); }}
-                                className={`w-5 h-5 flex items-center justify-center rounded-full transition-all duration-200 cursor-pointer ${isDisabled ? 'pointer-events-none' : 'pointer-events-auto'} ${isExpanded ? 'text-main bg-main/10' : 'text-sub/50 hover:text-main hover:bg-sub-alt shadow-sm'}`}
+                                className={`w-5 h-5 [@media(pointer:coarse)]:min-w-[44px] [@media(pointer:coarse)]:min-h-[44px] flex items-center justify-center rounded-full transition-[color,background-color,box-shadow] duration-200 cursor-pointer ${isDisabled ? 'pointer-events-none' : 'pointer-events-auto'} ${isExpanded ? 'text-main bg-main/10' : 'text-sub/50 hover:text-main hover:bg-sub-alt shadow-sm'}`}
                             >
                                 <FontAwesomeIcon icon={isExpanded ? faChevronUp : faInfoCircle} className="text-[10px]" />
                             </button>
@@ -309,10 +301,9 @@ export const ProtocolRow = React.memo(function ProtocolRow({ protocol, innerface
             </motion.div>
 
             {/* Targets & Actions Group */}
-            <motion.div layout={!isOverlay} className={`flex items-center justify-end gap-3 pointer-events-none w-full h-full text-right ${DEBUG_LAYOUT ? 'border border-green-500' : ''}`}>
+            <motion.div /* layout removed for perf */ className={`flex items-center justify-end gap-3 pointer-events-none w-full h-full text-right ${DEBUG_LAYOUT ? 'border border-green-500' : ''}`}>
                 <motion.div
-                    layout={!isOverlay}
-                    className={`flex flex-wrap justify-end content-center pointer-events-auto min-w-0 max-h-[40px] overflow-hidden ${(isHovered && targetInnerfaces.length >= 3) ? 'gap-1' : 'gap-1.5'
+                                       className={`flex flex-wrap justify-end content-center pointer-events-auto min-w-0 max-h-[40px] overflow-hidden transition-[gap] duration-200 ${(isHovered && targetInnerfaces.length >= 3) ? 'gap-1' : 'gap-1.5'
                         }`}
                 >
                     <AnimatePresence mode='popLayout'>
@@ -326,11 +317,10 @@ export const ProtocolRow = React.memo(function ProtocolRow({ protocol, innerface
 
                                 const InnerfaceIcon = (
                                     <motion.div
-                                        layout={!isOverlay}
-                                        initial={{ scale: 0.8, opacity: 0 }}
+                                                                               initial={{ scale: 0.8, opacity: 0 }}
                                         animate={{ scale: 1, opacity: 1 }}
                                         exit={{ scale: 0.5, opacity: 0 }}
-                                        className={`rounded-md flex items-center justify-center shrink-0 transition-transform hover:scale-110 duration-200 pointer-events-auto
+                                        className={`rounded-md flex items-center justify-center shrink-0 transition-[transform,width,height] hover:scale-110 duration-200 pointer-events-auto
                                             ${isCompact ? 'w-[18px] h-[18px]' : 'w-6 h-6'}`}
                                         style={{
                                             backgroundColor: `color-mix(in srgb, ${innerface.color || '#ffffff'} 10%, transparent)`,
@@ -338,12 +328,12 @@ export const ProtocolRow = React.memo(function ProtocolRow({ protocol, innerface
                                             boxShadow: `0 0 10px color-mix(in srgb, ${innerface.color || '#ffffff'} 5%, transparent)`
                                         }}
                                     >
-                                        <div className={isCompact ? "text-[0.55rem]" : "text-[0.7rem]"}> <AppIcon id={innerface.icon} /> </div>
+                                        <div className={`transition-[font-size] duration-200 ${isCompact ? "text-[0.55rem]" : "text-[0.7rem]"}`}> <AppIcon id={innerface.icon} /> </div>
                                     </motion.div>
                                 );
 
                                 return (
-                                    <motion.div layout={!isOverlay} key={innerface.id} className="pointer-events-none">
+                                    <motion.div /* layout removed for perf */ key={innerface.id} className="pointer-events-none">
                                         <Tooltip>
                                             <TooltipTrigger asChild>
                                                 <div className={isDisabled ? 'pointer-events-none' : 'pointer-events-auto'}>
@@ -364,21 +354,21 @@ export const ProtocolRow = React.memo(function ProtocolRow({ protocol, innerface
 
                 {/* Edit/History buttons revealed on hover/tap */}
                 <motion.div
-                    layout={!isOverlay}
-                    className="flex flex-col items-center gap-1 pointer-events-auto overflow-hidden shrink-0"
+                                       className="flex flex-col items-center gap-1 pointer-events-auto overflow-hidden shrink-0"
                     style={{
                         opacity: isHovered ? 1 : 0,
                         width: isHovered ? 32 : 0,
                         marginRight: isHovered ? 8 : 0,
-                        pointerEvents: isHovered ? 'auto' : 'none'
+                        pointerEvents: isHovered ? 'auto' : 'none',
+                        transition: 'opacity 0.2s ease, width 0.2s ease, margin-right 0.2s ease'
                     }}
                 >
                     <button onClick={(e) => { e.stopPropagation(); navigate(`/history?protocolId=${protocol.id}`); }}
-                        className="w-6 h-6 flex items-center justify-center rounded text-sub hover:text-main transition-colors cursor-pointer" title="History">
+                        className="w-6 h-6 [@media(pointer:coarse)]:min-w-[44px] [@media(pointer:coarse)]:min-h-[44px] flex items-center justify-center rounded text-sub hover:text-main transition-colors cursor-pointer" title="History">
                         <FontAwesomeIcon icon={faHistory} className="text-[10px]" />
                     </button>
                     <button onClick={(e) => { e.stopPropagation(); onEdit(protocol.id); }}
-                        className="w-6 h-6 flex items-center justify-center rounded text-sub hover:text-main transition-colors cursor-pointer" title="Edit">
+                        className="w-6 h-6 [@media(pointer:coarse)]:min-w-[44px] [@media(pointer:coarse)]:min-h-[44px] flex items-center justify-center rounded text-sub hover:text-main transition-colors cursor-pointer" title="Edit">
                         <FontAwesomeIcon icon={faCog} className="text-[10px]" />
                     </button>
                 </motion.div>
@@ -401,7 +391,7 @@ export const ProtocolRow = React.memo(function ProtocolRow({ protocol, innerface
             onClick={handleClick}
             className={`group relative bg-sub-alt border border-transparent rounded-xl overflow-hidden select-none 
                 ${isGrabbing ? 'cursor-grabbing opacity-90' : isDisabled ? 'cursor-default opacity-90' : isReadOnly ? 'cursor-default' : 'cursor-pointer'} 
-                ${!isDisabled ? 'transition-all duration-200 [@media(hover:hover)]:hover:scale-[1.002] [@media(hover:hover)]:hover:bg-[var(--sub-alt-color)]' : ''}
+                ${!isDisabled ? 'transition-[transform,background-color] duration-200 [@media(hover:hover)]:hover:scale-[1.002] [@media(hover:hover)]:hover:bg-[var(--sub-alt-color)]' : ''}
                 ${effectiveShake === 'left' ? 'animate-tilt-left' : effectiveShake === 'right' ? 'animate-tilt-right' : ''}
                 ${DEBUG_LAYOUT ? 'border-dashed border-red-500' : ''}`}
             transition={{

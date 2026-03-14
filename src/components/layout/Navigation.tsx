@@ -102,7 +102,7 @@ export function Navigation() {
                     {/* Expand Arrow - Integrated */}
                     <button
                         className={`
-                            bg-transparent border-none text-sub px-2 h-full cursor-pointer transition-all duration-250
+                            bg-transparent border-none text-sub px-2 [@media(pointer:coarse)]:min-w-[44px] h-full cursor-pointer transition-[color,opacity] duration-250
                             flex items-center justify-center outline-none opacity-50 z-20 relative
                             hover:text-text-primary hover:opacity-100
                             ${(isInnerfacesExpanded || isActive('/history')) ? 'text-main opacity-100' : ''}

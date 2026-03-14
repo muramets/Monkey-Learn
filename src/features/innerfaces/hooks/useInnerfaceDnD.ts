@@ -189,7 +189,7 @@ export const useInnerfaceDnD = ({
             const parts = id.split('-');
             const cat = parts[1];
             const groupName = parts.slice(2).join('-');
-            console.log('[DnD Debug] Dragging Group:', { groupName, category: cat });
+            console.debug('[DnD Debug] Dragging Group:', { groupName, category: cat });
 
             setActiveGroup(groupName);
             setActiveCategory(cat);
@@ -212,7 +212,7 @@ export const useInnerfaceDnD = ({
 
         const item = items.find(i => String(i.id) === id);
         if (item) {
-            console.log('[DnD Debug] Dragging Item:', item.name);
+            console.debug('[DnD Debug] Dragging Item:', item.name);
             setActiveItem(item);
         }
     }, [items]);

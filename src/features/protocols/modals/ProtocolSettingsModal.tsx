@@ -1,3 +1,4 @@
+import React, { Suspense } from 'react';
 import { Modal } from '../../../components/ui/molecules/Modal';
 import { Input } from '../../../components/ui/molecules/Input';
 import { Button } from '../../../components/ui/atoms/Button';
@@ -11,7 +12,10 @@ import { EntitySelector } from '../../../components/ui/molecules/EntitySelector'
 import { ProtocolGroupSelector } from '../components/ProtocolGroupSelector';
 import { ProtocolXpSelector } from '../components/ProtocolXpSelector';
 import { ProtocolInstructionInput } from '../components/ProtocolInstructionInput';
-import { RichTextEditor } from '../../../components/ui/RichTextEditor';
+
+const RichTextEditor = React.lazy(() =>
+    import('../../../components/ui/RichTextEditor/RichTextEditor').then(m => ({ default: m.RichTextEditor }))
+);
 
 interface ProtocolSettingsModalProps {
     isOpen: boolean;
@@ -158,12 +162,14 @@ export function ProtocolSettingsModal({ isOpen, onClose, protocolId }: ProtocolS
 
                 <div className="flex flex-col gap-1.5">
                     <InputLabel label="Quick Note" />
-                    <RichTextEditor
-                        value={hover}
-                        onChange={setHover}
-                        placeholder="Short note shown on tap/hover..."
-                        className="min-h-[100px] max-h-[300px] overflow-hidden"
-                    />
+                    <Suspense fallback={<div className="h-32 animate-pulse bg-sub-alt/50 rounded-lg" />}>
+                        <RichTextEditor
+                            value={hover}
+                            onChange={setHover}
+                            placeholder="Short note shown on tap/hover..."
+                            className="min-h-[100px] max-h-[300px] overflow-hidden"
+                        />
+                    </Suspense>
                 </div>
 
                 <ProtocolInstructionInput

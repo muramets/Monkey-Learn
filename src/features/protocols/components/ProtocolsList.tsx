@@ -198,7 +198,7 @@ export function ProtocolsList() {
                     {protocols.length === 0 ? (
                         <button
                             onClick={() => { setSelectedProtocolId(null); setIsModalOpen(true); }}
-                            className="w-full min-h-[72px] border border-dashed border-sub/30 hover:border-sub rounded-xl flex flex-col items-center justify-center gap-3 text-sub hover:text-text-primary transition-all duration-200 group bg-sub-alt/5 hover:bg-sub-alt/10 py-6"
+                            className="w-full min-h-[72px] border border-dashed border-sub/30 hover:border-sub rounded-xl flex flex-col items-center justify-center gap-3 text-sub hover:text-text-primary transition-colors duration-200 group bg-sub-alt/5 hover:bg-sub-alt/10 py-6"
                         >
                             <FontAwesomeIcon icon={faPlus} className="text-2xl" />
                             <span className="font-mono text-xs">Add your first action</span>

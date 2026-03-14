@@ -67,7 +67,7 @@ export function ProtocolsToolbar({
                                     setLocalOpen(false);
                                     onAddProtocol();
                                 }}
-                                className="h-[46px] w-[36px] flex items-center justify-center rounded-lg text-sub hover:text-main transition-all cursor-pointer"
+                                className="h-[46px] w-[36px] flex items-center justify-center rounded-lg text-sub hover:text-main transition-colors cursor-pointer"
                             >
                                 <FontAwesomeIcon icon={faPlus} className="text-xl" />
                             </button>

@@ -84,7 +84,7 @@ export const ProtocolsContent = forwardRef<HTMLDivElement, ProtocolsContentProps
                     }
                 `}</style>
 
-                <div ref={ref} className="flex flex-col gap-8 pb-20">
+                <div ref={ref} data-no-swipe className="flex flex-col gap-8 pb-20">
                     {/* SortableContext для групп (позволяет менять порядок групп) */}
                     <SortableContext
                         items={groupedProtocols.map(([name]) => `group-${name}`)}

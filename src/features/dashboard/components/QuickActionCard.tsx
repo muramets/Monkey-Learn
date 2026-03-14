@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
+import { MARKDOWN_TOOLTIP_COMPONENTS } from '../../../utils/markdownComponents';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -9,7 +10,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, TooltipPortal
 import { AppIcon } from '../../../components/ui/atoms/AppIcon';
 import { useTouchDevice } from '../../../hooks/useTouchDevice';
 
-export function QuickActionCard({ action, onAction, onDelete, isDisabled, isDragging }: { action: Protocol; onAction?: (direction: '+' | '-') => void; onDelete?: () => void; isDisabled?: boolean; isDragging?: boolean }) {
+export const QuickActionCard = React.memo(function QuickActionCard({ action, onAction, onDelete, isDisabled, isDragging }: { action: Protocol; onAction?: (direction: '+' | '-') => void; onDelete?: () => void; isDisabled?: boolean; isDragging?: boolean }) {
     const isTouchDevice = useTouchDevice();
     const [hoverSide, setHoverSide] = useState<'left' | 'right' | null>(null);
     const [feedbackType, setFeedbackType] = useState<'plus' | 'minus' | null>(null);
@@ -104,10 +105,10 @@ export function QuickActionCard({ action, onAction, onDelete, isDisabled, isDrag
     return (
         <TooltipProvider>
             {/* Main Card Container - Handles Hover Scale ONLY */}
-            <div className={`group relative h-[70px] ${!isDragging ? 'transition-all duration-300' : ''} select-none ${isDisabled ? 'cursor-default opacity-90' : isDragging ? 'cursor-grabbing' : 'hover:scale-[1.03] cursor-pointer'}`}>
+            <div className={`group relative h-[70px] ${!isDragging ? 'transition-[transform,opacity] duration-300' : ''} select-none ${isDisabled ? 'cursor-default opacity-90' : isDragging ? 'cursor-grabbing' : 'hover:scale-[1.03] cursor-pointer'}`}>
 
                 {/* Inner Animation Container - Handles Tilt, Background, & Shadows */}
-                <div className={`w-full h-full relative bg-sub-alt rounded-lg overflow-hidden shadow-sm ${!isDragging ? 'hover:shadow-md transition-all duration-300' : ''} ${effectiveShake === 'left' ? 'animate-tilt-left' : effectiveShake === 'right' ? 'animate-tilt-right' : ''
+                <div className={`w-full h-full relative bg-sub-alt rounded-lg overflow-hidden shadow-sm ${!isDragging ? 'hover:shadow-md transition-shadow duration-300' : ''} ${effectiveShake === 'left' ? 'animate-tilt-left' : effectiveShake === 'right' ? 'animate-tilt-right' : ''
                     }`}>
 
                     <style>{`
@@ -159,10 +160,10 @@ export function QuickActionCard({ action, onAction, onDelete, isDisabled, isDrag
                             onMouseLeave={() => !isTouchDevice && setHoverSide(null)}
                             onClick={(e) => handleTouchAction(e, '-')}
                         >
-                            <div className={`${!isDragging ? 'transition-all duration-300' : ''} transform ${effectiveFeedbackType === 'minus' ? 'scale-150' : ''} ${isTouchDevice && !isDisabled && !isDragging ? 'animate-pulse-soft' : ''}`}>
+                            <div className={`${!isDragging ? 'transition-transform duration-300' : ''} transform ${effectiveFeedbackType === 'minus' ? 'scale-150' : ''} ${isTouchDevice && !isDisabled && !isDragging ? 'animate-pulse-soft' : ''}`}>
                                 <FontAwesomeIcon
                                     icon={faMinus}
-                                    className={`text-sm ${!isDragging ? 'transition-all duration-300' : ''} ${effectiveFeedbackType === 'minus' ? 'text-[#ca4754]' : ''}`}
+                                    className={`text-sm ${!isDragging ? 'transition-colors duration-300' : ''} ${effectiveFeedbackType === 'minus' ? 'text-[#ca4754]' : ''}`}
                                     // Remove mouse events from icon to prevent double firing, let button handle it
                                     pointerEvents="none"
                                 />
@@ -178,10 +179,10 @@ export function QuickActionCard({ action, onAction, onDelete, isDisabled, isDrag
                             onMouseLeave={() => !isTouchDevice && setHoverSide(null)}
                             onClick={(e) => handleTouchAction(e, '+')}
                         >
-                            <div className={`${!isDragging ? 'transition-all duration-300' : ''} transform ${effectiveFeedbackType === 'plus' ? 'scale-150' : ''} ${isTouchDevice && !isDisabled && !isDragging ? 'animate-pulse-soft' : ''}`}>
+                            <div className={`${!isDragging ? 'transition-transform duration-300' : ''} transform ${effectiveFeedbackType === 'plus' ? 'scale-150' : ''} ${isTouchDevice && !isDisabled && !isDragging ? 'animate-pulse-soft' : ''}`}>
                                 <FontAwesomeIcon
                                     icon={faPlus}
-                                    className={`text-sm ${!isDragging ? 'transition-all duration-300' : ''} ${effectiveFeedbackType === 'plus' ? 'text-[#98c379]' : ''}`}
+                                    className={`text-sm ${!isDragging ? 'transition-colors duration-300' : ''} ${effectiveFeedbackType === 'plus' ? 'text-[#98c379]' : ''}`}
                                     pointerEvents="none"
                                 />
                             </div>
@@ -191,8 +192,7 @@ export function QuickActionCard({ action, onAction, onDelete, isDisabled, isDrag
                     {/* 3. Visual Layer: Text Content (Centered, Wide, Pointer Events None) */}
                     <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-20">
                         <motion.div
-                            layout={!isDragging}
-                            animate={{
+                                                        animate={{
                                 scale: effectiveFeedbackType ? 1.25 : 1,
                                 y: effectiveFeedbackType ? -4 : 0
                             }}
@@ -204,8 +204,7 @@ export function QuickActionCard({ action, onAction, onDelete, isDisabled, isDrag
                             className="w-[180px] flex items-center justify-center gap-3 text-text-primary font-mono text-[0.8rem] font-bold tracking-tight"
                         >
                             <motion.div
-                                layout={!isDragging}
-                                initial={false}
+                                                                initial={false}
                                 animate={{
                                     backgroundColor: `color-mix(in srgb, ${action.color || '#ffffff'} 20%, transparent)`,
                                     boxShadow: `0 0 10px color-mix(in srgb, ${action.color || '#ffffff'} 8%, transparent)`,
@@ -224,8 +223,7 @@ export function QuickActionCard({ action, onAction, onDelete, isDisabled, isDrag
                             </motion.div>
 
                             <motion.span
-                                layout={!isDragging}
-                                ref={titleRef}
+                                                                ref={titleRef}
                                 className={`truncate text-center origin-left ${!isDragging ? 'transition-colors duration-300' : ''}`}
                             >
                                 {action.title}
@@ -271,13 +269,13 @@ export function QuickActionCard({ action, onAction, onDelete, isDisabled, isDrag
 
                     {/* Success/Error Ripple Effect Overlay - SPLIT into two to avoid flash */}
                     <div
-                        className={`absolute inset-0 pointer-events-none transition-all duration-500 ease-out z-0 ${effectiveFeedbackType === 'plus' ? 'opacity-100' : 'opacity-0'}`}
+                        className={`absolute inset-0 pointer-events-none transition-opacity duration-500 ease-out z-0 ${effectiveFeedbackType === 'plus' ? 'opacity-100' : 'opacity-0'}`}
                         style={{
                             background: `radial-gradient(circle at 85% 50%, rgba(152, 195, 121, 0.2) 0%, transparent 60%)`
                         }}
                     />
                     <div
-                        className={`absolute inset-0 pointer-events-none transition-all duration-500 ease-out z-0 ${effectiveFeedbackType === 'minus' ? 'opacity-100' : 'opacity-0'}`}
+                        className={`absolute inset-0 pointer-events-none transition-opacity duration-500 ease-out z-0 ${effectiveFeedbackType === 'minus' ? 'opacity-100' : 'opacity-0'}`}
                         style={{
                             background: `radial-gradient(circle at 15% 50%, rgba(202, 71, 84, 0.2) 0%, transparent 60%)`
                         }}
@@ -303,15 +301,7 @@ export function QuickActionCard({ action, onAction, onDelete, isDisabled, isDrag
                                         <div className="rich-text-viewer text-left text-xs">
                                             <ReactMarkdown
                                                 rehypePlugins={[rehypeRaw]}
-                                                components={{
-                                                    p: ({ ...props }) => <p className="mb-1 last:mb-0" {...props} />,
-                                                    strong: ({ ...props }) => <strong className="font-bold text-text-primary" {...props} />,
-                                                    em: ({ ...props }) => <em className="italic text-text-primary/80" {...props} />,
-                                                    hr: ({ ...props }) => <hr className="my-2 border-t border-sub/10 w-full block" {...props} />,
-                                                    ul: ({ ...props }) => <ul className="list-disc pl-4 mb-1 space-y-0.5" {...props} />,
-                                                    ol: ({ ...props }) => <ol className="list-decimal pl-4 mb-1 space-y-0.5" {...props} />,
-                                                    li: ({ ...props }) => <li className="pl-0.5" {...props} />,
-                                                }}>
+                                                components={MARKDOWN_TOOLTIP_COMPONENTS}>
                                                 {action.hover}
                                             </ReactMarkdown>
                                         </div>
@@ -327,7 +317,7 @@ export function QuickActionCard({ action, onAction, onDelete, isDisabled, isDrag
                     {onDelete && (
                         <div className="absolute top-0 right-0 w-8 h-8 z-50 flex items-start justify-end p-1 group/delete pointer-events-auto">
                             <button
-                                className={`w-5 h-5 flex items-center justify-center rounded text-sub/50 hover:text-red-500 hover:bg-bg-primary/80 transition-all opacity-0 ${isDisabled ? 'group-hover:opacity-100' : 'group-hover/delete:opacity-100'}`}
+                                className={`w-5 h-5 [@media(pointer:coarse)]:min-w-[44px] [@media(pointer:coarse)]:min-h-[44px] flex items-center justify-center rounded text-sub/50 hover:text-red-500 hover:bg-bg-primary/80 transition-[opacity,color,background-color] opacity-0 ${isDisabled ? 'group-hover:opacity-100' : 'group-hover/delete:opacity-100'}`}
                                 onClick={handleDelete}
                                 title="Unpin"
                             >
@@ -339,4 +329,4 @@ export function QuickActionCard({ action, onAction, onDelete, isDisabled, isDrag
             </div>
         </TooltipProvider >
     );
-}
+});

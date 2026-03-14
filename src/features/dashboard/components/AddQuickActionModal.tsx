@@ -61,7 +61,7 @@ export function AddQuickActionModal({ isOpen, onClose }: AddQuickActionModalProp
                 {/* List */}
                 <div
                     className="overflow-y-auto flex-1 space-y-4 custom-scrollbar pr-1 pb-2"
-                    style={{ transform: 'translateZ(0)', willChange: 'transform' }}
+                    style={{ transform: 'translateZ(0)' }}
                 >
                     {protocols.length === 0 ? (
                         <div className="h-full flex items-center justify-center text-sub font-mono text-sm">
@@ -191,7 +191,7 @@ function ProtocolItem({ protocol, isPinned, onToggle }: { protocol: Protocol, is
 
     return (
         <div
-            className={`flex items-center justify-between p-3 rounded-xl transition-all group border ${isPinned
+            className={`flex items-center justify-between p-3 rounded-xl transition-colors group border ${isPinned
                 ? 'bg-sub-alt border-transparent'
                 : 'hover:bg-sub-alt border-transparent'
                 }`}
@@ -231,7 +231,7 @@ function ProtocolItem({ protocol, isPinned, onToggle }: { protocol: Protocol, is
                 size="sm"
                 onClick={onToggle}
                 variant="primary"
-                className={`min-w-[80px] h-[32px] text-[10px] uppercase font-bold tracking-wider transition-all duration-200 !focus:ring-0 !focus:outline-none ${!isPinned && 'opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0'
+                className={`min-w-[80px] h-[32px] text-[10px] uppercase font-bold tracking-wider transition-[opacity,transform] duration-200 !focus:ring-0 !focus:outline-none ${!isPinned && 'opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0'
                     }`}
                 leftIcon={<FontAwesomeIcon icon={isPinned ? faCheck : faThumbtack} />}
             >

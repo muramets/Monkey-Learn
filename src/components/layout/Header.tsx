@@ -77,7 +77,7 @@ export function Header() {
                         </button>
 
                         {/* Dropdown Menu */}
-                        <div className={`absolute top-full right-0 bg-sub-alt rounded-lg py-2 min-w-[180px] shadow-[0_4px_12px_rgba(0,0,0,0.3)] transition-all duration-125 z-50 mt-1
+                        <div className={`absolute top-full right-0 bg-sub-alt rounded-lg py-2 min-w-[180px] shadow-[0_4px_12px_rgba(0,0,0,0.3)] transition-[opacity,transform,visibility] duration-125 z-50 mt-1
                     ${isDropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-[10px]'}`}
                         >
                             <div className="px-4 py-2 text-text-primary text-sm font-mono opacity-50 border-b border-border mb-1">
@@ -85,7 +85,7 @@ export function Header() {
                             </div>
                             <button
                                 onClick={logout}
-                                className="w-full flex items-center gap-2 px-3 py-2 text-left text-text-primary hover:bg-bg-primary hover:text-error transition-all font-mono text-xs group"
+                                className="w-full flex items-center gap-2 px-3 py-2 text-left text-text-primary hover:bg-bg-primary hover:text-error transition-colors font-mono text-xs group"
                             >
                                 <LogOut className="w-3 h-3 text-text-secondary group-hover:text-error" />
                                 Logout

@@ -83,7 +83,7 @@ export function Toast({
             onClick={(e) => e.stopPropagation()}
         >
             <div
-                className={`${bgColor} text-bg-primary pl-4 pr-3 py-3 rounded-lg shadow-lg flex items-center gap-3 min-w-[300px] ${animationClass} ${isClickable ? 'cursor-pointer hover:brightness-110 transition-all' : ''}`}
+                className={`${bgColor} text-bg-primary pl-4 pr-3 py-3 rounded-lg shadow-lg flex items-center gap-3 min-w-[300px] ${animationClass} ${isClickable ? 'cursor-pointer hover:brightness-110 transition-[filter]' : ''}`}
                 onClick={isClickable ? handleToastClick : undefined}
             >
                 <FontAwesomeIcon icon={icon} className="text-bg-primary flex-shrink-0" />

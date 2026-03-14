@@ -59,7 +59,7 @@ function PlanningActionItem({
             key={protocol.id}
             className={`flex flex-col gap-2.5 p-3 rounded-xl bg-sub-alt ${isDeactivated
                 ? ''
-                : 'group transition-all duration-300 hover:scale-[1.02] hover:shadow-lg'
+                : 'group transition-[transform,box-shadow] duration-300 hover:scale-[1.02] hover:shadow-lg'
                 }`}
         >
             {/* Header: Icon, Title, XP */}
@@ -69,7 +69,7 @@ function PlanningActionItem({
                         <button
                             type="button"
                             onClick={() => handleProtocolToggle(protocolId)}
-                            className={`relative w-8 h-8 flex-shrink-0 rounded-lg flex items-center justify-center cursor-pointer hover:scale-105 transition-all duration-300 ${isDeactivated ? 'grayscale hover:grayscale-0' : ''}`}
+                            className={`relative w-8 h-8 flex-shrink-0 rounded-lg flex items-center justify-center cursor-pointer hover:scale-105 transition-[transform,filter] duration-300 ${isDeactivated ? 'grayscale hover:grayscale-0' : ''}`}
                             style={{
                                 backgroundColor: `color-mix(in srgb, ${iconColor} 20%, transparent)`,
                                 color: iconColor,
@@ -94,7 +94,7 @@ function PlanningActionItem({
                     </TooltipContent>
                 </Tooltip>
 
-                <div className={`flex flex-col flex-1 min-w-0 transition-all duration-300 ${isDeactivated ? 'grayscale opacity-50' : ''}`}>
+                <div className={`flex flex-col flex-1 min-w-0 transition-[opacity,filter] duration-300 ${isDeactivated ? 'grayscale opacity-50' : ''}`}>
                     <span className="text-xs font-medium truncate text-text-primary cursor-default">
                         {protocol.title}
                     </span>
@@ -102,7 +102,7 @@ function PlanningActionItem({
                         +{xp} XP each
                     </span>
                 </div>
-                <div className={`text-right transition-all duration-300 ${isDeactivated ? 'grayscale opacity-50' : ''}`}>
+                <div className={`text-right transition-[opacity,filter] duration-300 ${isDeactivated ? 'grayscale opacity-50' : ''}`}>
                     <div className="text-xs font-mono font-bold text-main cursor-default">
                         +{weeklyXP}
                     </div>
@@ -112,7 +112,7 @@ function PlanningActionItem({
                 </div>
             </div>
 
-            <div className={`${isDeactivated ? 'pointer-events-none grayscale opacity-50 transition-all duration-300' : ''}`}>
+            <div className={`${isDeactivated ? 'pointer-events-none grayscale opacity-50 transition-[opacity,filter] duration-300' : ''}`}>
                 {/* Pace Selector - clickable even in custom mode */}
                 <div className="flex gap-1.5 mb-2.5">
                     {(['slow', 'medium', 'fast'] as SmartPlannerPace[]).map(pace => {
@@ -126,7 +126,7 @@ function PlanningActionItem({
                                 onClick={() => handlePaceChange(protocolId, pace)}
                                 className={`
                                     flex-1 px-2 py-1.5 rounded-lg text-[9px] font-mono uppercase tracking-wide
-                                    transition-all duration-200
+                                    transition-[opacity,color,background-color] duration-200
                                     ${isCustomSchedule
                                         ? 'bg-sub-alt/30 text-sub opacity-60 hover:opacity-80 hover:text-text-primary'
                                         : isActive
@@ -166,7 +166,7 @@ function PlanningActionItem({
                                 onClick={() => handleDayToggle(protocolId, i)}
                                 className={`
                                     w-full aspect-square flex items-center justify-center
-                                    transition-all duration-200 cursor-pointer
+                                    transition-opacity duration-200 cursor-pointer
                                     group/check
                                     ${hasCheck
                                         ? 'opacity-100'
@@ -179,7 +179,7 @@ function PlanningActionItem({
                             >
                                 <FontAwesomeIcon
                                     icon={faCheck}
-                                    className="text-[10px] transition-all duration-200 group-hover/check:scale-[1.3] group-hover/check:text-text-primary"
+                                    className="text-[10px] transition-[transform,color] duration-200 group-hover/check:scale-[1.3] group-hover/check:text-text-primary"
                                 />
                             </button>
                         ))}
@@ -314,7 +314,7 @@ export function PlanningActionList({
             </div >
 
             {/* Compact Footer Summary */}
-            <div className="bg-sub-alt/40 rounded-xl p-3 flex items-center justify-between backdrop-blur-sm">
+            <div className="bg-sub-alt/70 [@media(hover:hover)]:bg-sub-alt/40 rounded-xl p-3 flex items-center justify-between [@media(hover:hover)]:backdrop-blur-sm">
                 <div className="flex flex-col gap-0.5">
                     <div className="text-[10px] text-sub font-mono uppercase tracking-wider mb-0.5">
                         Weekly Pace

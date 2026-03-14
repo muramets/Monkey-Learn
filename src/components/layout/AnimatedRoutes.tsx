@@ -1,20 +1,21 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { PAGE_ORDER } from '../../constants/navigation';
 
-// Pages
-import Dashboard from '../../pages/dashboard/DashboardPage';
-import { ProtocolsList } from '../../features/protocols/components/ProtocolsList';
-import InnerfacesPage from '../../pages/innerfaces/InnerfacesPage';
-import HistoryPage from '../../pages/history/HistoryPage';
-import JoinInvitePage from '../../pages/JoinInvitePage';
-import LoginPage from '../../pages/LoginPage';
-import { SettingsPage } from '../../pages/settings/SettingsPage';
+// Pages (lazy-loaded)
+const Dashboard = React.lazy(() => import('../../pages/dashboard/DashboardPage'));
+const ProtocolsList = React.lazy(() => import('../../features/protocols/components/ProtocolsList').then(m => ({ default: m.ProtocolsList })));
+const InnerfacesPage = React.lazy(() => import('../../pages/innerfaces/InnerfacesPage'));
+const HistoryPage = React.lazy(() => import('../../pages/history/HistoryPage'));
+const JoinInvitePage = React.lazy(() => import('../../pages/JoinInvitePage'));
+const LoginPage = React.lazy(() => import('../../pages/LoginPage'));
+const SettingsPage = React.lazy(() => import('../../pages/settings/SettingsPage').then(m => ({ default: m.SettingsPage })));
 import { Layout } from './Layout';
 import { GlobalLoader } from '../ui/molecules/GlobalLoader';
 import { useAuth } from '../../contexts/AuthContext';
 import { useScoreContext } from '../../contexts/ScoreContext';
+import { useTouchDevice } from '../../hooks/useTouchDevice';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
     const { user, loading } = useAuth();
@@ -68,22 +69,7 @@ export const AnimatedRoutes = () => {
     const { initialized } = useScoreContext();
     const { user } = useAuth();
 
-    // Detect touch device
-    const [isTouchDevice, setIsTouchDevice] = React.useState(false);
-
-    React.useEffect(() => {
-        const checkTouch = () => {
-            const hasTouch = 'ontouchstart' in window ||
-                navigator.maxTouchPoints > 0 ||
-                window.matchMedia('(pointer: coarse)').matches;
-            setIsTouchDevice(hasTouch);
-        };
-
-        checkTouch();
-        // Re-check on resize in case device orientation changes
-        window.addEventListener('resize', checkTouch);
-        return () => window.removeEventListener('resize', checkTouch);
-    }, []);
+    const isTouchDevice = useTouchDevice();
 
     const currentIndex = PAGE_ORDER.indexOf(location.pathname);
 
@@ -103,10 +89,12 @@ export const AnimatedRoutes = () => {
     // Public routes (no layout)
     if (location.pathname === '/login' || location.pathname.startsWith('/invite/')) {
         return (
-            <Routes location={location}>
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/invite/:code" element={<JoinInvitePage />} />
-            </Routes>
+            <Suspense fallback={<GlobalLoader />}>
+                <Routes location={location}>
+                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="/invite/:code" element={<JoinInvitePage />} />
+                </Routes>
+            </Suspense>
         );
     }
 
@@ -159,11 +147,13 @@ export const AnimatedRoutes = () => {
     return (
         <PrivateRoute>
             <Layout>
-                {isTouchDevice ? (
-                    <AnimatePresence mode="popLayout" initial={false} custom={effDirection}>
-                        {routesContent}
-                    </AnimatePresence>
-                ) : routesContent}
+                <Suspense fallback={<GlobalLoader />}>
+                    {isTouchDevice ? (
+                        <AnimatePresence mode="popLayout" initial={false} custom={effDirection}>
+                            {routesContent}
+                        </AnimatePresence>
+                    ) : routesContent}
+                </Suspense>
             </Layout>
         </PrivateRoute>
     );

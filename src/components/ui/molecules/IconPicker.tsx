@@ -204,7 +204,7 @@ export function IconPicker({
                                         type="button"
                                         data-category={cat.id}
                                         onClick={() => setActiveCategory(cat.id)}
-                                        className={`px-2.5 py-1 text-[10px] font-medium rounded-md whitespace-nowrap transition-all cursor-pointer ${activeCategory === cat.id
+                                        className={`px-2.5 py-1 text-[10px] font-medium rounded-md whitespace-nowrap transition-colors cursor-pointer ${activeCategory === cat.id
                                             ? 'bg-white/10 text-text-primary'
                                             : 'text-sub hover:text-text-primary hover:bg-white/5'
                                             }`}
@@ -225,7 +225,7 @@ export function IconPicker({
                                 >
                                     <FontAwesomeIcon
                                         icon={faChevronRight}
-                                        className="text-[10px] text-sub group-hover/arrow:text-text-primary group-hover/arrow:translate-x-0.5 transition-all animate-pulse mr-1"
+                                        className="text-[10px] text-sub group-hover/arrow:text-text-primary group-hover/arrow:translate-x-0.5 transition-[color,transform] animate-pulse mr-1"
                                     />
                                 </button>
                             )}
@@ -242,7 +242,7 @@ export function IconPicker({
                                             <button
                                                 type="button"
                                                 onClick={() => handleSelect(entry.id)}
-                                                className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all cursor-pointer ${icon === entry.id
+                                                className={`w-9 h-9 rounded-lg flex items-center justify-center transition-[color,transform,filter] cursor-pointer ${icon === entry.id
                                                     ? 'text-text-primary scale-110 drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]'
                                                     : 'text-sub hover:text-text-primary'
                                                     }`}

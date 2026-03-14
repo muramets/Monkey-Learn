@@ -31,7 +31,7 @@ export const CopyButton = ({ text, className }: CopyButtonProps) => {
         <button
             onClick={handleCopy}
             className={clsx(
-                "p-1.5 rounded-md transition-all duration-200 border",
+                "p-1.5 rounded-md transition-colors duration-200 border",
                 copied
                     ? "bg-green-500/20 border-green-500/50 text-green-400"
                     : "bg-white/5 border-white/10 text-sub hover:text-white hover:bg-white/10",

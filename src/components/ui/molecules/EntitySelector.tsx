@@ -118,7 +118,7 @@ export function EntitySelector({
                                                                             onToggle(item.id.toString());
                                                                         }
                                                                     }}
-                                                                    className={`px-3 py-1.5 rounded-lg border flex items-center gap-2 transition-all font-mono text-[10px] uppercase font-bold tracking-wider relative ${isActive
+                                                                    className={`px-3 py-1.5 rounded-lg border flex items-center gap-2 transition-[color,background-color,border-color,box-shadow] font-mono text-[10px] uppercase font-bold tracking-wider relative ${isActive
                                                                         ? ''
                                                                         : 'bg-sub-alt border-transparent text-sub hover:text-text-primary hover:bg-sub'
                                                                         } ${item.isDeleted ? '' : ''}`}

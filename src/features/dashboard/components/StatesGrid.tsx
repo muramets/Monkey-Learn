@@ -111,7 +111,7 @@ export function StatesGrid({ states, onAddState, onEdit, onHistory, hasProtocols
                         !hasProtocols ? (
                             <button
                                 onClick={() => navigate('/actions')}
-                                className="col-span-full md:col-span-1 min-h-[180px] border border-dashed border-sub/30 hover:border-sub rounded-2xl flex flex-col items-center justify-center gap-3 text-sub hover:text-text-primary transition-all duration-200 group bg-sub-alt/5 hover:bg-sub-alt/10 py-6"
+                                className="col-span-full md:col-span-1 min-h-[180px] border border-dashed border-sub/30 hover:border-sub rounded-2xl flex flex-col items-center justify-center gap-3 text-sub hover:text-text-primary transition-colors duration-200 group bg-sub-alt/5 hover:bg-sub-alt/10 py-6"
                             >
                                 <Plus className="w-8 h-8" />
                                 <span className="font-mono text-xs">Start by adding actions</span>
@@ -119,7 +119,7 @@ export function StatesGrid({ states, onAddState, onEdit, onHistory, hasProtocols
                         ) : (
                             <button
                                 onClick={onAddState}
-                                className="col-span-full md:col-span-1 min-h-[180px] border border-dashed border-sub/30 hover:border-sub rounded-2xl flex flex-col items-center justify-center gap-3 text-sub hover:text-text-primary transition-all duration-200 group bg-sub-alt/5 hover:bg-sub-alt/10 py-6"
+                                className="col-span-full md:col-span-1 min-h-[180px] border border-dashed border-sub/30 hover:border-sub rounded-2xl flex flex-col items-center justify-center gap-3 text-sub hover:text-text-primary transition-colors duration-200 group bg-sub-alt/5 hover:bg-sub-alt/10 py-6"
                             >
                                 <Plus className="w-8 h-8" />
                                 <span className="font-mono text-xs">Add your first dimension</span>

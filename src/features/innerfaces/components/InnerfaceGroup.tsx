@@ -14,7 +14,7 @@ import type { PlanningGoal } from '../../planning/types';
 const EmptyGroupDropZone = React.memo(({ isDragOver, groupName }: { isDragOver: boolean; groupName: string }) => {
     return (
         <div
-            className={`transition-all duration-300 ease-in-out rounded-xl flex items-center justify-center overflow-hidden ${isDragOver
+            className={`transition-[height,background-color,border-color,margin] duration-300 ease-in-out rounded-xl flex items-center justify-center overflow-hidden ${isDragOver
                 ? 'h-[100px] bg-main/5 border-2 border-dashed border-main/30 my-2'
                 : 'h-[0px] border-0 border-transparent margin-0'
                 }`}
@@ -174,7 +174,7 @@ export const InnerfaceGroup = React.memo(({
                                 ref={setActivatorNodeRef}
                                 {...listeners}
                                 {...attributes}
-                                className="cursor-grab active:cursor-grabbing text-sub hover:text-text-primary active:text-text-primary px-1 -ml-2 opacity-0 [@media(hover:hover)]:group-hover:opacity-100 transition-all duration-200"
+                                className="cursor-grab active:cursor-grabbing text-sub hover:text-text-primary active:text-text-primary px-1 -ml-2 opacity-0 [@media(hover:hover)]:group-hover:opacity-100 transition-[opacity,color] duration-200"
                                 title="Drag to reorder group"
                                 onPointerDown={(e) => {
                                     e.stopPropagation();

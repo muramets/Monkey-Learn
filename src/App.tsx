@@ -52,7 +52,7 @@ function AppContent() {
 function App() {
   useEffect(() => {
     // Initialize theme from localStorage (or default to serika_dark)
-    initTheme();
+    void initTheme();
   }, []);
 
   return (
@@ -65,8 +65,7 @@ function App() {
             style={{
               transform: 'translate3d(0, 0, 0)',
               backfaceVisibility: 'hidden',
-              perspective: '1000px',
-              willChange: 'transform'
+              contain: 'paint',
             }}
           />
           <AppContent />

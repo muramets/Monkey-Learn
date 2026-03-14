@@ -1,5 +1,8 @@
-import React from 'react';
-import { RichTextEditor } from '../../../components/ui/RichTextEditor';
+import React, { Suspense } from 'react';
+
+const RichTextEditor = React.lazy(() =>
+    import('../../../components/ui/RichTextEditor/RichTextEditor').then(m => ({ default: m.RichTextEditor }))
+);
 
 interface ProtocolInstructionInputProps {
     instruction: string;
@@ -24,7 +27,7 @@ export const ProtocolInstructionInput = React.memo(({ instruction, setInstructio
                     <button
                         type="button"
                         onClick={() => setHasInstruction(false)}
-                        className={`flex-1 px-3 py-2 rounded-md text-xs font-mono uppercase font-bold transition-all ${!hasInstruction
+                        className={`flex-1 px-3 py-2 rounded-md text-xs font-mono uppercase font-bold transition-[color,background-color,box-shadow] ${!hasInstruction
                             ? 'bg-sub text-text-primary shadow-sm'
                             : 'text-sub hover:text-text-primary'
                             }`}
@@ -34,7 +37,7 @@ export const ProtocolInstructionInput = React.memo(({ instruction, setInstructio
                     <button
                         type="button"
                         onClick={() => setHasInstruction(true)}
-                        className={`flex-1 px-3 py-2 rounded-md text-xs font-mono uppercase font-bold transition-all ${hasInstruction
+                        className={`flex-1 px-3 py-2 rounded-md text-xs font-mono uppercase font-bold transition-[color,background-color,box-shadow] ${hasInstruction
                             ? 'bg-sub text-text-primary shadow-sm'
                             : 'text-sub hover:text-text-primary'
                             }`}
@@ -46,12 +49,14 @@ export const ProtocolInstructionInput = React.memo(({ instruction, setInstructio
 
             {hasInstruction && (
                 <div className="flex flex-col gap-1.5 mt-2 animate-in fade-in slide-in-from-top-2 duration-200">
-                    <RichTextEditor
-                        value={instruction}
-                        onChange={setInstruction}
-                        placeholder="Enter specific instructions..."
-                        className="min-h-[120px] max-h-[300px] overflow-hidden"
-                    />
+                    <Suspense fallback={<div className="h-32 animate-pulse bg-sub-alt/50 rounded-lg" />}>
+                        <RichTextEditor
+                            value={instruction}
+                            onChange={setInstruction}
+                            placeholder="Enter specific instructions..."
+                            className="min-h-[120px] max-h-[300px] overflow-hidden"
+                        />
+                    </Suspense>
                 </div>
             )}
         </div>

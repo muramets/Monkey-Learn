@@ -26,7 +26,7 @@ export function PowerIcon({
 
     return (
         <div
-            className={`relative flex items-center justify-center text-lg shrink-0 transition-all duration-300 bg-sub-alt overflow-hidden ${size} ${shapeClass} ${className}`}
+            className={`relative flex items-center justify-center text-lg shrink-0 transition-[box-shadow] duration-300 bg-sub-alt overflow-hidden ${size} ${shapeClass} ${className}`}
             style={{
                 boxShadow: `0 0 ${glowSize} color-mix(in srgb, ${color || '#ffffff'} 8%, transparent)`
             }}

@@ -1,3 +1,4 @@
+import React, { Suspense } from 'react';
 import { Modal } from '../../../components/ui/molecules/Modal';
 import { Input } from '../../../components/ui/molecules/Input';
 import { Button } from '../../../components/ui/atoms/Button';
@@ -10,7 +11,10 @@ import { EntitySelector } from '../../../components/ui/molecules/EntitySelector'
 import { AppIcon } from '../../../components/ui/atoms/AppIcon';
 import { InnerfaceGroupSelector } from '../components/InnerfaceGroupSelector';
 import { PowerIcon } from '../components/PowerIcon';
-import { RichTextEditor } from '../../../components/ui/RichTextEditor';
+
+const RichTextEditor = React.lazy(() =>
+    import('../../../components/ui/RichTextEditor/RichTextEditor').then(m => ({ default: m.RichTextEditor }))
+);
 
 interface InnerfaceSettingsModalProps {
     isOpen: boolean;
@@ -110,7 +114,7 @@ export function InnerfaceSettingsModal({ isOpen, onClose, innerfaceId }: Innerfa
         >
             <div
                 className="flex flex-col gap-5 max-h-[60vh] overflow-y-auto custom-scrollbar overscroll-contain px-1"
-                style={{ transform: 'translateZ(0)', willChange: 'transform' }}
+                style={{ transform: 'translateZ(0)' }}
             >
                 <div className="flex flex-col gap-1.5">
                     <InputLabel label="Name" />
@@ -135,12 +139,14 @@ export function InnerfaceSettingsModal({ isOpen, onClose, innerfaceId }: Innerfa
 
                 <div className="flex flex-col gap-1.5">
                     <InputLabel label="Quick Note" />
-                    <RichTextEditor
-                        value={hover}
-                        onChange={setHover}
-                        placeholder="Short note shown on tap/hover..."
-                        className="min-h-[100px] max-h-[300px] overflow-hidden"
-                    />
+                    <Suspense fallback={<div className="h-32 animate-pulse bg-sub-alt/50 rounded-lg" />}>
+                        <RichTextEditor
+                            value={hover}
+                            onChange={setHover}
+                            placeholder="Short note shown on tap/hover..."
+                            className="min-h-[100px] max-h-[300px] overflow-hidden"
+                        />
+                    </Suspense>
                 </div>
 
                 {/* Color & Icon Selectors */}
@@ -173,7 +179,7 @@ export function InnerfaceSettingsModal({ isOpen, onClose, innerfaceId }: Innerfa
                         <button
                             type="button"
                             onClick={() => setPriority('low')}
-                            className={`flex-1 flex flex-col items-center justify-center gap-0.5 px-2 py-3 rounded-md transition-all ${priority === 'low'
+                            className={`flex-1 flex flex-col items-center justify-center gap-0.5 px-2 py-3 rounded-md transition-[color,background-color,box-shadow] ${priority === 'low'
                                 ? 'bg-sub/50 text-text-primary shadow-sm ring-1 ring-white/10'
                                 : 'text-sub hover:bg-sub/20 hover:text-text-primary'
                                 }`}
@@ -184,7 +190,7 @@ export function InnerfaceSettingsModal({ isOpen, onClose, innerfaceId }: Innerfa
                         <button
                             type="button"
                             onClick={() => setPriority('medium')}
-                            className={`flex-1 flex flex-col items-center justify-center gap-0.5 px-2 py-3 rounded-md transition-all ${priority === 'medium'
+                            className={`flex-1 flex flex-col items-center justify-center gap-0.5 px-2 py-3 rounded-md transition-[color,background-color,box-shadow] ${priority === 'medium'
                                 ? 'bg-sub text-text-primary shadow-sm ring-1 ring-white/20'
                                 : 'text-sub hover:bg-sub/20 hover:text-text-primary'
                                 }`}
@@ -195,7 +201,7 @@ export function InnerfaceSettingsModal({ isOpen, onClose, innerfaceId }: Innerfa
                         <button
                             type="button"
                             onClick={() => setPriority('high')}
-                            className={`flex-1 flex flex-col items-center justify-center gap-0.5 px-2 py-3 rounded-md transition-all ${priority === 'high'
+                            className={`flex-1 flex flex-col items-center justify-center gap-0.5 px-2 py-3 rounded-md transition-[color,background-color,box-shadow] ${priority === 'high'
                                 ? 'bg-main text-black shadow-sm shadow-main/20'
                                 : 'text-sub hover:bg-sub/20 hover:text-text-primary'
                                 }`}
@@ -224,7 +230,7 @@ export function InnerfaceSettingsModal({ isOpen, onClose, innerfaceId }: Innerfa
                             <button
                                 type="button"
                                 onClick={() => setCategory(null)}
-                                className={`flex-1 px-3 py-2 rounded-md text-xs font-mono uppercase font-bold transition-all ${category === null
+                                className={`flex-1 px-3 py-2 rounded-md text-xs font-mono uppercase font-bold transition-[color,background-color,box-shadow] ${category === null
                                     ? 'bg-sub text-text-primary shadow-sm'
                                     : 'text-sub hover:text-text-primary'
                                     }`}
@@ -234,7 +240,7 @@ export function InnerfaceSettingsModal({ isOpen, onClose, innerfaceId }: Innerfa
                             <button
                                 type="button"
                                 onClick={() => setCategory('skill')}
-                                className={`flex-1 px-3 py-2 rounded-md text-xs font-mono uppercase font-bold transition-all ${category === 'skill'
+                                className={`flex-1 px-3 py-2 rounded-md text-xs font-mono uppercase font-bold transition-[color,background-color,box-shadow] ${category === 'skill'
                                     ? 'bg-sub text-text-primary shadow-sm'
                                     : 'text-sub hover:text-text-primary'
                                     }`}
@@ -244,7 +250,7 @@ export function InnerfaceSettingsModal({ isOpen, onClose, innerfaceId }: Innerfa
                             <button
                                 type="button"
                                 onClick={() => setCategory('foundation')}
-                                className={`flex-1 px-3 py-2 rounded-md text-xs font-mono uppercase font-bold transition-all ${category === 'foundation'
+                                className={`flex-1 px-3 py-2 rounded-md text-xs font-mono uppercase font-bold transition-[color,background-color,box-shadow] ${category === 'foundation'
                                     ? 'bg-sub text-text-primary shadow-sm'
                                     : 'text-sub hover:text-text-primary'
                                     }`}
@@ -295,7 +301,7 @@ export function InnerfaceSettingsModal({ isOpen, onClose, innerfaceId }: Innerfa
                             <button
                                 type="button"
                                 onClick={() => setDecayEnabled(false)}
-                                className={`flex-1 px-3 py-2 rounded-md text-xs font-mono uppercase font-bold transition-all ${!decayEnabled
+                                className={`flex-1 px-3 py-2 rounded-md text-xs font-mono uppercase font-bold transition-[color,background-color,box-shadow] ${!decayEnabled
                                     ? 'bg-sub text-text-primary shadow-sm'
                                     : 'text-sub hover:text-text-primary'
                                     }`}
@@ -305,7 +311,7 @@ export function InnerfaceSettingsModal({ isOpen, onClose, innerfaceId }: Innerfa
                             <button
                                 type="button"
                                 onClick={() => setDecayEnabled(true)}
-                                className={`flex-1 px-3 py-2 rounded-md text-xs font-mono uppercase font-bold transition-all ${decayEnabled
+                                className={`flex-1 px-3 py-2 rounded-md text-xs font-mono uppercase font-bold transition-[color,background-color,box-shadow] ${decayEnabled
                                     ? 'bg-sub text-text-primary shadow-sm'
                                     : 'text-sub hover:text-text-primary'
                                     }`}
@@ -368,7 +374,7 @@ export function InnerfaceSettingsModal({ isOpen, onClose, innerfaceId }: Innerfa
                                         <button
                                             type="button"
                                             onClick={() => setDecayFrequency('day')}
-                                            className={`px-2 py-1.5 rounded-md text-[10px] font-mono uppercase font-bold transition-all truncate ${decayFrequency === 'day'
+                                            className={`px-2 py-1.5 rounded-md text-[10px] font-mono uppercase font-bold transition-[color,background-color,box-shadow] truncate ${decayFrequency === 'day'
                                                 ? 'bg-sub text-text-primary shadow-sm'
                                                 : 'text-sub hover:text-text-primary'
                                                 }`}
@@ -378,7 +384,7 @@ export function InnerfaceSettingsModal({ isOpen, onClose, innerfaceId }: Innerfa
                                         <button
                                             type="button"
                                             onClick={() => setDecayFrequency('week')}
-                                            className={`px-2 py-1.5 rounded-md text-[10px] font-mono uppercase font-bold transition-all truncate ${decayFrequency === 'week'
+                                            className={`px-2 py-1.5 rounded-md text-[10px] font-mono uppercase font-bold transition-[color,background-color,box-shadow] truncate ${decayFrequency === 'week'
                                                 ? 'bg-sub text-text-primary shadow-sm'
                                                 : 'text-sub hover:text-text-primary'
                                                 }`}
@@ -388,7 +394,7 @@ export function InnerfaceSettingsModal({ isOpen, onClose, innerfaceId }: Innerfa
                                         <button
                                             type="button"
                                             onClick={() => setDecayFrequency('month')}
-                                            className={`px-2 py-1.5 rounded-md text-[10px] font-mono uppercase font-bold transition-all truncate ${decayFrequency === 'month'
+                                            className={`px-2 py-1.5 rounded-md text-[10px] font-mono uppercase font-bold transition-[color,background-color,box-shadow] truncate ${decayFrequency === 'month'
                                                 ? 'bg-sub text-text-primary shadow-sm'
                                                 : 'text-sub hover:text-text-primary'
                                                 }`}

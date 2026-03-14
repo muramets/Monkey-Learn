@@ -1,4 +1,4 @@
-
+import React from 'react';
 import { format, parseISO } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock, faTrash, faGear, faComment, faHourglassHalf } from '@fortawesome/free-solid-svg-icons';
@@ -18,7 +18,7 @@ interface HistoryEventProps {
     onFilterProtocol: (id: string) => void;
 }
 
-export function HistoryEvent({ event, innerfaces, protocolColor, onDelete, onFilterInnerface, onFilterProtocol }: HistoryEventProps) {
+export const HistoryEvent = React.memo(function HistoryEvent({ event, innerfaces, protocolColor, onDelete, onFilterInnerface, onFilterProtocol }: HistoryEventProps) {
     const isPositive = event.weight > 0;
     const isSystem = event.type === 'system';
     const isDecay = event.type === 'decay';
@@ -125,7 +125,7 @@ export function HistoryEvent({ event, innerfaces, protocolColor, onDelete, onFil
             >
                 {/* Dynamic Background Gradient (Right side) */}
                 <div
-                    className="absolute inset-0 transition-all duration-500 pointer-events-none opacity-80 rounded-2xl"
+                    className="absolute inset-0 transition-opacity duration-500 pointer-events-none opacity-80 rounded-2xl"
                     style={{
                         background: `radial-gradient(circle at 100% 50%, ${gradientColor}, transparent 60%)`
                     }}
@@ -164,7 +164,7 @@ export function HistoryEvent({ event, innerfaces, protocolColor, onDelete, onFil
                                         e.stopPropagation();
                                         onFilterProtocol(String(event.protocolId));
                                     }}
-                                    className="relative w-14 h-14 flex items-center justify-center rounded-2xl text-2xl shrink-0 transition-all duration-500 z-10 group-hover:scale-105 cursor-pointer hover:shadow-lg"
+                                    className="relative w-14 h-14 flex items-center justify-center rounded-2xl text-2xl shrink-0 transition-[transform,box-shadow] duration-500 z-10 group-hover:scale-105 cursor-pointer hover:shadow-lg"
                                     style={{
                                         backgroundColor: `color-mix(in srgb, ${effectiveColor} 20%, transparent)`,
                                         color: effectiveColor,
@@ -228,7 +228,7 @@ export function HistoryEvent({ event, innerfaces, protocolColor, onDelete, onFil
                                         <TooltipTrigger asChild>
                                             <button
                                                 onClick={() => onFilterInnerface(innerfaceId)}
-                                                className={`flex items-center gap-3 px-3 py-2 rounded-xl bg-black/20 hover:bg-black/30 transition-all border border-transparent hover:border-white/5 active:scale-95 group/iface cursor-pointer ${isHistorical ? 'opacity-30 grayscale-[0.5] hover:opacity-60 scale-[0.98]' : ''}`}
+                                                className={`flex items-center gap-3 px-3 py-2 rounded-xl bg-black/20 hover:bg-black/30 transition-[color,background-color,border-color,opacity,transform] border border-transparent hover:border-white/5 active:scale-95 group/iface cursor-pointer ${isHistorical ? 'opacity-30 grayscale-[0.5] hover:opacity-60 scale-[0.98]' : ''}`}
                                             >
                                                 <div
                                                     className="w-1.5 h-1.5 rounded-full shadow-[0_0_8px_rgba(0,0,0,0.5)]"
@@ -262,7 +262,7 @@ export function HistoryEvent({ event, innerfaces, protocolColor, onDelete, onFil
                             <TooltipProvider delayDuration={200}>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
-                                        <div className="group/comment relative flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br from-main/20 to-main/10 hover:from-main/30 hover:to-main/20 transition-all duration-300 cursor-pointer hover:scale-110 hover:shadow-lg hover:shadow-main/20">
+                                        <div className="group/comment relative flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br from-main/20 to-main/10 hover:from-main/30 hover:to-main/20 transition-[background,transform,box-shadow] duration-300 cursor-pointer hover:scale-110 hover:shadow-lg hover:shadow-main/20">
                                             <FontAwesomeIcon
                                                 icon={faComment}
                                                 className="text-main text-base group-hover/comment:scale-110 transition-transform duration-300"
@@ -286,4 +286,4 @@ export function HistoryEvent({ event, innerfaces, protocolColor, onDelete, onFil
             </motion.div>
         </div>
     );
-}
+});

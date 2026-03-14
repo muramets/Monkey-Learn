@@ -1,5 +1,3 @@
-import { allThemes } from '../styles/allThemes';
-
 export type Theme = {
     name: string;
     bgColor: string;
@@ -18,6 +16,16 @@ export type Theme = {
 
 const STORAGE_KEY = 'theme';
 const DEFAULT_THEME = 'serika_dark';
+
+let _allThemes: Record<string, Theme> | null = null;
+
+export async function getAllThemes(): Promise<Record<string, Theme>> {
+    if (!_allThemes) {
+        const module = await import('../styles/allThemes');
+        _allThemes = module.allThemes;
+    }
+    return _allThemes;
+}
 
 // Helper to convert hex to rgb
 export function hexToRgb(hex: string): string {
@@ -114,8 +122,9 @@ export const applyTheme = (theme: Theme) => {
     }
 };
 
-export const setTheme = (themeName: string) => {
-    const theme = allThemes[themeName];
+export const setTheme = async (themeName: string) => {
+    const themes = await getAllThemes();
+    const theme = themes[themeName];
     if (theme) {
         applyTheme(theme);
         localStorage.setItem(STORAGE_KEY, themeName);
@@ -124,11 +133,11 @@ export const setTheme = (themeName: string) => {
     }
 };
 
-export const initTheme = () => {
+export const initTheme = async () => {
     const savedTheme = localStorage.getItem(STORAGE_KEY);
     // Determine theme: Saved -> Default -> 'serika_dark' as generic fallback
     const themeName = savedTheme || DEFAULT_THEME;
-    setTheme(themeName);
+    await setTheme(themeName);
     return themeName;
 };
 

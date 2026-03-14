@@ -92,7 +92,7 @@ export const TeamItem = ({
                 <div className="flex items-center shrink-0 mr-[0.9em]">
                     <button
                         onClick={onEditTeam}
-                        className="opacity-0 group-hover/item:opacity-100 transition-all text-[var(--text-color)]"
+                        className="opacity-0 group-hover/item:opacity-100 transition-opacity text-[var(--text-color)]"
                     >
                         <FontAwesomeIcon icon={faCog} className="text-[0.8em]" />
                     </button>

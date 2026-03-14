@@ -99,7 +99,7 @@ export const RoleItem = ({
                     <div className="flex items-center shrink-0 ml-auto gap-2">
                         <button
                             onClick={onEditRole}
-                            className="opacity-0 group-hover/role:opacity-100 transition-all hover:!text-[var(--main-color)]"
+                            className="opacity-0 group-hover/role:opacity-100 transition-[opacity,color] hover:!text-[var(--main-color)]"
                             style={{ color: 'var(--bg-color)' }}
                         >
                             <FontAwesomeIcon icon={faCog} className="text-[0.8em]" />

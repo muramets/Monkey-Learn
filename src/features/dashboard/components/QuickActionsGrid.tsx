@@ -104,7 +104,7 @@ export function QuickActionsGrid({
                         </div>
                     ) : null}
                 </DragOverlay>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 p-2">
+                <div data-no-swipe className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 p-2">
                     <SortableContext
                         items={actions.map(a => a.id)}
                         strategy={rectSortingStrategy}
@@ -124,7 +124,7 @@ export function QuickActionsGrid({
                     {actions.length === 0 && totalProtocolCount > 0 && (
                         <button
                             onClick={onAddAction}
-                            className="col-span-full md:col-span-1 h-[70px] border border-dashed border-sub/30 hover:border-sub rounded-lg flex flex-col items-center justify-center gap-2 text-sub hover:text-text-primary transition-all duration-200 group bg-sub-alt/5 hover:bg-sub-alt/10"
+                            className="col-span-full md:col-span-1 h-[70px] border border-dashed border-sub/30 hover:border-sub rounded-lg flex flex-col items-center justify-center gap-2 text-sub hover:text-text-primary transition-colors duration-200 group bg-sub-alt/5 hover:bg-sub-alt/10"
                         >
                             <FontAwesomeIcon icon={faPlus} className="text-lg" />
                             <span className="text-xs font-mono">Add your first quick action</span>
@@ -135,7 +135,7 @@ export function QuickActionsGrid({
                     {actions.length === 0 && totalProtocolCount === 0 && (
                         <button
                             onClick={() => navigate('/actions')}
-                            className="col-span-full md:col-span-1 h-[70px] border border-dashed border-sub/30 hover:border-sub rounded-lg flex flex-col items-center justify-center gap-2 text-sub hover:text-text-primary transition-all duration-200 group bg-sub-alt/5 hover:bg-sub-alt/10"
+                            className="col-span-full md:col-span-1 h-[70px] border border-dashed border-sub/30 hover:border-sub rounded-lg flex flex-col items-center justify-center gap-2 text-sub hover:text-text-primary transition-colors duration-200 group bg-sub-alt/5 hover:bg-sub-alt/10"
                         >
                             <FontAwesomeIcon icon={faPlus} className="text-lg" />
                             <span className="font-mono text-xs">Start by adding actions</span>

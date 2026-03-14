@@ -70,7 +70,7 @@ export const InnerfacesDragOverlay = React.memo(({
 
         return (
             <div className={`w-full relative shadow-2xl z-50 pointer-events-none rounded-lg overflow-hidden ${!isValidDrop ? 'scale-95' : 'opacity-90 cursor-grabbing'}`}>
-                <div className={`w-full backdrop-blur-sm rounded-lg flex items-center py-2 pr-4 ${!isValidDrop ? 'bg-error/20 border border-error/50' : 'bg-sub-alt/80'}`}>
+                <div className={`w-full [@media(hover:hover)]:backdrop-blur-sm rounded-lg flex items-center py-2 pr-4 ${!isValidDrop ? 'bg-error/20 border border-error/50' : 'bg-sub-alt [@media(hover:hover)]:bg-sub-alt/80'}`}>
                     {/* Handle Placeholder */}
                     <div className="w-10 flex items-center justify-center opacity-70">
                         <FontAwesomeIcon icon={faGripVertical} className="text-sm" />
@@ -98,7 +98,7 @@ export const InnerfacesDragOverlay = React.memo(({
         const Icon = config.icon;
         return (
             <div className={`w-full relative shadow-2xl z-50 pointer-events-none rounded-lg overflow-hidden ${!isValidDrop ? 'scale-95' : 'opacity-90 cursor-grabbing'}`}>
-                <div className={`w-full backdrop-blur-sm rounded-lg flex items-center py-2 pr-4 ${!isValidDrop ? 'bg-error/20 border border-error/50' : 'bg-sub-alt/80'}`}>
+                <div className={`w-full [@media(hover:hover)]:backdrop-blur-sm rounded-lg flex items-center py-2 pr-4 ${!isValidDrop ? 'bg-error/20 border border-error/50' : 'bg-sub-alt [@media(hover:hover)]:bg-sub-alt/80'}`}>
                     {/* Handle Placeholder */}
                     <div className="w-10 flex items-center justify-center opacity-70">
                         <FontAwesomeIcon icon={faGripVertical} className="text-sm" />

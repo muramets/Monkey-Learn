@@ -75,7 +75,7 @@ export function StateSettingsModal({ isOpen, onClose, stateId }: StateSettingsMo
                             size="sm"
                             onClick={handleDelete}
                             leftIcon={<FontAwesomeIcon icon={isConfirmingDelete ? faExclamationTriangle : faTrash} />}
-                            className="text-[10px] uppercase tracking-wider font-bold px-3 py-2 transition-all duration-200"
+                            className="text-[10px] uppercase tracking-wider font-bold px-3 py-2 transition-colors duration-200"
                         >
                             {isConfirmingDelete ? 'Are you sure?' : 'Delete'}
                         </Button>

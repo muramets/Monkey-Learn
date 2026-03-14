@@ -113,7 +113,7 @@ export function PersonalitySettingsModal({ isOpen, onClose, personalityId }: Per
                             size="sm"
                             onClick={handleDelete}
                             leftIcon={<FontAwesomeIcon icon={isConfirmingDelete ? faExclamationTriangle : faTrash} />}
-                            className="text-[10px] uppercase tracking-wider font-bold px-3 py-2 transition-all duration-200"
+                            className="text-[10px] uppercase tracking-wider font-bold px-3 py-2 transition-colors duration-200"
                         >
                             {isConfirmingDelete ? 'Confirm Delete' : 'Delete'}
                         </Button>
@@ -149,7 +149,7 @@ export function PersonalitySettingsModal({ isOpen, onClose, personalityId }: Per
                     <InputLabel label="Profile Picture" />
                     <div className="group relative">
                         <div
-                            className="relative w-[80px] h-[80px] rounded-full bg-sub-alt cursor-pointer transition-all duration-150 shadow-lg flex items-center justify-center overflow-hidden hover:ring-2 hover:ring-text-primary/50"
+                            className="relative w-[80px] h-[80px] rounded-full bg-sub-alt cursor-pointer transition-shadow duration-150 shadow-lg flex items-center justify-center overflow-hidden hover:ring-2 hover:ring-text-primary/50"
                             onClick={() => fileInputRef.current?.click()}
                         >
                             <input
@@ -267,7 +267,7 @@ export function PersonalitySettingsModal({ isOpen, onClose, personalityId }: Per
                                                     handlers.handleMottoToggle(mottoItem.id);
                                                 }
                                             }}
-                                            className={`flex-1 rounded-md text-[10px] font-mono uppercase font-bold transition-all ${!mottoItem.isActive
+                                            className={`flex-1 rounded-md text-[10px] font-mono uppercase font-bold transition-[color,background-color,box-shadow] ${!mottoItem.isActive
                                                 ? 'bg-sub text-text-primary shadow-sm'
                                                 : 'text-sub hover:text-text-primary'}`}
                                         >
@@ -288,7 +288,7 @@ export function PersonalitySettingsModal({ isOpen, onClose, personalityId }: Per
                                                     }
                                                 }
                                             }}
-                                            className={`flex-1 rounded-md text-[10px] font-mono uppercase font-bold transition-all ${mottoItem.isActive
+                                            className={`flex-1 rounded-md text-[10px] font-mono uppercase font-bold transition-[color,background-color,box-shadow] ${mottoItem.isActive
                                                 ? 'bg-main text-black shadow-sm'
                                                 : 'text-sub'
                                                 } ${!mottoItem.text.trim()

@@ -29,7 +29,7 @@ export function Button({
         danger: "bg-error text-bg-primary hover:bg-text-primary hover:text-bg-primary transition-colors duration-150",
         ghost: "bg-transparent text-sub hover:text-text-primary transition-colors duration-150",
         neutral: "bg-sub-alt text-text-primary hover:bg-text-primary hover:text-bg-primary active:bg-sub active:text-bg-primary transition-colors duration-150",
-        history: "bg-sub-alt/50 text-sub hover:bg-error/20 hover:text-error transition-all duration-300 shadow-lg hover:rotate-6 active:scale-90",
+        history: "bg-sub-alt/50 text-sub hover:bg-error/20 hover:text-error transition-[color,background-color,box-shadow,transform] duration-300 shadow-lg hover:rotate-6 active:scale-90",
     };
 
     const sizes = {

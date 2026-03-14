@@ -42,7 +42,7 @@ export function InviteErrorState({ error }: InviteErrorStateProps) {
                 </p>
                 <button
                     onClick={() => navigate('/')}
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium lowercase transition-all duration-200"
+                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-medium lowercase transition-colors duration-200"
                     style={{
                         backgroundColor: 'var(--sub-alt-color)',
                         color: 'var(--text-color)',

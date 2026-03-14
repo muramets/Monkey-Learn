@@ -56,7 +56,7 @@ export function CommentInputOverlay() {
 
     return createPortal(
         <div
-            className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity duration-300"
+            className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/75 [@media(hover:hover)]:bg-black/60 [@media(hover:hover)]:backdrop-blur-sm transition-opacity duration-300"
             onClick={(e) => {
                 if (e.target === e.currentTarget) {
                     closeCommentOverlay();

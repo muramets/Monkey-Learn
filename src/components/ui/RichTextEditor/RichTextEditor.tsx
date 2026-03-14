@@ -118,7 +118,7 @@ export const RichTextEditor = ({
      */
     const NormalView = (
         <div className={clsx(
-            "flex flex-col bg-sub-alt rounded-lg p-3 transition-all duration-300",
+            "flex flex-col bg-sub-alt rounded-lg p-3 transition-[padding,border-radius] duration-300",
             className
         )}>
             <MenuBar
@@ -146,7 +146,7 @@ export const RichTextEditor = ({
      * Expanded (zen) view - fullscreen modal
      */
     const ExpandedView = (
-        <div className="fixed inset-0 z-[9999] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 sm:p-8 animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-[9999] bg-black/75 [@media(hover:hover)]:bg-black/60 [@media(hover:hover)]:backdrop-blur-sm flex items-center justify-center p-4 sm:p-8 animate-in fade-in duration-200">
             <div className="flex flex-col w-full bg-sub-alt max-w-4xl mx-auto rounded-xl shadow-2xl p-6 h-[85vh]">
                 <MenuBar
                     editor={editor}

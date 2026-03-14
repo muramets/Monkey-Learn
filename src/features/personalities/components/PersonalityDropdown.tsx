@@ -132,7 +132,7 @@ export function PersonalityDropdown() {
                 </button>
 
                 {/* Dropdown Menu - Exact MonkeyType Replica */}
-                <div className="absolute top-full right-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 min-w-[23ch] z-[100] text-[0.75rem] pt-2">
+                <div className="absolute top-full right-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-[opacity,visibility] duration-150 min-w-[23ch] z-[100] text-[0.75rem] pt-2">
                     <div
                         className="flex flex-col rounded-[0.5rem] overflow-hidden"
                         style={{
@@ -195,7 +195,7 @@ export function PersonalityDropdown() {
                                         <div className="w-[1.5em] flex justify-center">
                                             <button
                                                 onClick={(e) => handleEdit(e, p.id)}
-                                                className="opacity-0 group-hover/item:opacity-100 transition-all hover:!text-[var(--main-color)]"
+                                                className="opacity-0 group-hover/item:opacity-100 transition-[opacity,color] hover:!text-[var(--main-color)]"
                                                 style={{ color: 'var(--bg-color)' }}
                                             >
                                                 <FontAwesomeIcon icon={faCog} className="text-[0.8em]" />

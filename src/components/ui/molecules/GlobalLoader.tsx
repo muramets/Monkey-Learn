@@ -10,7 +10,7 @@ export const GlobalLoader = () => {
                 <div className="w-full h-2 bg-sub-alt rounded-full overflow-hidden">
                     {/* Real Progress Fill */}
                     <div
-                        className="h-full bg-main rounded-full transition-all duration-300 ease-out"
+                        className="h-full bg-main rounded-full transition-[width] duration-300 ease-out"
                         style={{
                             width: `${progress}%`,
                             transformOrigin: 'left',
