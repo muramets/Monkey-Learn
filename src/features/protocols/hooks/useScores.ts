@@ -7,6 +7,12 @@ import { useMetadataStore } from '../../../stores/metadataStore';
 import { usePersonalityStore } from '../../../stores/personalityStore';
 import { useUIStore } from '../../../stores/uiStore';
 import type { HistoryRecord } from '../../../types/history';
+import {
+    getInnerfaceScore,
+    calculateStateScore,
+    calculateInnerfaceScoreAtDate,
+    calculateStateScoreAtDate,
+} from '../../../utils/scoreUtils';
 
 export type { HistoryRecord as Checkin };
 
@@ -17,11 +23,49 @@ export function useScores() {
     const { activePersonalityId } = usePersonalityStore();
 
     const isLoading = isHistoryLoading || isMetadataLoading;
-
-    // Calculate Progress
     const historyProgress = isHistoryLoading ? 0 : 20;
     const metadataProgress = (metadataLoadedCount || 0) * 20;
     const loadingProgress = historyProgress + metadataProgress;
+
+    // --- Score Calculations (delegated to pure utils) ---
+
+    const getScore = useCallback((innerfaceId: number | string) => {
+        const innerface = innerfaces.find(i => i.id.toString() === innerfaceId.toString());
+        if (!innerface) return 0;
+        return getInnerfaceScore(innerface);
+    }, [innerfaces]);
+
+    const innerfacesWithScores = useMemo(() =>
+        innerfaces.map(innerface => ({
+            ...innerface,
+            currentScore: getInnerfaceScore(innerface)
+        })),
+    [innerfaces]);
+
+    const getScoreAtDate = useCallback((innerfaceId: number | string, date: Date) => {
+        const innerface = innerfaces.find(i => i.id.toString() === innerfaceId.toString());
+        if (!innerface) return 0;
+        return calculateInnerfaceScoreAtDate(innerface, date, history);
+    }, [innerfaces, history]);
+
+    const statesWithScores = useMemo(() => {
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+
+        return states.map(state => {
+            const validInnerfaceIds = (state.innerfaceIds || []).filter(id =>
+                innerfaces.some(i => i.id.toString() === id.toString())
+            );
+            return {
+                ...state,
+                innerfaceIds: validInnerfaceIds,
+                score: calculateStateScore(state.id, states, getScore),
+                yesterdayScore: calculateStateScoreAtDate(state.id, yesterday, states, getScoreAtDate),
+            };
+        });
+    }, [states, innerfaces, getScore, getScoreAtDate]);
+
+    // --- Mutations ---
 
     const applyProtocol = useCallback(async (protocolId: number | string, direction: '+' | '-' = '+') => {
         const protocol = protocols.find(p => p.id === protocolId);
@@ -32,14 +76,9 @@ export function useScores() {
             return;
         }
 
-        // 1. Determine Weight for Internal Score (0-10 scale)
-        // If protocol has weight 0.1, and direction is '-', resulting weight is -0.1
         const weight = direction === '+' ? protocol.weight : -protocol.weight;
-
         const changes: Record<string | number, number> = {};
-        protocol.targets.forEach(targetId => {
-            changes[targetId] = weight;
-        });
+        protocol.targets.forEach(targetId => { changes[targetId] = weight; });
 
         const newRecord: Omit<HistoryRecord, 'id'> = {
             type: 'protocol',
@@ -52,170 +91,27 @@ export function useScores() {
             changes
         };
 
-        // --- Optimistic UI Start ---
-        // 1. Generate ID synchronously
+        // Optimistic UI
         const collectionRef = collection(db, 'users', user.uid, 'personalities', activePersonalityId, 'history');
         const optimisticId = doc(collectionRef).id;
 
-        // 2. Optimistic Stats Update
         const { optimisticUpdateStats } = usePersonalityStore.getState();
-        // Calculate XP exactly as the server/store does (weight * 100)
         const recordXp = Math.round(weight * 100);
-        // +1 checkin, +recordXp
         optimisticUpdateStats(activePersonalityId, 1, recordXp);
 
-        // 3. Show Toast IMMEDIATELY (before network request)
         const { showToast, openCommentOverlay } = useUIStore.getState();
-        showToast(
-            'Check-in Successful',
-            'success',
-            'Add Comment [Enter]',
-            () => openCommentOverlay(optimisticId)
-        );
+        showToast('Check-in Successful', 'success', 'Add Comment [Enter]', () => openCommentOverlay(optimisticId));
 
-        // 4. Perform network request in background
         try {
             await addCheckin(user.uid, activePersonalityId, newRecord, true, optimisticId);
         } catch (error) {
             console.error("Optimistic check-in failed:", error);
-
-            // Rollback UI state (Stats)
             optimisticUpdateStats(activePersonalityId, -1, -recordXp);
-
-            // Rollback UI state (Toast/Overlay)
             const { closeCommentOverlay } = useUIStore.getState();
-            closeCommentOverlay(); // Close overlay if it's open
-
+            closeCommentOverlay();
             showToast('Check-in failed to save', 'error');
         }
     }, [user, activePersonalityId, protocols, addCheckin]);
-
-    const calculateInnerfaceScore = useCallback((innerfaceId: number | string) => {
-        const innerface = innerfaces.find(i => i.id.toString() === innerfaceId.toString());
-        if (!innerface) return 0;
-        // Optimization: Use persistent score if available
-        if (innerface.currentScore !== undefined) {
-            return innerface.currentScore;
-        }
-
-        // Fallback for pre-migration or missing score
-        return Math.max(0, innerface.initialScore);
-    }, [innerfaces]);
-
-    const innerfacesWithScores = useMemo(() => {
-        return innerfaces.map(innerface => ({
-            ...innerface,
-            currentScore: calculateInnerfaceScore(innerface.id)
-        }));
-    }, [innerfaces, calculateInnerfaceScore]);
-
-    const calculateStateScore = useCallback((stateId: string, visited = new Set<string>()): number => {
-        if (visited.has(stateId)) return 0;
-        visited.add(stateId);
-
-        const state = states.find(s => s.id === stateId);
-        if (!state) return 0;
-
-        let total = 0;
-        let count = 0;
-
-        if (state.innerfaceIds) {
-            state.innerfaceIds.forEach(id => {
-                const score = calculateInnerfaceScore(id);
-                total += score;
-                count++;
-            });
-        }
-
-        if (state.stateIds) {
-            state.stateIds.forEach(id => {
-                total += calculateStateScore(id, visited);
-                count++;
-            });
-        }
-
-        return count > 0 ? total / count : 0;
-    }, [states, calculateInnerfaceScore]);
-
-    // Used for "Yesterday's Score" to calculate daily progress (+5 etc)
-    const calculateInnerfaceScoreAtDate = useCallback((innerfaceId: number | string, date: Date) => {
-        const innerface = innerfaces.find(i => i.id.toString() === innerfaceId.toString());
-        if (!innerface) return 0;
-
-        // Start with CURRENT score
-        let simulatedScore = innerface.currentScore ?? innerface.initialScore;
-
-        // If we want score at END of 'date', we must REVERSE changes that happened AFTER 'date'
-        const targetEndTime = new Date(date);
-        targetEndTime.setHours(23, 59, 59, 999);
-
-        // Iterate history (newest first) and un-apply changes until we reach target time
-        for (const record of history) {
-            const recordDate = new Date(record.timestamp);
-            if (recordDate <= targetEndTime) {
-                // We reached the target time, stop reversing
-                break;
-            }
-
-            // Reverse this record's effect
-            if (record.changes && record.changes[innerfaceId] !== undefined) {
-                simulatedScore -= record.changes[innerfaceId];
-            }
-        }
-
-        return Math.max(0, simulatedScore);
-    }, [history, innerfaces]);
-
-    const calculateStateScoreAtDate = useCallback((stateId: string, date: Date, visited = new Set<string>()): number => {
-        if (visited.has(stateId)) return 0;
-        visited.add(stateId);
-
-        const state = states.find(s => s.id === stateId);
-        if (!state) return 0;
-
-        let total = 0;
-        let count = 0;
-
-        if (state.innerfaceIds) {
-            state.innerfaceIds.forEach(id => {
-                const score = calculateInnerfaceScoreAtDate(id, date);
-                total += score;
-                count++;
-            });
-        }
-
-        if (state.stateIds) {
-            state.stateIds.forEach(id => {
-                total += calculateStateScoreAtDate(id, date, visited);
-                count++;
-            });
-        }
-
-        return count > 0 ? total / count : 0;
-    }, [states, calculateInnerfaceScoreAtDate]);
-
-    const statesWithScores = useMemo(() => {
-        const yesterday = new Date();
-        yesterday.setDate(yesterday.getDate() - 1);
-
-        return states.map(state => {
-            // Filter out invalid child references to maintain data integrity
-            const validInnerfaceIds = (state.innerfaceIds || []).filter(id =>
-                innerfaces.some(i => i.id.toString() === id.toString())
-            );
-
-            const sanitizedState = {
-                ...state,
-                innerfaceIds: validInnerfaceIds
-            };
-
-            return {
-                ...sanitizedState,
-                score: calculateStateScore(state.id),
-                yesterdayScore: calculateStateScoreAtDate(state.id, yesterday)
-            };
-        });
-    }, [states, innerfaces, calculateStateScore, calculateStateScoreAtDate]);
 
     const deleteEvent = useCallback(async (id: string) => {
         if (!user || !activePersonalityId) return;
