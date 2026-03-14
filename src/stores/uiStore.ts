@@ -39,7 +39,7 @@ export const useUIStore = create<UIState>((set) => ({
     }),
 
     hideToast: () => set((state) => ({
-        toast: { ...state.toast, isVisible: false, actionLabel: undefined, onAction: undefined }
+        toast: { ...state.toast, isVisible: false }
     })),
 
     openCommentOverlay: (checkinId, initialComment) => set({

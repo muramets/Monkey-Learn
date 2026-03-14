@@ -1,27 +1,8 @@
 import type { Innerface } from '../../features/innerfaces/types';
 import { db } from '../../config/firebase';
 import { collection, doc, addDoc, updateDoc, writeBatch, setDoc } from 'firebase/firestore';
-import { useUIStore } from '../uiStore';
-import type { MetadataState, PathContext } from './types';
-
-// Helpers (re-implemented here or imported if we extracted them)
-const showErrorToast = (message: string) => useUIStore.getState().showToast(message, 'error');
-
-const getPathRoot = (context: PathContext | null) => {
-    if (!context) throw new Error('No active context for metadata operation');
-    if (context.type === 'personality') return `users/${context.uid}/personalities/${context.pid}`;
-    if (context.type === 'viewer') return `users/${context.targetUid}/personalities/${context.personalityId}`;
-    return `teams/${context.teamId}/roles/${context.roleId}`;
-};
-
-const isViewerMode = (context: PathContext | null) => context?.type === 'viewer';
-
-const guardAgainstViewerMode = (context: PathContext | null, allowInCoachMode = false) => {
-    if (isViewerMode(context) && !allowInCoachMode) {
-        console.warn('[MetadataStore] Blocked mutation in viewer/coach mode');
-        throw new Error('Cannot modify data in coach/viewer mode');
-    }
-};
+import type { MetadataState } from './types';
+import { getPathRoot, guardAgainstViewerMode } from '../helpers';
 
 export const createInnerfaceSlice = (
     set: (partial: Partial<MetadataState> | ((state: MetadataState) => Partial<MetadataState>)) => void,
@@ -38,7 +19,7 @@ export const createInnerfaceSlice = (
             return docRef.id;
         } catch (err: unknown) {
             const message = err instanceof Error ? err.message : 'Unknown error';
-            showErrorToast(message);
+            console.error('[MetadataStore] addInnerface failed:', message);
             throw err; // Re-throw to prevent caller from proceeding with undefined ID
         }
     },
@@ -59,8 +40,8 @@ export const createInnerfaceSlice = (
             await updateDoc(docRef, data);
         } catch (err: unknown) {
             const message = err instanceof Error ? err.message : 'Unknown error';
-            console.error('[MetadataStore] updateInnerface failed:', err);
-            showErrorToast(message);
+            console.error('[MetadataStore] updateInnerface failed:', message);
+            throw err;
         }
     },
 
@@ -78,7 +59,8 @@ export const createInnerfaceSlice = (
 
         } catch (err: unknown) {
             const message = err instanceof Error ? err.message : 'Unknown error';
-            showErrorToast(message);
+            console.error('[MetadataStore] deleteInnerface failed:', message);
+            throw err;
         }
     },
 
@@ -95,7 +77,8 @@ export const createInnerfaceSlice = (
             await updateDoc(docRef, { deletedAt: null });
         } catch (err: unknown) {
             const message = err instanceof Error ? err.message : 'Unknown error';
-            showErrorToast(message);
+            console.error('[MetadataStore] restoreInnerface failed:', message);
+            throw err;
         }
     },
 
@@ -146,9 +129,9 @@ export const createInnerfaceSlice = (
 
             await batch.commit();
         } catch (err: unknown) {
-            console.error("Failed to move innerface:", err);
             const message = err instanceof Error ? err.message : 'Unknown error';
-            showErrorToast(message);
+            console.error('[MetadataStore] moveInnerface failed:', message);
+            throw err;
         }
     },
 
@@ -194,9 +177,9 @@ export const createInnerfaceSlice = (
             await batch.commit();
             console.debug('[MetadataStore] reorderInnerfaces success');
         } catch (err: unknown) {
-            console.error("Failed to reorder innerfaces:", err);
             const message = err instanceof Error ? err.message : 'Unknown error';
-            showErrorToast(message);
+            console.error('[MetadataStore] reorderInnerfaces failed:', message);
+            throw err;
         }
     },
 
@@ -220,9 +203,9 @@ export const createInnerfaceSlice = (
 
             console.debug('[MetadataStore] Group Reorder success');
         } catch (err: unknown) {
-            console.error('[MetadataStore] reorderInnerfaceGroups failed:', err);
             const message = err instanceof Error ? err.message : 'Unknown error';
-            showErrorToast(message);
+            console.error('[MetadataStore] reorderInnerfaceGroups failed:', message);
+            throw err;
         }
     },
 
@@ -246,9 +229,9 @@ export const createInnerfaceSlice = (
 
             console.debug('[MetadataStore] Category Reorder success');
         } catch (err: unknown) {
-            console.error('[MetadataStore] reorderCategories failed:', err);
             const message = err instanceof Error ? err.message : 'Unknown error';
-            showErrorToast(message);
+            console.error('[MetadataStore] reorderCategories failed:', message);
+            throw err;
         }
     },
 });

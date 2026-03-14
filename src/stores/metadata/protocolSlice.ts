@@ -1,28 +1,8 @@
 import type { Protocol } from '../../features/protocols/types';
 import { db } from '../../config/firebase';
 import { collection, doc, addDoc, updateDoc, writeBatch, setDoc } from 'firebase/firestore';
-import { useUIStore } from '../uiStore';
-import type { MetadataState, PathContext } from './types';
-import { useHistoryStore } from '../historyStore';
-
-// Helpers (duplicated for now to keep slices independent/portable)
-const showErrorToast = (message: string) => useUIStore.getState().showToast(message, 'error');
-
-const getPathRoot = (context: PathContext | null) => {
-    if (!context) throw new Error('No active context for metadata operation');
-    if (context.type === 'personality') return `users/${context.uid}/personalities/${context.pid}`;
-    if (context.type === 'viewer') return `users/${context.targetUid}/personalities/${context.personalityId}`;
-    return `teams/${context.teamId}/roles/${context.roleId}`;
-};
-
-const isViewerMode = (context: PathContext | null) => context?.type === 'viewer';
-
-const guardAgainstViewerMode = (context: PathContext | null, allowInCoachMode = false) => {
-    if (isViewerMode(context) && !allowInCoachMode) {
-        console.warn('[MetadataStore] Blocked mutation in viewer/coach mode');
-        throw new Error('Cannot modify data in coach/viewer mode');
-    }
-};
+import type { MetadataState } from './types';
+import { getPathRoot, guardAgainstViewerMode } from '../helpers';
 
 export const createProtocolSlice = (
     set: (partial: Partial<MetadataState> | ((state: MetadataState) => Partial<MetadataState>)) => void,
@@ -34,19 +14,11 @@ export const createProtocolSlice = (
             guardAgainstViewerMode(context);
             const colRef = collection(db, `${getPathRoot(context)}/protocols`);
             const docRef = await addDoc(colRef, protocol);
-
-            // System events only make sense for Personalities (where history exists)
-            if (protocol.targets && protocol.targets.length > 0 && context && context.type === 'personality') {
-                protocol.targets.forEach(tid => {
-                    const iface = get().innerfaces.find(i => i.id.toString() === tid.toString());
-                    const name = iface ? iface.name : 'Unknown Power';
-                    const { uid, pid } = context;
-                    useHistoryStore.getState().addSystemEvent(uid, pid, `Linked Action "${protocol.title}" to Power "${name}"`, { protocolId: docRef.id, innerfaceId: tid, type: 'link' });
-                });
-            }
+            return docRef.id;
         } catch (err: unknown) {
             const message = err instanceof Error ? err.message : 'Unknown error';
-            showErrorToast(message);
+            console.error('[MetadataStore] addProtocol failed:', message);
+            throw err;
         }
     },
 
@@ -55,40 +27,11 @@ export const createProtocolSlice = (
             const context = get().context;
             guardAgainstViewerMode(context, true);
             const docRef = doc(db, `${getPathRoot(context)}/protocols/${id}`);
-
-            // Detect changes for History logging
-            const currentProtocol = get().protocols.find(p => p.id === id);
-
-            // System events only make sense for Personalities (where history exists)
-            if (currentProtocol && data.targets && context && context.type === 'personality') {
-                const oldTargets = new Set(currentProtocol.targets || []);
-                const newTargets = new Set(data.targets);
-
-                // Find added
-                data.targets.forEach(tid => {
-                    if (!oldTargets.has(tid)) {
-                        const iface = get().innerfaces.find(i => i.id.toString() === tid.toString());
-                        const name = iface ? iface.name : 'Unknown Power';
-                        const { uid, pid } = context; // Destructure safely after type check
-                        useHistoryStore.getState().addSystemEvent(uid, pid, `Linked Action "${currentProtocol.title}" to Power "${name}"`, { protocolId: id, innerfaceId: tid, type: 'link' });
-                    }
-                });
-
-                // Find removed
-                currentProtocol.targets.forEach(tid => {
-                    if (!newTargets.has(tid)) {
-                        const iface = get().innerfaces.find(i => i.id.toString() === tid.toString());
-                        const name = iface ? iface.name : 'Unknown Power';
-                        const { uid, pid } = context; // Destructure safely after type check
-                        useHistoryStore.getState().addSystemEvent(uid, pid, `Unlinked Action "${currentProtocol.title}" from Power "${name}"`, { protocolId: id, innerfaceId: tid, type: 'unlink' });
-                    }
-                });
-            }
-
             await updateDoc(docRef, data);
         } catch (err: unknown) {
             const message = err instanceof Error ? err.message : 'Unknown error';
-            showErrorToast(message);
+            console.error('[MetadataStore] updateProtocol failed:', message);
+            throw err;
         }
     },
 
@@ -116,7 +59,8 @@ export const createProtocolSlice = (
             await batch.commit();
         } catch (err: unknown) {
             const message = err instanceof Error ? err.message : 'Unknown error';
-            showErrorToast(message);
+            console.error('[MetadataStore] deleteProtocol failed:', message);
+            throw err;
         }
     },
 
@@ -133,7 +77,8 @@ export const createProtocolSlice = (
             await updateDoc(docRef, { deletedAt: null });
         } catch (err: unknown) {
             const message = err instanceof Error ? err.message : 'Unknown error';
-            showErrorToast(message);
+            console.error('[MetadataStore] restoreProtocol failed:', message);
+            throw err;
         }
     },
 
@@ -151,7 +96,8 @@ export const createProtocolSlice = (
             await setDoc(docRef, { pinnedProtocolIds: newIds }, { merge: true });
         } catch (err: unknown) {
             const message = err instanceof Error ? err.message : 'Unknown error';
-            showErrorToast(message);
+            console.error('[MetadataStore] togglePinnedProtocol failed:', message);
+            throw err;
         }
     },
 
@@ -164,7 +110,8 @@ export const createProtocolSlice = (
             await setDoc(docRef, { pinnedProtocolIds: orderedIds }, { merge: true });
         } catch (err: unknown) {
             const message = err instanceof Error ? err.message : 'Unknown error';
-            showErrorToast(message);
+            console.error('[MetadataStore] reorderQuickActions failed:', message);
+            throw err;
         }
     },
 
@@ -195,7 +142,8 @@ export const createProtocolSlice = (
             await batch.commit();
         } catch (err: unknown) {
             const message = err instanceof Error ? err.message : 'Unknown error';
-            showErrorToast(message);
+            console.error('[MetadataStore] reorderProtocols failed:', message);
+            throw err;
         }
     },
 
@@ -253,7 +201,8 @@ export const createProtocolSlice = (
             await batch.commit();
         } catch (err: unknown) {
             const message = err instanceof Error ? err.message : 'Unknown error';
-            showErrorToast(message);
+            console.error('[MetadataStore] moveProtocol failed:', message);
+            throw err;
         }
     },
 
@@ -266,7 +215,8 @@ export const createProtocolSlice = (
             await setDoc(docRef, { protocolGroupOrder: orderedGroups }, { merge: true });
         } catch (err: unknown) {
             const message = err instanceof Error ? err.message : 'Unknown error';
-            showErrorToast(message);
+            console.error('[MetadataStore] reorderGroups failed:', message);
+            throw err;
         }
     },
 });

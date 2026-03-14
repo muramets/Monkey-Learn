@@ -14,17 +14,7 @@ import { createProtocolSlice } from './metadata/protocolSlice';
 import { createStateSlice } from './metadata/stateSlice';
 import { createGroupSlice } from './metadata/groupSlice';
 import type { MetadataState, PathContext } from './metadata/types';
-
-const getPathRoot = (context: PathContext | null) => {
-    if (!context) throw new Error('No active context for metadata operation');
-    if (context.type === 'personality') {
-        return `users/${context.uid}/personalities/${context.pid}`;
-    }
-    if (context.type === 'viewer') {
-        return `users/${context.targetUid}/personalities/${context.personalityId}`;
-    }
-    return `teams/${context.teamId}/roles/${context.roleId}`;
-};
+import { getPathRoot } from './helpers';
 
 export const useMetadataStore = create<MetadataState>((set, get) => ({
     // --- Initial State ---

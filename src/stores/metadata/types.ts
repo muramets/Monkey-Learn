@@ -30,7 +30,7 @@ export interface MetadataState {
     restoreInnerface: (innerface: Innerface) => Promise<void>;
 
     // Protocols
-    addProtocol: (protocol: Omit<Protocol, 'id'>) => Promise<void>;
+    addProtocol: (protocol: Omit<Protocol, 'id'>) => Promise<string | undefined>;
     updateProtocol: (id: number | string, data: Partial<Protocol>) => Promise<void>;
     deleteProtocol: (id: number | string) => Promise<void>;
     restoreProtocol: (protocol: Protocol) => Promise<void>;

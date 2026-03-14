@@ -10,17 +10,7 @@ import {
 } from 'firebase/firestore';
 import type { PlanningGoal } from '../features/planning/types';
 import type { PathContext } from './metadata/types';
-
-const getGoalsCollectionPath = (context: PathContext) => {
-    if (context.type === 'role') {
-        return `teams/${context.teamId}/roles/${context.roleId}/goals`;
-    }
-    if (context.type === 'viewer') {
-        return `users/${context.targetUid}/personalities/${context.personalityId}/goals`;
-    }
-    // Default to personality (user)
-    return `users/${context.uid}/personalities/${context.pid}/goals`;
-};
+import { getCollectionPath } from './helpers';
 
 interface PlanningState {
     goals: Record<string, PlanningGoal>; // Keyed by innerfaceId
@@ -44,7 +34,7 @@ export const usePlanningStore = create<PlanningState>((set) => ({
     setGoal: async (context, goalData) => {
         try {
             const goalId = String(goalData.innerfaceId);
-            const collectionPath = getGoalsCollectionPath(context);
+            const collectionPath = getCollectionPath(context, 'goals');
             const docRef = doc(db, collectionPath, goalId);
 
             const now = Date.now();
@@ -68,7 +58,7 @@ export const usePlanningStore = create<PlanningState>((set) => ({
     deleteGoal: async (context, innerfaceId) => {
         try {
             const goalId = String(innerfaceId);
-            const collectionPath = getGoalsCollectionPath(context);
+            const collectionPath = getCollectionPath(context, 'goals');
             const docRef = doc(db, collectionPath, goalId);
             await deleteDoc(docRef);
 
@@ -86,7 +76,7 @@ export const usePlanningStore = create<PlanningState>((set) => ({
 
     subscribeToGoals: (context) => {
         set({ isLoading: true });
-        const collectionPath = getGoalsCollectionPath(context);
+        const collectionPath = getCollectionPath(context, 'goals');
         const goalsRef = collection(db, collectionPath);
 
         const unsubscribe = onSnapshot(query(goalsRef), (snapshot) => {

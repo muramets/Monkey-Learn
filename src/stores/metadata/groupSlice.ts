@@ -1,26 +1,7 @@
 import { db } from '../../config/firebase';
 import { doc, writeBatch, setDoc } from 'firebase/firestore';
-import { useUIStore } from '../uiStore';
-import type { MetadataState, PathContext } from './types';
-
-// Helpers
-const showErrorToast = (message: string) => useUIStore.getState().showToast(message, 'error');
-
-const getPathRoot = (context: PathContext | null) => {
-    if (!context) throw new Error('No active context for metadata operation');
-    if (context.type === 'personality') return `users/${context.uid}/personalities/${context.pid}`;
-    if (context.type === 'viewer') return `users/${context.targetUid}/personalities/${context.personalityId}`;
-    return `teams/${context.teamId}/roles/${context.roleId}`;
-};
-
-const isViewerMode = (context: PathContext | null) => context?.type === 'viewer';
-
-const guardAgainstViewerMode = (context: PathContext | null, allowInCoachMode = false) => {
-    if (isViewerMode(context) && !allowInCoachMode) {
-        console.warn('[MetadataStore] Blocked mutation in viewer/coach mode');
-        throw new Error('Cannot modify data in coach/viewer mode');
-    }
-};
+import type { MetadataState } from './types';
+import { getPathRoot, guardAgainstViewerMode } from '../helpers';
 
 export const createGroupSlice = (
     set: (partial: Partial<MetadataState> | ((state: MetadataState) => Partial<MetadataState>)) => void,
@@ -40,7 +21,8 @@ export const createGroupSlice = (
 
         } catch (err: unknown) {
             const message = err instanceof Error ? err.message : 'Unknown error';
-            showErrorToast(message);
+            console.error('[MetadataStore] updateGroupMetadata failed:', message);
+            throw err;
         }
     },
 
@@ -164,8 +146,8 @@ export const createGroupSlice = (
 
         } catch (err: unknown) {
             const message = err instanceof Error ? err.message : 'Unknown error';
-            console.error("Failed to rename group:", err);
-            showErrorToast(message);
+            console.error('[MetadataStore] renameGroup failed:', message);
+            throw err;
         } finally {
             setTimeout(() => {
                 get().setHasPendingWrites(false);
@@ -236,8 +218,8 @@ export const createGroupSlice = (
             await batch.commit();
         } catch (err: unknown) {
             const message = err instanceof Error ? err.message : 'Unknown error';
-            console.error("Failed to delete group:", err);
-            showErrorToast(message);
+            console.error('[MetadataStore] deleteGroup failed:', message);
+            throw err;
         }
     },
 
@@ -307,8 +289,8 @@ export const createGroupSlice = (
             await batch.commit();
         } catch (err: unknown) {
             const message = err instanceof Error ? err.message : 'Unknown error';
-            console.error("Failed to restore group:", err);
-            showErrorToast(message);
+            console.error('[MetadataStore] restoreGroup failed:', message);
+            throw err;
         }
     }
 });

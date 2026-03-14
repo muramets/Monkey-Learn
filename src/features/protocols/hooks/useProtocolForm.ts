@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '../../../contexts/AuthContext';
 import { useMetadataStore } from '../../../stores/metadataStore';
 import { usePersonalityStore } from '../../../stores/personalityStore';
+import { useHistoryStore } from '../../../stores/historyStore';
 import { useUIStore } from '../../../stores/uiStore';
 
 
@@ -96,9 +97,46 @@ export function useProtocolForm({ protocolId, onClose, isOpen }: UseProtocolForm
             };
 
             if (protocolId) {
+                // Capture current targets before the update for diff
+                const currentProtocol = protocols.find(p => p.id === protocolId);
+
                 await updateProtocol(protocolId, data);
+
+                // Fire system events for linked/unlinked targets (personality context only)
+                const activeContext = usePersonalityStore.getState().activeContext;
+                if (currentProtocol && activeContext?.type === 'personality') {
+                    const { uid, pid } = activeContext;
+                    const oldTargets = new Set(currentProtocol.targets.map(String));
+                    const newTargets = new Set(targets.map(String));
+
+                    // Added targets
+                    targets.forEach(tid => {
+                        if (!oldTargets.has(String(tid))) {
+                            const iface = innerfaces.find(i => i.id.toString() === tid.toString());
+                            useHistoryStore.getState().addSystemEvent(uid, pid, `Linked Action "${title}" to Power "${iface?.name || 'Unknown'}"`, { protocolId, innerfaceId: tid, type: 'link' });
+                        }
+                    });
+
+                    // Removed targets
+                    currentProtocol.targets.forEach(tid => {
+                        if (!newTargets.has(String(tid))) {
+                            const iface = innerfaces.find(i => i.id.toString() === tid.toString());
+                            useHistoryStore.getState().addSystemEvent(uid, pid, `Unlinked Action "${title}" from Power "${iface?.name || 'Unknown'}"`, { protocolId, innerfaceId: tid, type: 'unlink' });
+                        }
+                    });
+                }
             } else {
-                await addProtocol(data);
+                const newId = await addProtocol(data);
+
+                // Fire system events for initial target links (personality context only)
+                const activeContext = usePersonalityStore.getState().activeContext;
+                if (targets.length > 0 && activeContext?.type === 'personality') {
+                    const { uid, pid } = activeContext;
+                    targets.forEach(tid => {
+                        const iface = innerfaces.find(i => i.id.toString() === tid.toString());
+                        useHistoryStore.getState().addSystemEvent(uid, pid, `Linked Action "${title}" to Power "${iface?.name || 'Unknown'}"`, { protocolId: newId || 'new', innerfaceId: tid, type: 'link' });
+                    });
+                }
             }
         } catch (error) {
             console.error('Failed to save protocol:', error);

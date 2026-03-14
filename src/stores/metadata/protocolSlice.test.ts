@@ -100,19 +100,8 @@ describe('protocolSlice', () => {
             );
         });
 
-        it('creates system events for linked targets', async () => {
+        it('does not create system events (moved to form hooks)', async () => {
             await slice.addProtocol(newProtocol);
-            expect(mockAddSystemEvent).toHaveBeenCalledTimes(1);
-            expect(mockAddSystemEvent).toHaveBeenCalledWith(
-                'u1',
-                'p1',
-                expect.stringContaining('Linked Action "Swim" to Power "Fitness"'),
-                expect.objectContaining({ protocolId: 'new-doc-id', innerfaceId: 'if1', type: 'link' }),
-            );
-        });
-
-        it('does not create system events when there are no targets', async () => {
-            await slice.addProtocol({ ...newProtocol, targets: [] });
             expect(mockAddSystemEvent).not.toHaveBeenCalled();
         });
 
@@ -121,13 +110,7 @@ describe('protocolSlice', () => {
             mockGet.mockReturnValue(state);
             slice = createProtocolSlice(mockSet, mockGet);
 
-            await slice.addProtocol(newProtocol);
-
-            // Error is caught and surfaced as toast
-            expect(mockShowToast).toHaveBeenCalledWith(
-                'Cannot modify data in coach/viewer mode',
-                'error',
-            );
+            await expect(slice.addProtocol(newProtocol)).rejects.toThrow('Cannot modify data in coach/viewer mode');
             expect(addDoc).not.toHaveBeenCalled();
         });
     });
@@ -158,27 +141,9 @@ describe('protocolSlice', () => {
             expect(updateDoc).toHaveBeenCalled();
         });
 
-        it('creates system events for added and removed targets', async () => {
-            // proto1 currently targets ['if1'], update to ['if2']
+        it('does not create system events (moved to form hooks)', async () => {
             await slice.updateProtocol('proto1', { targets: ['if2'] });
-
-            expect(mockAddSystemEvent).toHaveBeenCalledTimes(2);
-
-            // Link event for new target if2
-            expect(mockAddSystemEvent).toHaveBeenCalledWith(
-                'u1',
-                'p1',
-                expect.stringContaining('Linked Action "Run" to Power "Knowledge"'),
-                expect.objectContaining({ protocolId: 'proto1', innerfaceId: 'if2', type: 'link' }),
-            );
-
-            // Unlink event for removed target if1
-            expect(mockAddSystemEvent).toHaveBeenCalledWith(
-                'u1',
-                'p1',
-                expect.stringContaining('Unlinked Action "Run" from Power "Fitness"'),
-                expect.objectContaining({ protocolId: 'proto1', innerfaceId: 'if1', type: 'unlink' }),
-            );
+            expect(mockAddSystemEvent).not.toHaveBeenCalled();
         });
 
         it('does not create system events when targets unchanged', async () => {
@@ -235,12 +200,7 @@ describe('protocolSlice', () => {
             mockGet.mockReturnValue(state);
             slice = createProtocolSlice(mockSet, mockGet);
 
-            await slice.deleteProtocol('proto1');
-
-            expect(mockShowToast).toHaveBeenCalledWith(
-                'Cannot modify data in coach/viewer mode',
-                'error',
-            );
+            await expect(slice.deleteProtocol('proto1')).rejects.toThrow('Cannot modify data in coach/viewer mode');
             expect(mockBatch.update).not.toHaveBeenCalled();
         });
     });
@@ -275,12 +235,7 @@ describe('protocolSlice', () => {
             mockGet.mockReturnValue(state);
             slice = createProtocolSlice(mockSet, mockGet);
 
-            await slice.restoreProtocol(deletedProtocol);
-
-            expect(mockShowToast).toHaveBeenCalledWith(
-                'Cannot modify data in coach/viewer mode',
-                'error',
-            );
+            await expect(slice.restoreProtocol(deletedProtocol)).rejects.toThrow('Cannot modify data in coach/viewer mode');
             expect(updateDoc).not.toHaveBeenCalled();
         });
     });
@@ -320,12 +275,7 @@ describe('protocolSlice', () => {
             mockGet.mockReturnValue(state);
             slice = createProtocolSlice(mockSet, mockGet);
 
-            await slice.reorderProtocols(['proto2', 'proto1']);
-
-            expect(mockShowToast).toHaveBeenCalledWith(
-                'Cannot modify data in coach/viewer mode',
-                'error',
-            );
+            await expect(slice.reorderProtocols(['proto2', 'proto1'])).rejects.toThrow('Cannot modify data in coach/viewer mode');
             expect(mockBatch.update).not.toHaveBeenCalled();
         });
     });
@@ -353,13 +303,7 @@ describe('protocolSlice', () => {
             mockGet.mockReturnValue(state);
             slice = createProtocolSlice(mockSet, mockGet);
 
-            await slice.deleteProtocol('proto1');
-
-            // Mutation blocked before reaching Firestore
-            expect(mockShowToast).toHaveBeenCalledWith(
-                'Cannot modify data in coach/viewer mode',
-                'error',
-            );
+            await expect(slice.deleteProtocol('proto1')).rejects.toThrow('Cannot modify data in coach/viewer mode');
             expect(mockBatch.commit).not.toHaveBeenCalled();
         });
 

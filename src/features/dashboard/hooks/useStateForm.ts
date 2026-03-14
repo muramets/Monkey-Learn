@@ -3,6 +3,7 @@ import { DEFAULT_STATE_COLOR } from '../../../constants/common';
 import { useAuth } from '../../../contexts/AuthContext';
 import { useMetadataStore } from '../../../stores/metadataStore';
 import { usePersonalityStore } from '../../../stores/personalityStore';
+import { useHistoryStore } from '../../../stores/historyStore';
 import { useUIStore } from '../../../stores/uiStore';
 
 interface UseStateFormProps {
@@ -73,8 +74,51 @@ export function useStateForm({ stateId, onClose, isOpen }: UseStateFormProps) {
 
             if (stateId) {
                 await updateState(stateId, data);
+
+                // Fire system events for linked/unlinked innerfaces (personality context only)
+                if (user && activePersonalityId) {
+                    const currentState = states.find(s => s.id === stateId);
+                    if (currentState) {
+                        const oldIds = new Set((currentState.innerfaceIds || []).map(String));
+                        const newIds = new Set(innerfaceIds.map(String));
+                        // Added
+                        innerfaceIds.forEach(ifaceId => {
+                            if (!oldIds.has(String(ifaceId))) {
+                                const iface = innerfaces.find(i => i.id.toString() === ifaceId.toString());
+                                useHistoryStore.getState().addSystemEvent(
+                                    user.uid, activePersonalityId,
+                                    `Added Power "${iface?.name || 'Unknown'}" to Dimension "${name}"`,
+                                    { stateId, innerfaceId: String(ifaceId), type: 'linkState' }
+                                );
+                            }
+                        });
+                        // Removed
+                        (currentState.innerfaceIds || []).forEach(ifaceId => {
+                            if (!newIds.has(String(ifaceId))) {
+                                const iface = innerfaces.find(i => i.id.toString() === ifaceId.toString());
+                                useHistoryStore.getState().addSystemEvent(
+                                    user.uid, activePersonalityId,
+                                    `Removed Power "${iface?.name || 'Unknown'}" from Dimension "${name}"`,
+                                    { stateId, innerfaceId: String(ifaceId), type: 'unlinkState' }
+                                );
+                            }
+                        });
+                    }
+                }
             } else {
                 await addState(data);
+
+                // Fire system events for linked innerfaces (personality context only)
+                if (innerfaceIds.length > 0 && user && activePersonalityId) {
+                    innerfaceIds.forEach(ifaceId => {
+                        const iface = innerfaces.find(i => i.id.toString() === ifaceId.toString());
+                        useHistoryStore.getState().addSystemEvent(
+                            user.uid, activePersonalityId,
+                            `Added Power "${iface?.name || 'Unknown'}" to Dimension "${name}"`,
+                            { stateId: 'new', innerfaceId: String(ifaceId), type: 'linkState' }
+                        );
+                    });
+                }
             }
         } catch (error) {
             console.error('Failed to save state:', error);
