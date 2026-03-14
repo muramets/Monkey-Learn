@@ -13,6 +13,7 @@ import { useUIStore } from './stores/uiStore';
 import { initTheme } from './utils/themeManager';
 import { AnimatedRoutes } from './components/layout/AnimatedRoutes';
 import { CommentInputOverlay } from './features/comments/components/CommentInputOverlay';
+import { ErrorBoundary } from './components/ui/molecules/ErrorBoundary';
 
 function AppContent() {
   const { loading: authLoading } = useAuth();
@@ -68,7 +69,9 @@ function App() {
               contain: 'paint',
             }}
           />
-          <AppContent />
+          <ErrorBoundary section="App">
+            <AppContent />
+          </ErrorBoundary>
         </ScoreProvider>
       </AuthProvider>
     </QueryProvider>

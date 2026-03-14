@@ -16,6 +16,7 @@ import { GlobalLoader } from '../ui/molecules/GlobalLoader';
 import { useAuth } from '../../contexts/AuthContext';
 import { useScoreContext } from '../../contexts/ScoreContext';
 import { useTouchDevice } from '../../hooks/useTouchDevice';
+import { ErrorBoundary } from '../ui/molecules/ErrorBoundary';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
     const { user, loading } = useAuth();
@@ -103,44 +104,27 @@ export const AnimatedRoutes = () => {
         return <GlobalLoader />;
     }
 
-    // Render routes without animation on desktop
+    // Helper: wraps page in ErrorBoundary + optional touch animation
+    const page = (name: string, Component: React.LazyExoticComponent<React.ComponentType>) => {
+        const content = (
+            <ErrorBoundary section={name}>
+                <Component />
+            </ErrorBoundary>
+        );
+        return isTouchDevice ? (
+            <AnimatedPage pageKey={location.pathname} direction={effDirection}>
+                {content}
+            </AnimatedPage>
+        ) : content;
+    };
+
     const routesContent = (
         <Routes location={location} key={location.pathname}>
-            <Route path="/" element={
-                isTouchDevice ? (
-                    <AnimatedPage pageKey={location.pathname} direction={effDirection}>
-                        <Dashboard />
-                    </AnimatedPage>
-                ) : <Dashboard />
-            } />
-            <Route path="/actions" element={
-                isTouchDevice ? (
-                    <AnimatedPage pageKey={location.pathname} direction={effDirection}>
-                        <ProtocolsList />
-                    </AnimatedPage>
-                ) : <ProtocolsList />
-            } />
-            <Route path="/powers" element={
-                isTouchDevice ? (
-                    <AnimatedPage pageKey={location.pathname} direction={effDirection}>
-                        <InnerfacesPage />
-                    </AnimatedPage>
-                ) : <InnerfacesPage />
-            } />
-            <Route path="/history" element={
-                isTouchDevice ? (
-                    <AnimatedPage pageKey={location.pathname} direction={effDirection}>
-                        <HistoryPage />
-                    </AnimatedPage>
-                ) : <HistoryPage />
-            } />
-            <Route path="/settings" element={
-                isTouchDevice ? (
-                    <AnimatedPage pageKey={location.pathname} direction={effDirection}>
-                        <SettingsPage />
-                    </AnimatedPage>
-                ) : <SettingsPage />
-            } />
+            <Route path="/" element={page('Dashboard', Dashboard)} />
+            <Route path="/actions" element={page('Actions', ProtocolsList)} />
+            <Route path="/powers" element={page('Powers', InnerfacesPage)} />
+            <Route path="/history" element={page('History', HistoryPage)} />
+            <Route path="/settings" element={page('Settings', SettingsPage)} />
         </Routes>
     );
 
