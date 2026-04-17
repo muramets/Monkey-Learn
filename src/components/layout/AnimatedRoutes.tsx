@@ -26,15 +26,17 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
 
 const variants = {
     enter: (direction: number) => ({
-        x: direction > 0 ? '100%' : '-100%',
+        x: direction > 0 ? '30%' : '-30%',
+        opacity: 0,
         position: 'absolute' as const
     }),
     center: {
         x: 0,
+        opacity: 1,
         position: 'relative' as const
     },
     exit: (direction: number) => ({
-        x: direction < 0 ? '100%' : '-100%',
+        x: direction < 0 ? '30%' : '-30%',
         opacity: 0,
         position: 'absolute' as const
     })
@@ -42,8 +44,8 @@ const variants = {
 
 const transition = {
     type: "tween" as const,
-    ease: [0.25, 0.1, 0.25, 1] as const, // Premium cubic bezier curve
-    duration: 0.45
+    ease: [0.32, 0.72, 0, 1] as const, // iOS-native ease-out curve
+    duration: 0.2
 };
 
 // Animated page wrapper component
