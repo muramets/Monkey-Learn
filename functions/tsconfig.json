@@ -1,16 +1,26 @@
 {
     "compilerOptions": {
         "module": "commonjs",
+        "moduleResolution": "node",
+        "esModuleInterop": true,
         "noImplicitReturns": true,
         "noUnusedLocals": true,
         "outDir": "lib",
+        "rootDir": "..",
         "sourceMap": true,
         "strict": true,
         "target": "es2017",
-        "skipLibCheck": true
+        "skipLibCheck": true,
+        "resolveJsonModule": true
     },
     "compileOnSave": true,
     "include": [
-        "src"
+        "src/**/*",
+        "../src/utils/checkinCalculations.ts",
+        "../src/utils/decayCalculations.ts",
+        "../src/types/history.ts",
+        "../src/types/personality.ts",
+        "../src/features/innerfaces/types.ts",
+        "../src/features/protocols/types.ts"
     ]
 }

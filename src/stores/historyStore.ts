@@ -14,9 +14,15 @@ import {
     increment,
     updateDoc
 } from 'firebase/firestore';
-import { format } from 'date-fns';
 import type { HistoryRecord } from '../types/history';
 import type { Personality } from '../types/personality';
+import {
+    computeCheckinScore,
+    computeRevertedScore,
+    weightToXp,
+    planStatsForCheckin,
+    planStatsForDelete,
+} from '../utils/checkinCalculations';
 
 /**
  * History Store
@@ -91,13 +97,7 @@ export const useHistoryStore = create<HistoryState>((set) => ({
                         const innerfaceDoc = await transaction.get(innerfaceRef);
 
                         if (innerfaceDoc.exists()) {
-                            const data = innerfaceDoc.data();
-                            // Calculate new total: (Current OR Initial OR 0) + Weight
-                            // Use || to treat 0 as "fallback to initial", matching UI component behavior
-                            // This ensures that if a score was accidentally reset to 0, it recovers to initialScore.
-                            const currentTotal = data.currentScore || data.initialScore || 0;
-                            const newScore = Math.max(0, Number((currentTotal + Number(weight)).toFixed(4)));
-
+                            const newScore = computeCheckinScore(innerfaceDoc.data(), Number(weight));
                             innerfaceUpdates.push({ ref: innerfaceRef, newScore });
                         }
                     }
@@ -125,64 +125,18 @@ export const useHistoryStore = create<HistoryState>((set) => ({
                     // WRITE: Personality Stats
                     if (personalityDoc && personalityDoc.exists()) {
                         const pData = personalityDoc.data() as Personality;
-                        const todayStr = format(new Date(), 'yyyy-MM-dd');
-                        const monthStr = format(new Date(), 'yyyy-MM');
+                        const recordXp = weightToXp(record.weight);
+                        const plan = planStatsForCheckin(pData.stats, recordXp, new Date());
 
-                        // Initialize defaults for safety
-                        const defaults = {
-                            totalCheckins: 0,
-                            totalXp: 0,
-                            lastDailyUpdate: todayStr,
-                            dailyCheckins: 0,
-                            dailyXp: 0,
-                            lastMonthlyUpdate: monthStr,
-                            monthlyCheckins: 0,
-                            monthlyXp: 0
-                        };
-                        const currentStats = { ...defaults, ...(pData.stats || {}) };
-                        const recordXp = Math.round((record.weight || 0) * 100);
-
-                        if (!pData.stats) {
-                            // If stats are missing, we MUST write the full object to create the map
-                            // We cannot use dot notation or increment on non-existent parent fields safely in all cases
-                            const initialStats = {
-                                ...defaults,
-                                totalCheckins: 1,
-                                totalXp: recordXp,
-                                dailyCheckins: 1,
-                                dailyXp: recordXp,
-                                monthlyCheckins: 1,
-                                monthlyXp: recordXp
-                            };
-                            transaction.update(personalityRef, { stats: initialStats });
+                        if (plan.mode === 'initialize') {
+                            transaction.update(personalityRef, { stats: plan.stats });
                         } else {
-                            // Stats exist: Use Atomic Increments for thread safety
-                            // This allows rapid clicking without lost updates
-                            const statsUpdate: Record<string, unknown> = {
-                                'stats.totalCheckins': increment(1),
-                                'stats.totalXp': increment(recordXp)
-                            };
-
-                            // Daily Logic
-                            if (currentStats.lastDailyUpdate === todayStr) {
-                                statsUpdate['stats.dailyCheckins'] = increment(1);
-                                statsUpdate['stats.dailyXp'] = increment(recordXp);
-                            } else {
-                                statsUpdate['stats.lastDailyUpdate'] = todayStr;
-                                statsUpdate['stats.dailyCheckins'] = 1;
-                                statsUpdate['stats.dailyXp'] = recordXp;
+                            // Atomic increments for thread safety under rapid clicking.
+                            // Reset fields (day/month rollover) use plain values, not increment().
+                            const statsUpdate: Record<string, unknown> = { ...plan.resets };
+                            for (const [path, delta] of Object.entries(plan.increments)) {
+                                statsUpdate[path] = increment(delta);
                             }
-
-                            // Monthly Logic
-                            if (currentStats.lastMonthlyUpdate === monthStr) {
-                                statsUpdate['stats.monthlyCheckins'] = increment(1);
-                                statsUpdate['stats.monthlyXp'] = increment(recordXp);
-                            } else {
-                                statsUpdate['stats.lastMonthlyUpdate'] = monthStr;
-                                statsUpdate['stats.monthlyCheckins'] = 1;
-                                statsUpdate['stats.monthlyXp'] = recordXp;
-                            }
-
                             transaction.update(personalityRef, statsUpdate);
                         }
                     }
@@ -315,8 +269,7 @@ export const useHistoryStore = create<HistoryState>((set) => ({
                         const currentScore = scoreMap.get(innerfaceId);
 
                         if (currentScore !== undefined) {
-                            const rawNewScore = currentScore - Number(weight);
-                            const newScore = Math.max(0, Number(rawNewScore.toFixed(4)));
+                            const newScore = computeRevertedScore(currentScore, Number(weight));
                             transaction.update(innerfaceRef, { currentScore: newScore });
                         }
                     }
@@ -325,29 +278,14 @@ export const useHistoryStore = create<HistoryState>((set) => ({
                 // Update Personality Stats (SKIP for System Events)
                 if (record.type !== 'system' && personalityDoc.exists()) {
                     const pData = personalityDoc.data() as Personality;
-                    if (pData.stats) {
-                        const recordDate = new Date(record.timestamp);
-                        const recordDateStr = format(recordDate, 'yyyy-MM-dd');
-                        const recordMonthStr = format(recordDate, 'yyyy-MM');
-                        const recordXp = Math.round((record.weight || 0) * 100);
+                    const recordXp = weightToXp(record.weight);
+                    const plan = planStatsForDelete(pData.stats, recordXp, record.timestamp);
 
-                        const statsUpdate: Record<string, unknown> = {
-                            'stats.totalCheckins': increment(-1),
-                            'stats.totalXp': increment(-recordXp)
-                        };
-
-                        // Only decrement daily stats if the deleted record belongs to the current "active" day in stats
-                        if (pData.stats.lastDailyUpdate === recordDateStr) {
-                            statsUpdate['stats.dailyCheckins'] = increment(-1);
-                            statsUpdate['stats.dailyXp'] = increment(-recordXp);
+                    if (plan) {
+                        const statsUpdate: Record<string, unknown> = {};
+                        for (const [path, delta] of Object.entries(plan.decrements)) {
+                            statsUpdate[path] = increment(delta);
                         }
-
-                        // Only decrement monthly stats if the deleted record belongs to the current "active" month in stats
-                        if (pData.stats.lastMonthlyUpdate === recordMonthStr) {
-                            statsUpdate['stats.monthlyCheckins'] = increment(-1);
-                            statsUpdate['stats.monthlyXp'] = increment(-recordXp);
-                        }
-
                         transaction.update(personalityRef, statsUpdate);
                     }
                 }
