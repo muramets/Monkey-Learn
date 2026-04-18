@@ -86,3 +86,23 @@ export const AddCommentInput = PersonalityCtx.extend({
     checkInId: z.string(),
     comment: z.string(),
 }).strict();
+
+export const UpsertGroupInput = PersonalityCtx.extend({
+    name: z.string().min(1),
+    kind: z.enum(['protocol', 'innerface', 'both']),
+    // Required when kind includes 'innerface' — which order bucket to
+    // place the group in ('uncategorized' matches the app's default bucket).
+    category: z.enum(['skill', 'foundation', 'uncategorized']).optional(),
+    icon: z.string().optional(),
+    color: z.string().optional(),
+    position: z.number().int().optional(),
+}).strict()
+    .refine(
+        (v) => v.kind === 'protocol' || v.category !== undefined,
+        { message: "'category' is required when kind is 'innerface' or 'both'", path: ['category'] }
+    );
+
+export const ListIconsInput = z.object({
+    category: z.string().optional(),
+    query: z.string().optional(),
+}).strict();

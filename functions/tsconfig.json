@@ -18,9 +18,11 @@
         "src/**/*",
         "../src/utils/checkinCalculations.ts",
         "../src/utils/decayCalculations.ts",
+        "../src/utils/groupOrderHelpers.ts",
         "../src/types/history.ts",
         "../src/types/personality.ts",
         "../src/features/innerfaces/types.ts",
-        "../src/features/protocols/types.ts"
+        "../src/features/protocols/types.ts",
+        "../src/config/iconCatalog.ts"
     ]
 }

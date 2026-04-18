@@ -12,6 +12,8 @@ import { createAction } from './handlers/createAction';
 import { createState } from './handlers/createState';
 import { createCheckIn } from './handlers/createCheckIn';
 import { addComment } from './handlers/addComment';
+import { upsertGroup } from './handlers/upsertGroup';
+import { listIcons } from './handlers/listIcons';
 
 type Handler = (raw: unknown) => Promise<unknown>;
 
@@ -22,11 +24,13 @@ const handlers: Record<string, Handler> = {
     listStates,
     listCheckIns,
     getPowerTimeline,
+    listIcons,
     createPower,
     createAction,
     createState,
     createCheckIn,
     addComment,
+    upsertGroup,
 };
 
 async function main(): Promise<void> {
