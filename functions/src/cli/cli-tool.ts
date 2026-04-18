@@ -14,6 +14,7 @@ import { createCheckIn } from './handlers/createCheckIn';
 import { addComment } from './handlers/addComment';
 import { upsertGroup } from './handlers/upsertGroup';
 import { listIcons } from './handlers/listIcons';
+import { listColors } from './handlers/listColors';
 
 type Handler = (raw: unknown) => Promise<unknown>;
 
@@ -25,6 +26,7 @@ const handlers: Record<string, Handler> = {
     listCheckIns,
     getPowerTimeline,
     listIcons,
+    listColors,
     createPower,
     createAction,
     createState,

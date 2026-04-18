@@ -106,3 +106,5 @@ export const ListIconsInput = z.object({
     category: z.string().optional(),
     query: z.string().optional(),
 }).strict();
+
+export const ListColorsInput = z.object({}).strict();

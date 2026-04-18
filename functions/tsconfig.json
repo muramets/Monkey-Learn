@@ -23,6 +23,7 @@
         "../src/types/personality.ts",
         "../src/features/innerfaces/types.ts",
         "../src/features/protocols/types.ts",
-        "../src/config/iconCatalog.ts"
+        "../src/config/iconCatalog.ts",
+        "../src/constants/common.ts"
     ]
 }
