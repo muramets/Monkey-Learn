@@ -89,17 +89,24 @@ export const AddCommentInput = PersonalityCtx.extend({
 
 export const UpsertGroupInput = PersonalityCtx.extend({
     name: z.string().min(1),
-    kind: z.enum(['protocol', 'innerface', 'both']),
-    // Required when kind includes 'innerface' — which order bucket to
-    // place the group in ('uncategorized' matches the app's default bucket).
+    // Optional: when omitted, the tool only updates metadata (icon/color)
+    // and leaves order arrays untouched. Specify kind to place the group
+    // in order or move it to `position`.
+    kind: z.enum(['protocol', 'innerface', 'both']).optional(),
+    // Required only when kind includes 'innerface' — which bucket inside
+    // innerfaceGroupOrder ('uncategorized' is the default app bucket).
     category: z.enum(['skill', 'foundation', 'uncategorized']).optional(),
     icon: z.string().optional(),
     color: z.string().optional(),
     position: z.number().int().optional(),
 }).strict()
     .refine(
-        (v) => v.kind === 'protocol' || v.category !== undefined,
+        (v) => v.kind !== 'innerface' && v.kind !== 'both' ? true : v.category !== undefined,
         { message: "'category' is required when kind is 'innerface' or 'both'", path: ['category'] }
+    )
+    .refine(
+        (v) => v.position === undefined || v.kind !== undefined,
+        { message: "'kind' is required when 'position' is provided", path: ['kind'] }
     );
 
 export const ListIconsInput = z.object({
