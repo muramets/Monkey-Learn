@@ -21,6 +21,12 @@ import type { Personality } from '../../../../src/types/personality';
  *   4. Update each target's currentScore + lastCheckInDate.
  *   5. Update personality stats (atomic increments, day/month rollover).
  *
+ * `weight` override — if supplied, replaces action.weight for this one
+ * check-in. Use it to fire a negative on a normally-positive action
+ * ("Kept the flow" → -0.2 when flow actually broke) without defining
+ * a mirror action. Protocol attribution (protocolId / protocolName /
+ * protocolIcon) remains the same — history shows "Kept the flow -0.2".
+ *
  * `idempotencyKey` — when provided, used as the history doc id. Re-runs
  * return `alreadyApplied: true` without side effects.
  */
@@ -54,6 +60,7 @@ export async function createCheckIn(raw: unknown): Promise<unknown> {
             throw notFound(`Action not found: ${input.actionId}`);
         }
         const action = actionSnap.data() as Protocol;
+        const effectiveWeight = input.weight ?? action.weight;
 
         // READ: Personality
         const personalitySnap = await tx.get(personalityRef);
@@ -71,14 +78,14 @@ export async function createCheckIn(raw: unknown): Promise<unknown> {
             const snap = await tx.get(ref);
             if (!snap.exists) continue;
             const data = snap.data() as Innerface;
-            const newScore = computeCheckinScore(data, action.weight);
+            const newScore = computeCheckinScore(data, effectiveWeight);
             innerfaceUpdates.push({ ref, newScore, id: tid });
         }
 
         const changes: Record<string, number> = {};
-        for (const upd of innerfaceUpdates) changes[upd.id] = action.weight;
+        for (const upd of innerfaceUpdates) changes[upd.id] = effectiveWeight;
 
-        const recordXp = weightToXp(action.weight);
+        const recordXp = weightToXp(effectiveWeight);
         const statsPlan = planStatsForCheckin(personalityData.stats, recordXp, now);
 
         // WRITES
@@ -88,7 +95,7 @@ export async function createCheckIn(raw: unknown): Promise<unknown> {
             protocolName: action.title,
             protocolIcon: action.icon,
             timestamp: isoTimestamp,
-            weight: action.weight,
+            weight: effectiveWeight,
             targets: action.targets,
             changes,
             serverTimestamp: FieldValue.serverTimestamp(),

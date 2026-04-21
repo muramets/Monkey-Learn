@@ -80,6 +80,11 @@ export const CreateCheckInInput = PersonalityCtx.extend({
     comment: z.string().optional(),
     timestamp: z.string().optional(),
     idempotencyKey: z.string().optional(),
+    // Override the action's stored weight for this one check-in.
+    // Same rules as action.weight: non-zero signed number.
+    // Typical use: fire a negative check-in on a normally-positive action
+    // (e.g. "Kept the flow" → -0.2 when flow was actually broken).
+    weight: z.number().refine((v) => v !== 0, 'weight must be non-zero').optional(),
 }).strict();
 
 export const AddCommentInput = PersonalityCtx.extend({
