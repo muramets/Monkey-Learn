@@ -1,1 +1,1 @@
-export const PAGE_ORDER = ['/', '/actions', '/powers', '/history', '/settings'];
+export const PAGE_ORDER = ['/', '/actions', '/stats', '/powers', '/history', '/settings'];

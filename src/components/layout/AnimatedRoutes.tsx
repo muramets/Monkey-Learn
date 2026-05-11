@@ -8,6 +8,7 @@ const Dashboard = React.lazy(() => import('../../pages/dashboard/DashboardPage')
 const ProtocolsList = React.lazy(() => import('../../features/protocols/components/ProtocolsList').then(m => ({ default: m.ProtocolsList })));
 const InnerfacesPage = React.lazy(() => import('../../pages/innerfaces/InnerfacesPage'));
 const HistoryPage = React.lazy(() => import('../../pages/history/HistoryPage'));
+const StatsPage = React.lazy(() => import('../../pages/stats/StatsPage'));
 const JoinInvitePage = React.lazy(() => import('../../pages/JoinInvitePage'));
 const LoginPage = React.lazy(() => import('../../pages/LoginPage'));
 const SettingsPage = React.lazy(() => import('../../pages/settings/SettingsPage').then(m => ({ default: m.SettingsPage })));
@@ -125,6 +126,7 @@ export const AnimatedRoutes = () => {
             <Route path="/" element={page('Dashboard', Dashboard)} />
             <Route path="/actions" element={page('Actions', ProtocolsList)} />
             <Route path="/powers" element={page('Powers', InnerfacesPage)} />
+            <Route path="/stats" element={page('Stats', StatsPage)} />
             <Route path="/history" element={page('History', HistoryPage)} />
             <Route path="/settings" element={page('Settings', SettingsPage)} />
         </Routes>

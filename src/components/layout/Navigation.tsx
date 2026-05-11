@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { Home, List, BarChart2, Clock, ChevronRight } from 'lucide-react';
+import { Home, List, BarChart2, Clock, ChevronRight, TrendingUp } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 /*
@@ -77,6 +77,21 @@ export function Navigation() {
                         strokeWidth={isActive('/actions') ? 3 : 2}
                     />
                     <span>actions</span>
+                </Link>
+
+                <Spacer />
+
+                {/* Stats */}
+                <Link
+                    draggable={false}
+                    to="/stats"
+                    className={`${baseItemClasses} ${isActive('/stats') ? activeClasses : inactiveClasses}`}
+                >
+                    <TrendingUp
+                        className="w-3.5 h-3.5"
+                        strokeWidth={isActive('/stats') ? 3 : 2}
+                    />
+                    <span>stats</span>
                 </Link>
 
                 <Spacer />
