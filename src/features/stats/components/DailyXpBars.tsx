@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Bar } from 'react-chartjs-2';
+import { Chart } from 'react-chartjs-2';
 import { parseISO, format } from 'date-fns';
 import type { ChartData, ChartOptions, ScriptableContext, TooltipItem } from 'chart.js';
 import '../chartSetup';
@@ -11,40 +11,53 @@ interface Props {
     daily: DailyXp[];
 }
 
+/**
+ * MonkeyType "activity and progress" chart, ported 1:1: XP-per-day bars in
+ * the theme accent with a dotted sub-colored trendline, plus a check-ins
+ * line on a second axis in the sub color. 200px tall, vertical grid only —
+ * both y axes drop their grids exactly like MT's daily activity chart.
+ */
 export function DailyXpBars({ daily }: Props) {
     const theme = useChartTheme();
 
     const { data, options } = useMemo(() => {
-        const points = daily.map((d) => ({ x: parseISO(d.dateISO).getTime(), y: d.xp, checkins: d.checkins }));
+        const labels = daily.map((d) => parseISO(d.dateISO).getTime());
 
-        const chartData: ChartData<'bar', { x: number; y: number; checkins: number }[]> = {
+        const chartData: ChartData<'bar', number[]> = {
+            labels,
             datasets: [
                 {
+                    type: 'bar' as const,
+                    yAxisID: 'xp',
                     label: 'xp',
-                    data: points,
-                    // Bar colours follow the same "green = gained XP, red =
-                    // lost XP" scheme used elsewhere on the page, so the
-                    // eye learns one visual shorthand for all XP numbers.
-                    backgroundColor: (ctx: ScriptableContext<'bar'>) => {
-                        const raw = ctx.raw as { y: number } | undefined;
-                        if (!raw || raw.y < 0) return theme.error;
-                        return theme.correct;
-                    },
-                    hoverBackgroundColor: (ctx: ScriptableContext<'bar'>) => {
-                        const raw = ctx.raw as { y: number } | undefined;
-                        if (!raw || raw.y < 0) return theme.error;
-                        return theme.correct;
-                    },
-                    borderRadius: 3,
-                    borderSkipped: false,
-                    // Trendline visualises the weekly slope even when daily
-                    // bars bounce around — same idea as MT's accountActivity.
+                    data: daily.map((d) => d.xp),
+                    // MT paints activity bars in the theme accent; we keep
+                    // error color for negative days so lost XP stays legible.
+                    backgroundColor: (ctx: ScriptableContext<'bar'>) =>
+                        (ctx.raw as number) < 0 ? theme.error : theme.main,
+                    order: 3,
                     trendlineLinear: {
-                        colorMin: withAlpha(theme.subRgb, 0.5),
-                        colorMax: withAlpha(theme.subRgb, 0.5),
+                        colorMin: theme.sub,
+                        colorMax: theme.sub,
                         lineStyle: 'dotted',
-                        width: 1.5,
+                        width: 2,
                     },
+                } as never,
+                // Chart.js mixed-type dataset — typed as never because the
+                // ChartData generic is pinned to 'bar'.
+                {
+                    type: 'line' as const,
+                    yAxisID: 'checkins',
+                    label: 'check-ins',
+                    data: daily.map((d) => d.checkins),
+                    borderColor: theme.sub,
+                    pointBackgroundColor: theme.sub,
+                    pointBorderColor: theme.sub,
+                    pointRadius: 2,
+                    borderWidth: 2,
+                    tension: 0,
+                    fill: false,
+                    order: 2,
                 } as never,
             ],
         };
@@ -53,59 +66,59 @@ export function DailyXpBars({ daily }: Props) {
             responsive: true,
             maintainAspectRatio: false,
             animation: { duration: 0 },
-            interaction: {
-                mode: 'index',
-                intersect: false,
-                axis: 'x',
-            },
+            hover: { mode: 'nearest', intersect: false },
+            interaction: { mode: 'index', intersect: false, axis: 'x' },
             scales: {
                 x: {
                     type: 'time',
                     time: {
                         unit: 'day',
                         displayFormats: { day: 'd MMM' },
-                        tooltipFormat: 'dd MMM yyyy',
                     },
+                    bounds: 'ticks',
                     offset: true,
-                    grid: { display: false, drawTicks: false },
+                    grid: { color: withAlpha(theme.subAltRgb, 0.65), drawTicks: false },
                     border: { display: false },
                     ticks: {
                         color: theme.sub,
                         maxRotation: 0,
-                        autoSkipPadding: 16,
+                        autoSkip: true,
+                        autoSkipPadding: 20,
                     },
                 },
-                y: {
+                xp: {
+                    axis: 'y',
+                    position: 'left',
                     beginAtZero: true,
-                    grid: {
-                        color: withAlpha(theme.subAltRgb, 0.65),
-                        drawTicks: false,
-                        lineWidth: 1,
-                    },
+                    grid: { display: false, drawTicks: false },
                     border: { display: false },
-                    ticks: {
-                        color: theme.sub,
-                        padding: 8,
-                        precision: 0,
-                    },
-                    title: {
-                        display: true,
-                        text: 'xp',
-                        color: theme.sub,
-                    },
+                    ticks: { color: theme.sub, padding: 8, precision: 0, autoSkipPadding: 20 },
+                    title: { display: true, text: 'xp earned', color: theme.sub },
+                },
+                checkins: {
+                    axis: 'y',
+                    position: 'right',
+                    beginAtZero: true,
+                    grid: { display: false, drawTicks: false },
+                    border: { display: false },
+                    ticks: { color: theme.sub, padding: 8, precision: 0, stepSize: 1, autoSkipPadding: 20 },
+                    title: { display: true, text: 'check-ins', color: theme.sub },
                 },
             },
             plugins: {
                 legend: { display: false },
                 tooltip: {
                     enabled: false,
+                    filter: (item) => item.datasetIndex === 0,
                     external: createExternalTooltip<'bar'>((items: TooltipItem<'bar'>[]) => {
-                        const raw = items[0].raw as { x: number; y: number; checkins: number };
+                        const idx = items[0].dataIndex;
+                        const day = daily[idx];
+                        if (!day) return { title: '', rows: [] };
                         return {
-                            title: format(new Date(raw.x), 'EEEE, d MMM'),
+                            title: format(parseISO(day.dateISO), 'EEEE, dd MMM yyyy'),
                             rows: [
-                                { label: 'xp', value: String(raw.y) },
-                                { label: 'check-ins', value: String(raw.checkins) },
+                                { label: 'xp earned', value: String(day.xp) },
+                                { label: 'check-ins', value: String(day.checkins) },
                             ],
                         };
                     }),
@@ -119,13 +132,8 @@ export function DailyXpBars({ daily }: Props) {
     if (daily.length === 0) return null;
 
     return (
-        <section className="py-2">
-            <div className="text-xs uppercase tracking-wider text-text-secondary font-mono mb-4 px-1">
-                xp per day (last {daily.length} days)
-            </div>
-            <div className="relative h-[220px]">
-                <Bar data={data} options={options} />
-            </div>
-        </section>
+        <div className="relative h-[200px]">
+            <Chart type="bar" data={data} options={options} />
+        </div>
     );
 }

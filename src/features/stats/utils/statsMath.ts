@@ -4,6 +4,7 @@ import type { Innerface } from '../../innerfaces/types';
 import type {
     DailyXp,
     InnerfaceSeries,
+    RangeStats,
     SeriesPoint,
     TodayDelta,
 } from '../types';
@@ -228,4 +229,143 @@ function scoreAt(replay: SeriesPoint[], t: number): number {
 
 export function topNByAbsDelta(series: InnerfaceSeries[], n: number): InnerfaceSeries[] {
     return [...series].sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta)).slice(0, n);
+}
+
+/**
+ * Aggregates protocol check-ins inside [sinceMs, nowMs] into the headline
+ * numbers for the stats tiles. `sinceMs === null` means all time.
+ */
+export function computeRangeStats(
+    history: HistoryRecord[],
+    nowMs: number,
+    sinceMs: number | null
+): RangeStats {
+    const inRange = history
+        .filter(isLive)
+        .filter((r) => r.type === 'protocol')
+        .filter((r) => {
+            const ts = new Date(r.timestamp).getTime();
+            return ts <= nowMs && (sinceMs === null || ts >= sinceMs);
+        })
+        .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+
+    if (inRange.length === 0) {
+        return {
+            totalXp: 0,
+            totalCheckins: 0,
+            activeDays: 0,
+            checkinsPerActiveDay: 0,
+            bestDayXp: 0,
+            bestDayISO: null,
+            avgXpPerActiveDay: 0,
+            avgXpLast10ActiveDays: 0,
+            firstCheckinISO: null,
+        };
+    }
+
+    const byDay = new Map<string, { xp: number; checkins: number }>();
+    let totalXp = 0;
+    for (const r of inRange) {
+        const key = dateKey(new Date(r.timestamp).getTime());
+        const bucket = byDay.get(key) ?? { xp: 0, checkins: 0 };
+        const xp = weightToXp(r.weight);
+        bucket.xp += xp;
+        bucket.checkins += 1;
+        byDay.set(key, bucket);
+        totalXp += xp;
+    }
+
+    let bestDayXp = -Infinity;
+    let bestDayISO: string | null = null;
+    for (const [day, bucket] of byDay) {
+        if (bucket.xp > bestDayXp) {
+            bestDayXp = bucket.xp;
+            bestDayISO = day;
+        }
+    }
+
+    const activeDays = byDay.size;
+    const dayXps = [...byDay.values()].map((b) => b.xp);
+    const last10 = dayXps.slice(-10);
+
+    return {
+        totalXp,
+        totalCheckins: inRange.length,
+        activeDays,
+        checkinsPerActiveDay: Number((inRange.length / activeDays).toFixed(1)),
+        bestDayXp,
+        bestDayISO,
+        avgXpPerActiveDay: Math.round(totalXp / activeDays),
+        avgXpLast10ActiveDays: Math.round(last10.reduce((a, b) => a + b, 0) / last10.length),
+        firstCheckinISO: inRange[0].timestamp,
+    };
+}
+
+/**
+ * Consecutive-day check-in streak ending today (or yesterday, so an
+ * unfinished today doesn't break the chain). Always computed over the
+ * full history, independent of the page filters.
+ */
+export function currentStreakDays(history: HistoryRecord[], nowMs: number): number {
+    const activeDayKeys = new Set(
+        history
+            .filter(isLive)
+            .filter((r) => r.type === 'protocol')
+            .map((r) => dateKey(new Date(r.timestamp).getTime()))
+    );
+    if (activeDayKeys.size === 0) return 0;
+
+    let offset = 0;
+    // A quiet today keeps yesterday's streak alive.
+    if (!activeDayKeys.has(dateKey(localMidnightOffset(nowMs, 0)))) offset = -1;
+
+    let streak = 0;
+    while (activeDayKeys.has(dateKey(localMidnightOffset(nowMs, offset - streak)))) {
+        streak += 1;
+    }
+    return streak;
+}
+
+/**
+ * Live protocol check-ins inside [sinceMs, nowMs], newest first — feed for
+ * the results table. `sinceMs === null` means all time.
+ */
+export function recentCheckins(
+    history: HistoryRecord[],
+    nowMs: number,
+    sinceMs: number | null
+): HistoryRecord[] {
+    return history
+        .filter(isLive)
+        .filter((r) => r.type === 'protocol')
+        .filter((r) => {
+            const ts = new Date(r.timestamp).getTime();
+            return ts <= nowMs && (sinceMs === null || ts >= sinceMs);
+        })
+        .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+}
+
+/**
+ * Least-squares fit over evenly spaced samples. Returns null for fewer than
+ * two points. `first`/`last` are the fitted values at both ends — enough to
+ * draw the dotted trendline dataset and to phrase a "change per day" caption.
+ */
+export function leastSquaresTrend(
+    values: number[]
+): { slope: number; first: number; last: number } | null {
+    const n = values.length;
+    if (n < 2) return null;
+
+    let sumX = 0, sumY = 0, sumXY = 0, sumXX = 0;
+    for (let i = 0; i < n; i += 1) {
+        sumX += i;
+        sumY += values[i];
+        sumXY += i * values[i];
+        sumXX += i * i;
+    }
+    const denom = n * sumXX - sumX * sumX;
+    if (denom === 0) return null;
+    const slope = (n * sumXY - sumX * sumY) / denom;
+    const intercept = (sumY - slope * sumX) / n;
+    return { slope, first: intercept, last: intercept + slope * (n - 1) };
 }

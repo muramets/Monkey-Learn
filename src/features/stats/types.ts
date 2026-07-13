@@ -23,6 +23,33 @@ export interface InnerfaceSeries {
     delta: number;
 }
 
+export type StatsRange = '7d' | '30d' | '90d' | 'all';
+
+export interface RangeStats {
+    totalXp: number;
+    totalCheckins: number;
+    activeDays: number;
+    checkinsPerActiveDay: number;
+    bestDayXp: number;
+    bestDayISO: string | null;
+    avgXpPerActiveDay: number;
+    avgXpLast10ActiveDays: number;
+    firstCheckinISO: string | null;
+}
+
+export interface StatsFiltersState {
+    range: StatsRange;
+    /** 'all' or an explicit set of enabled group names. */
+    groups: 'all' | string[];
+}
+
+export interface PowerTiles {
+    powersTracked: number;
+    highestPowerName: string | null;
+    highestPowerLevel: number;
+    averageLevel: number;
+}
+
 export interface StatsAggregation {
     today: {
         checkins: number;
@@ -34,4 +61,12 @@ export interface StatsAggregation {
     fell: TodayDelta[];
     dailyXp: DailyXp[];
     series: InnerfaceSeries[];
+    /** Headline tile numbers for the active date range. */
+    range: RangeStats;
+    streakDays: number;
+    powers: PowerTiles;
+    /** Days covered by the active window (resolved for 'all'). */
+    windowDays: number;
+    /** Group names available for the filter row. */
+    availableGroups: string[];
 }

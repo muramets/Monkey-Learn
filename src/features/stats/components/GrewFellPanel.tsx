@@ -1,7 +1,10 @@
+import { faArrowTrendUp, faArrowTrendDown } from '@fortawesome/free-solid-svg-icons';
+import { AppIcon } from '../../../components/ui/atoms/AppIcon';
+import { resolveEntityColor } from '../../../utils/entityColor';
+import { StatsSectionTitle } from './StatsSectionTitle';
 import type { TodayDelta } from '../types';
 
 interface ColumnProps {
-    title: string;
     entries: TodayDelta[];
     accent: 'grew' | 'fell';
     emptyLabel: string;
@@ -13,15 +16,20 @@ function DeltaRow({ entry, accent }: { entry: TodayDelta; accent: 'grew' | 'fell
     // alone tells the story without parsing the sign.
     const deltaClass = accent === 'grew' ? 'text-correct' : 'text-error';
     return (
-        <div className="flex items-center justify-between py-2 border-b border-bg-primary last:border-b-0">
-            <div className="flex items-center gap-3 min-w-0">
-                <span className="text-base leading-none shrink-0">{entry.innerface.icon || '·'}</span>
-                <span className="text-sm text-text-primary font-mono truncate">
+        <div className="flex items-center justify-between px-2 py-2 odd:bg-black/10">
+            <div className="flex min-w-0 items-center gap-3">
+                <span
+                    className="shrink-0 text-base leading-none"
+                    style={{ color: resolveEntityColor(entry.innerface.color) }}
+                >
+                    <AppIcon id={entry.innerface.icon} />
+                </span>
+                <span className="truncate text-sm text-text-primary">
                     {entry.innerface.name}
                 </span>
             </div>
-            <div className="flex items-center gap-3 shrink-0 font-mono">
-                <span className="text-xs text-text-secondary">×{entry.checkinCount}</span>
+            <div className="flex shrink-0 items-center gap-3">
+                <span className="text-xs text-sub">×{entry.checkinCount}</span>
                 <span className={`text-sm ${deltaClass}`}>
                     {sign}
                     {entry.delta.toFixed(2)}
@@ -31,23 +39,15 @@ function DeltaRow({ entry, accent }: { entry: TodayDelta; accent: 'grew' | 'fell
     );
 }
 
-function Column({ title, entries, accent, emptyLabel }: ColumnProps) {
+function Column({ entries, accent, emptyLabel }: ColumnProps) {
+    if (entries.length === 0) {
+        return <div className="py-6 text-center text-sm text-sub">{emptyLabel}</div>;
+    }
     return (
-        <div className="bg-bg-secondary rounded-lg p-6 flex flex-col">
-            <div className="text-xs uppercase tracking-wider text-text-secondary font-mono mb-4">
-                {title}
-            </div>
-            {entries.length === 0 ? (
-                <div className="text-sm text-text-secondary font-mono py-6 text-center">
-                    {emptyLabel}
-                </div>
-            ) : (
-                <div className="flex flex-col">
-                    {entries.map((e) => (
-                        <DeltaRow key={String(e.innerface.id)} entry={e} accent={accent} />
-                    ))}
-                </div>
-            )}
+        <div className="flex flex-col">
+            {entries.map((e) => (
+                <DeltaRow key={String(e.innerface.id)} entry={e} accent={accent} />
+            ))}
         </div>
     );
 }
@@ -59,19 +59,15 @@ interface Props {
 
 export function GrewFellPanel({ grew, fell }: Props) {
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Column
-                title="grew today"
-                entries={grew}
-                accent="grew"
-                emptyLabel="no growth yet today"
-            />
-            <Column
-                title="fell today"
-                entries={fell}
-                accent="fell"
-                emptyLabel="nothing lost today"
-            />
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+            <div>
+                <StatsSectionTitle icon={faArrowTrendUp} text="grew today" />
+                <Column entries={grew} accent="grew" emptyLabel="no growth yet today" />
+            </div>
+            <div>
+                <StatsSectionTitle icon={faArrowTrendDown} text="fell today" />
+                <Column entries={fell} accent="fell" emptyLabel="nothing lost today" />
+            </div>
         </div>
     );
 }

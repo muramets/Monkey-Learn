@@ -8,6 +8,10 @@ import {
     dailyXpSeries,
     reconstructSeries,
     topNByAbsDelta,
+    computeRangeStats,
+    currentStreakDays,
+    leastSquaresTrend,
+    recentCheckins,
 } from './statsMath';
 import type { HistoryRecord } from '../../../types/history';
 import type { Innerface } from '../../innerfaces/types';
@@ -192,5 +196,115 @@ describe('topNByAbsDelta', () => {
         ];
         const top = topNByAbsDelta(s, 2);
         expect(top.map((x) => x.innerface.id)).toEqual(['grit', 'focus']);
+    });
+});
+
+describe('computeRangeStats', () => {
+    const dayMs = 24 * 3600_000;
+    const history: HistoryRecord[] = [
+        checkin({ id: 'a', timestamp: new Date(APR_18_NOON - 2 * dayMs).toISOString(), changes: {}, weight: 0.2 }),
+        checkin({ id: 'b', timestamp: new Date(APR_18_NOON - 2 * dayMs + 3600_000).toISOString(), changes: {}, weight: 0.3 }),
+        checkin({ id: 'c', timestamp: new Date(APR_18_NOON - 1 * dayMs).toISOString(), changes: {}, weight: 0.1 }),
+        checkin({ id: 'd', timestamp: new Date(APR_18_NOON).toISOString(), changes: {}, weight: 0.5 }),
+    ];
+
+    it('sums XP and check-ins across the whole range', () => {
+        const stats = computeRangeStats(history, APR_18_NOON, null);
+        expect(stats.totalCheckins).toBe(4);
+        expect(stats.totalXp).toBe(110); // (0.2+0.3+0.1+0.5) * 100
+        expect(stats.activeDays).toBe(3);
+        expect(stats.checkinsPerActiveDay).toBeCloseTo(1.3, 1);
+    });
+
+    it('finds the best day', () => {
+        const stats = computeRangeStats(history, APR_18_NOON, null);
+        expect(stats.bestDayXp).toBe(50);
+    });
+
+    it('respects the since boundary', () => {
+        const stats = computeRangeStats(history, APR_18_NOON, APR_18_NOON - dayMs - 3600_000);
+        expect(stats.totalCheckins).toBe(2);
+        expect(stats.totalXp).toBe(60);
+    });
+
+    it('returns zeroes for empty history', () => {
+        const stats = computeRangeStats([], APR_18_NOON, null);
+        expect(stats.totalCheckins).toBe(0);
+        expect(stats.bestDayISO).toBeNull();
+        expect(stats.avgXpPerActiveDay).toBe(0);
+    });
+
+    it('ignores deleted and non-protocol records', () => {
+        const noisy: HistoryRecord[] = [
+            checkin({ id: 'x', timestamp: new Date(APR_18_NOON).toISOString(), changes: {}, weight: 0.4, deletedAt: new Date().toISOString() }),
+            { ...checkin({ id: 'y', timestamp: new Date(APR_18_NOON).toISOString(), changes: {} }), type: 'decay' } as HistoryRecord,
+        ];
+        const stats = computeRangeStats(noisy, APR_18_NOON, null);
+        expect(stats.totalCheckins).toBe(0);
+    });
+});
+
+describe('currentStreakDays', () => {
+    const dayMs = 24 * 3600_000;
+
+    it('counts consecutive days ending today', () => {
+        const history = [0, 1, 2].map((i) =>
+            checkin({ id: `s${i}`, timestamp: new Date(APR_18_NOON - i * dayMs).toISOString(), changes: {} })
+        );
+        expect(currentStreakDays(history, APR_18_NOON)).toBe(3);
+    });
+
+    it('keeps streak alive when today has no check-ins yet', () => {
+        const history = [1, 2].map((i) =>
+            checkin({ id: `s${i}`, timestamp: new Date(APR_18_NOON - i * dayMs).toISOString(), changes: {} })
+        );
+        expect(currentStreakDays(history, APR_18_NOON)).toBe(2);
+    });
+
+    it('breaks on a gap', () => {
+        const history = [0, 2, 3].map((i) =>
+            checkin({ id: `s${i}`, timestamp: new Date(APR_18_NOON - i * dayMs).toISOString(), changes: {} })
+        );
+        expect(currentStreakDays(history, APR_18_NOON)).toBe(1);
+    });
+
+    it('returns 0 for empty history', () => {
+        expect(currentStreakDays([], APR_18_NOON)).toBe(0);
+    });
+});
+
+describe('leastSquaresTrend', () => {
+    it('fits a perfect line', () => {
+        const t = leastSquaresTrend([1, 2, 3, 4]);
+        expect(t).not.toBeNull();
+        expect(t!.slope).toBeCloseTo(1, 6);
+        expect(t!.first).toBeCloseTo(1, 6);
+        expect(t!.last).toBeCloseTo(4, 6);
+    });
+
+    it('returns zero slope for flat data', () => {
+        const t = leastSquaresTrend([5, 5, 5]);
+        expect(t!.slope).toBeCloseTo(0, 6);
+    });
+
+    it('returns null for fewer than two points', () => {
+        expect(leastSquaresTrend([1])).toBeNull();
+        expect(leastSquaresTrend([])).toBeNull();
+    });
+});
+
+describe('recentCheckins', () => {
+    const dayMs = 24 * 3600_000;
+    it('returns live protocol records newest-first within range', () => {
+        const history: HistoryRecord[] = [
+            checkin({ id: 'old', timestamp: new Date(APR_18_NOON - 5 * dayMs).toISOString(), changes: {} }),
+            checkin({ id: 'new', timestamp: new Date(APR_18_NOON).toISOString(), changes: {} }),
+            checkin({ id: 'gone', timestamp: new Date(APR_18_NOON).toISOString(), changes: {}, deletedAt: new Date().toISOString() }),
+            { ...checkin({ id: 'sys', timestamp: new Date(APR_18_NOON).toISOString(), changes: {} }), type: 'system' } as HistoryRecord,
+        ];
+        const inWindow = recentCheckins(history, APR_18_NOON, APR_18_NOON - 2 * dayMs);
+        expect(inWindow.map((r) => r.id)).toEqual(['new']);
+        const all = recentCheckins(history, APR_18_NOON, null);
+        expect(all.map((r) => r.id)).toEqual(['new', 'old']);
     });
 });

@@ -1,28 +1,28 @@
 /**
  * Per-innerface line colours for the stats charts. Respects the innerface's
  * explicit `color` override (set via the in-app ColorPicker) when present;
- * otherwise assigns a stable hue from a curated 8-colour palette.
+ * otherwise assigns a stable hue derived from the active theme's accent.
  *
- * The palette is a subset of `PRESET_COLORS` picked specifically for
- * legibility against `serika_dark` without clashing with `--main-color`
- * (the accent yellow stays the "hero" slot but every hue after it is
- * distinct enough to tell apart at a glance).
+ * Chart.js consumes concrete colour strings (no CSS `var()`), so the palette
+ * is computed in JS from the theme's main colour: the accent keeps the "hero"
+ * slot and every following slot is a hue rotation of it — distinct enough to
+ * tell apart at a glance, yet always harmonised with the current theme.
  */
 
 import type { Innerface } from '../../innerfaces/types';
+import { shiftHue } from '../../../utils/themeManager';
+import { isDefaultEntityColor } from '../../../utils/entityColor';
 
-const STATS_PALETTE = [
-    '#e2b714', // Yellow (main)
-    '#7fb3d3', // Blue
-    '#98c379', // Green
-    '#c678dd', // Purple
-    '#e6934a', // Orange
-    '#56b6c2', // Cyan
-    '#e06c75', // Light Red
-    '#d19a66', // Light Orange
-] as const;
+// Hue offsets from the theme accent; ordered so adjacent series contrast strongly.
+const HUE_OFFSETS = [0, 210, 120, 300, 60, 255, 165, 30] as const;
 
-export function colorForSeries(innerface: Innerface, index: number): string {
-    if (innerface.color) return innerface.color;
-    return STATS_PALETTE[index % STATS_PALETTE.length];
+export function buildStatsPalette(mainColor: string): string[] {
+    return HUE_OFFSETS.map((offset) => (offset === 0 ? mainColor : shiftHue(mainColor, offset)));
+}
+
+export function colorForSeries(innerface: Innerface, index: number, mainColor: string): string {
+    // Legacy default (#e2b714) follows the theme accent instead of staying yellow.
+    if (innerface.color && !isDefaultEntityColor(innerface.color)) return innerface.color;
+    const palette = buildStatsPalette(mainColor);
+    return palette[index % palette.length];
 }
