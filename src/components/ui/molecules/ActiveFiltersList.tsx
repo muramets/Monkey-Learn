@@ -1,6 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+import { resolveEntityColor } from '../../../utils/entityColor';
 
 interface FilterItem {
     id: string;
@@ -37,7 +38,7 @@ export function ActiveFiltersList({
                     {filter.icon && (
                         <FontAwesomeIcon
                             icon={filter.icon}
-                            style={{ color: filter.color }}
+                            style={{ color: filter.color ? resolveEntityColor(filter.color) : undefined }}
                             className="text-[9px]"
                         />
                     )}

@@ -87,6 +87,34 @@ export function hexToHSL(hex: string): { h: number; s: number; l: number } {
     return { h, s, l };
 }
 
+// Helper to convert HSL (h: 0-360, s/l: 0-100) back to hex
+export function hslToHex(h: number, s: number, l: number): string {
+    const sNorm = s / 100;
+    const lNorm = l / 100;
+    const c = (1 - Math.abs(2 * lNorm - 1)) * sNorm;
+    const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+    const m = lNorm - c / 2;
+
+    let r = 0, g = 0, b = 0;
+    if (h < 60) { r = c; g = x; }
+    else if (h < 120) { r = x; g = c; }
+    else if (h < 180) { g = c; b = x; }
+    else if (h < 240) { g = x; b = c; }
+    else if (h < 300) { r = x; b = c; }
+    else { r = c; b = x; }
+
+    const toHex = (v: number) => Math.round((v + m) * 255).toString(16).padStart(2, '0');
+    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+}
+
+// Rotates the hue of a hex color, preserving saturation and lightness.
+// Used to derive theme-harmonized accent variants (tier ladder, chart series).
+export function shiftHue(hex: string, degrees: number): string {
+    const { h, s, l } = hexToHSL(hex);
+    const shifted = ((h + degrees) % 360 + 360) % 360;
+    return hslToHex(shifted, s, l);
+}
+
 export const applyTheme = (theme: Theme) => {
     const root = document.documentElement;
 
@@ -109,11 +137,22 @@ export const applyTheme = (theme: Theme) => {
     setVar('sub-alt-color', theme.subAltColor || theme.bgColor);
 
     // Default error colors if not provided
-    setVar('error-color', theme.errorColor || '#ca4754');
+    const errorColor = theme.errorColor || '#ca4754';
+    const correctColor = theme.correctColor || '#98c379';
+    setVar('error-color', errorColor);
     setVar('error-extra-color', theme.errorExtraColor || '#7e2a33');
     setVar('colorful-error-color', theme.colorfulErrorColor || '#ca4754');
     setVar('colorful-error-extra-color', theme.colorfulErrorExtraColor || '#7e2a33');
-    setVar('correct-color', theme.correctColor || '#98c379');
+    setVar('correct-color', correctColor);
+
+    // Derived tier ladder (level colors) — semantic theme tokens for the low
+    // tiers, hue-rotated accents for the high ones, so progression colors
+    // always harmonize with the active theme instead of a static palette.
+    setVar('tier-1', errorColor);
+    setVar('tier-2', theme.mainColor);
+    setVar('tier-3', correctColor);
+    setVar('tier-4', shiftHue(theme.mainColor, 60));
+    setVar('tier-5', shiftHue(theme.mainColor, 180));
 
     // 3. Update Meta Theme Color for Mobile Browsers
     const metaThemeColor = document.querySelector('meta[name="theme-color"]');

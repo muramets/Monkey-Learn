@@ -9,6 +9,7 @@ import { getGroupConfig } from '../../../constants/common';
 import { getIcon } from '../../../config/iconRegistry';
 import type { Protocol } from '../types';
 import type { Innerface } from '../../innerfaces/types';
+import { resolveEntityColor } from '../../../utils/entityColor';
 
 export const ProtocolGroup = React.memo(({
     groupName,
@@ -41,7 +42,7 @@ export const ProtocolGroup = React.memo(({
     const storeMeta = groupsMetadata[groupName];
 
     let icon = staticConfig ? getIcon(staticConfig.icon) : getIcon('circle');
-    let color = staticConfig?.color || '#d1d0c5';
+    let color = staticConfig?.color || 'var(--text-color)';
 
     if (storeMeta) {
         if (storeMeta.icon) {
@@ -50,6 +51,8 @@ export const ProtocolGroup = React.memo(({
         }
         if (storeMeta.color) color = storeMeta.color;
     }
+
+    color = resolveEntityColor(color);
 
     // Memoize the items list creation
     const itemsIds = useMemo(() => protocols.map(p => String(p.id)), [protocols]);

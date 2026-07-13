@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { usePersonalityStore } from '../../../stores/personalityStore';
+import { resolveEntityColor } from '../../../utils/entityColor';
 
 export function PersonalityMottoBanner() {
     const { activePersonalityId } = usePersonalityStore();
@@ -64,7 +65,7 @@ function PersonalityMottoBannerContent() {
     // Use a contrasting color for text based on brightness if possible, 
     // but typically "Coach Mode" banner uses main-color bg and bg-color text.
     // Here we use the personality color (iconColor).
-    const backgroundColor = activePersonality?.iconColor || 'var(--main-color)';
+    const backgroundColor = resolveEntityColor(activePersonality?.iconColor);
 
     return (
         <AnimatePresence>

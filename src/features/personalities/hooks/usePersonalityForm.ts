@@ -5,6 +5,7 @@ import { usePersonalityStore } from '../../../stores/personalityStore';
 import { uploadAvatar } from '../../../utils/storageUtils';
 import { resizeImage } from '../../../utils/imageUtils';
 import type { Motto } from '../../../types/personality';
+import { DEFAULT_ENTITY_COLOR } from '../../../utils/entityColor';
 
 
 interface UsePersonalityFormProps {
@@ -21,7 +22,7 @@ export function usePersonalityForm({ personalityId, onClose, isOpen }: UsePerson
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [icon, setIcon] = useState('user');
-    const [color, setColor] = useState('#e2b714');
+    const [color, setColor] = useState(DEFAULT_ENTITY_COLOR);
     const [avatar, setAvatar] = useState('');
     const [mottos, setMottos] = useState<Motto[]>([]);
 
@@ -50,7 +51,7 @@ export function usePersonalityForm({ personalityId, onClose, isOpen }: UsePerson
                     setName(p.name);
                     setDescription(p.description || '');
                     setIcon(p.icon || 'user');
-                    setColor(p.iconColor || '#e2b714');
+                    setColor(p.iconColor || DEFAULT_ENTITY_COLOR);
                     setAvatar(p.avatar || '');
 
                     // Migration Logic: String -> Array
@@ -72,7 +73,7 @@ export function usePersonalityForm({ personalityId, onClose, isOpen }: UsePerson
                 setName('');
                 setDescription('');
                 setIcon('user');
-                setColor('#e2b714');
+                setColor(DEFAULT_ENTITY_COLOR);
                 setAvatar('');
                 setMottos([]);
             }

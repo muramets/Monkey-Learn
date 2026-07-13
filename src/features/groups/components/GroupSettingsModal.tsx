@@ -12,6 +12,7 @@ import { useUIStore } from '../../../stores/uiStore';
 import { ColorPicker } from '../../../components/ui/molecules/ColorPicker';
 import { IconPicker } from '../../../components/ui/molecules/IconPicker';
 import { ConfirmButton } from '../../../components/ui/molecules/ConfirmButton';
+import { DEFAULT_ENTITY_COLOR } from '../../../utils/entityColor';
 
 
 
@@ -41,7 +42,7 @@ export function GroupSettingsModal({ isOpen, onClose, groupName }: GroupSettings
         return {
             name: groupName,
             icon: metadata?.icon || config?.icon || 'brain',
-            color: metadata?.color || config?.color || '#e2b714'
+            color: metadata?.color || config?.color || DEFAULT_ENTITY_COLOR
         };
     });
 

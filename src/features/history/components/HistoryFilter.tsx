@@ -17,6 +17,7 @@ import type { Innerface } from '../../innerfaces/types';
 import type { StateData } from '../../dashboard/types';
 import { FilterDropdown } from '../../../components/ui/molecules/FilterDropdown';
 import { faMap } from '@fortawesome/free-solid-svg-icons';
+import { resolveEntityColor } from '../../../utils/entityColor';
 
 export type TimeFilter = 'All time' | 'Today' | 'This week' | 'This month';
 export type TypeFilter = 'All types' | 'Actions' | 'Manual' | 'System' | 'Decay';
@@ -120,7 +121,7 @@ export function HistoryFilter({
     };
 
     const getInnerfaceLabel = (ids: string[]) => {
-        if (ids.length === 0) return 'All powers';
+        if (ids.length === 0) return 'All skills';
         if (ids.length === 1) return innerfaces.find(i => i.id.toString() === ids[0])?.name || ids[0];
         return `${ids.length} selected`;
     };
@@ -190,7 +191,7 @@ export function HistoryFilter({
                                 active={selectedProtocolIds.length > 0}
                             />
                             <FilterDropdown.NavButton
-                                title="Power"
+                                title="Skill"
                                 icon={faChartBar}
                                 value={getInnerfaceLabel(selectedInnerfaceIds)}
                                 onClick={() => { setSelectedGroup(null); changeView('innerface_groups'); }}
@@ -270,7 +271,7 @@ export function HistoryFilter({
                             const meta = groupsMetadata[group];
 
                             // Resolve color: Metadata > Config > Default
-                            const color = meta?.color || config?.color;
+                            const color = resolveEntityColor(meta?.color || config?.color);
 
                             return (
                                 <FilterDropdown.NavButton
@@ -313,10 +314,10 @@ export function HistoryFilter({
                                     label={p.title}
                                     isActive={isSelected}
                                     onClick={() => toggleProtocol(p.id.toString())}
-                                    icon={<div style={{ color: p.color }}><AppIcon id={p.icon} /></div>}
+                                    icon={<div style={{ color: resolveEntityColor(p.color) }}><AppIcon id={p.icon} /></div>}
                                     showIndicator={true}
                                     showCheck={false}
-                                    style={p.color ? { '--hover-color': p.color } as React.CSSProperties : undefined}
+                                    style={p.color ? { '--hover-color': resolveEntityColor(p.color) } as React.CSSProperties : undefined}
                                     description={p.hover || p.description}
                                 />
                             );
@@ -339,7 +340,7 @@ export function HistoryFilter({
                     />
 
                     <FilterDropdown.Item
-                        label="ALL POWERS"
+                        label="ALL SKILLS"
                         isActive={selectedInnerfaceIds.length === 0}
                         onClick={() => { setSelectedInnerfaceIds([]); changeView('root'); }}
                         className="mx-1 mt-1 font-bold tracking-wider"
@@ -349,7 +350,7 @@ export function HistoryFilter({
                         {innerfaceGroups.map(group => {
                             const config = getGroupConfig(group);
                             const meta = groupsMetadata[group];
-                            const color = meta?.color || config?.color;
+                            const color = resolveEntityColor(meta?.color || config?.color);
 
                             return (
                                 <FilterDropdown.NavButton
@@ -376,7 +377,7 @@ export function HistoryFilter({
             {view === 'innerfaces' && (
                 <div className="animate-in slide-in-from-right-4 duration-200 h-full flex flex-col">
                     <FilterDropdown.SearchHeader
-                        title={selectedGroup || 'Powers'}
+                        title={selectedGroup || 'Skills'}
                         showSearch={filteredInnerfaces.length > 10}
                         searchQuery={searchQuery}
                         onSearchChange={setSearchQuery}
@@ -392,16 +393,16 @@ export function HistoryFilter({
                                     label={i.name}
                                     isActive={isSelected}
                                     onClick={() => toggleInnerface(i.id.toString())}
-                                    icon={<div style={{ color: i.color }}><AppIcon id={i.icon} /></div>}
+                                    icon={<div style={{ color: resolveEntityColor(i.color) }}><AppIcon id={i.icon} /></div>}
                                     showIndicator={true}
                                     showCheck={false}
-                                    style={i.color ? { '--hover-color': i.color } as React.CSSProperties : undefined}
+                                    style={i.color ? { '--hover-color': resolveEntityColor(i.color) } as React.CSSProperties : undefined}
                                     description={i.hover || i.description}
                                 />
                             );
                         })}
                         {filteredInnerfaces.length === 0 && (
-                            <div className="p-4 text-center text-sub/50 text-xs font-mono">No powers found</div>
+                            <div className="p-4 text-center text-sub/50 text-xs font-mono">No skills found</div>
                         )}
                     </div>
                 </div>
@@ -435,10 +436,10 @@ export function HistoryFilter({
                                         label={s.name}
                                         isActive={isSelected}
                                         onClick={() => toggleState(s.id)}
-                                        icon={<div style={{ color: s.color }}><AppIcon id={s.icon || 'question'} /></div>}
+                                        icon={<div style={{ color: resolveEntityColor(s.color) }}><AppIcon id={s.icon || 'question'} /></div>}
                                         showIndicator={false}
                                         showCheck={true}
-                                        style={s.color ? { '--hover-color': s.color } as React.CSSProperties : undefined}
+                                        style={s.color ? { '--hover-color': resolveEntityColor(s.color) } as React.CSSProperties : undefined}
                                         description={s.description || s.subtext}
                                     />
                                 );

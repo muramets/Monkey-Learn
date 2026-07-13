@@ -9,6 +9,7 @@ import type { RoleTemplate } from '../../../types/team';
 import type { Protocol } from '../../../features/protocols/types';
 import type { Innerface } from '../../../features/innerfaces/types';
 import type { StateData } from '../../../features/dashboard/types';
+import { DEFAULT_ENTITY_COLOR } from '../../../utils/entityColor';
 
 interface UseRoleFormProps {
     teamId: string | null;
@@ -37,7 +38,7 @@ export function useRoleForm({ teamId, roleId, onClose, isOpen }: UseRoleFormProp
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [icon, setIcon] = useState('user');
-    const [color, setColor] = useState('#e2b714');
+    const [color, setColor] = useState(DEFAULT_ENTITY_COLOR);
 
     // Selection State
     const [selectedInnerfaces, setSelectedInnerfaces] = useState<Set<string>>(new Set());
@@ -71,7 +72,7 @@ export function useRoleForm({ teamId, roleId, onClose, isOpen }: UseRoleFormProp
                 setName('');
                 setDescription('');
                 setIcon('user');
-                setColor('#e2b714');
+                setColor(DEFAULT_ENTITY_COLOR);
                 setRoleInnerfaces([]);
                 setRoleProtocols([]);
                 setRoleStates([]);
@@ -90,7 +91,7 @@ export function useRoleForm({ teamId, roleId, onClose, isOpen }: UseRoleFormProp
         setName(role.name);
         setDescription(role.description || '');
         setIcon(role.icon || 'user');
-        setColor(role.iconColor || '#e2b714');
+        setColor(role.iconColor || DEFAULT_ENTITY_COLOR);
 
         // Check Invite
         if (role.activeInviteCode) {

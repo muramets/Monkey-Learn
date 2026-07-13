@@ -9,6 +9,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { Button } from '../../../../components/ui/atoms/Button';
 import { getIcon } from '../../../../config/iconRegistry';
+import { resolveEntityColor } from '../../../../utils/entityColor';
 
 // Google icon as SVG
 function GoogleIcon() {
@@ -106,9 +107,9 @@ export function InviteJoinCard({
                             <div
                                 className="w-14 h-14 rounded-xl flex items-center justify-center shrink-0"
                                 style={{
-                                    backgroundColor: `color-mix(in srgb, ${inviteData.teamColor || '#ffffff'} 20%, transparent)`,
-                                    color: inviteData.teamColor || 'var(--main-color)',
-                                    boxShadow: `0 0 15px color-mix(in srgb, ${inviteData.teamColor || '#ffffff'} 8%, transparent)`
+                                    backgroundColor: `color-mix(in srgb, ${resolveEntityColor(inviteData.teamColor)} 20%, transparent)`,
+                                    color: resolveEntityColor(inviteData.teamColor),
+                                    boxShadow: `0 0 15px color-mix(in srgb, ${resolveEntityColor(inviteData.teamColor)} 8%, transparent)`
                                 }}
                             >
                                 {teamIconDef ? (

@@ -3,6 +3,7 @@ import * as Popover from '@radix-ui/react-popover';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { PRESET_COLORS } from '../../../constants/common';
+import { resolveEntityColor, isDefaultEntityColor } from '../../../utils/entityColor';
 
 interface ColorPickerProps {
     color: string;
@@ -35,7 +36,7 @@ export function ColorPicker({
                 >
                     <div
                         className="w-5 h-5 rounded-full shadow-[0_0_8px_rgba(0,0,0,0.3)] transition-transform duration-200 active:scale-90"
-                        style={{ backgroundColor: color }}
+                        style={{ backgroundColor: resolveEntityColor(color) }}
                     />
                 </button>
             </Popover.Trigger>
@@ -68,7 +69,8 @@ export function ColorPicker({
                                     setIsOpen(false);
                                 }}
                                 className={`w-5 h-5 rounded-full transition-transform hover:scale-125 hover:ring-2 hover:ring-white/30 cursor-pointer ${color === c ? 'ring-2 ring-white/50' : ''}`}
-                                style={{ backgroundColor: c }}
+                                title={isDefaultEntityColor(c) ? 'Theme accent' : undefined}
+                                style={{ backgroundColor: resolveEntityColor(c) }}
                             />
                         ))}
                     </div>

@@ -10,6 +10,7 @@ import { ColorPicker } from '../../../components/ui/molecules/ColorPicker';
 import { IconPicker } from '../../../components/ui/molecules/IconPicker';
 import { EntitySelector } from '../../../components/ui/molecules/EntitySelector';
 import * as Tabs from '@radix-ui/react-tabs';
+import { resolveEntityColor } from '../../../utils/entityColor';
 
 interface RoleSettingsModalProps {
     isOpen: boolean;
@@ -212,7 +213,7 @@ export function RoleSettingsModal({ isOpen, onClose, teamId, roleId }: RoleSetti
                             <div className="flex items-center gap-2 px-3 py-2 bg-sub-alt/30 rounded-lg">
                                 <div
                                     className="w-1.5 h-1.5 rounded-full"
-                                    style={{ backgroundColor: sourceContext.color }}
+                                    style={{ backgroundColor: resolveEntityColor(sourceContext.color) }}
                                 />
                                 <span className="text-[10px] uppercase font-bold tracking-wider text-sub">
                                     Source: {sourceContext.name}

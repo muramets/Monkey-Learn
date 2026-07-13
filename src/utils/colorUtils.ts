@@ -1,72 +1,61 @@
 /**
- * Utility for interpolating colors based on a score (0-10).
- * Implements a specific ladder with smooth transitions.
+ * Utility for resolving level/tier colors as CSS color expressions.
+ *
+ * Colors are theme-derived: `--tier-1..5` are written by
+ * `themeManager.applyTheme` from the active theme's tokens
+ * (error → main → correct → hue-shifted accents), so every consumer
+ * automatically follows theme changes. Returned strings are valid CSS
+ * colors (`var(...)` / `color-mix(...)`) — safe for inline styles and
+ * gradients, but NOT for canvas APIs that need concrete hex values.
  */
 
-// ColorRGB interface removed as it is no longer used
-
 const TIER_COLORS = [
-    { maxLevel: 3, hex: '#CA4754' },    // Levels 1-3: Bronze/Red (Beginner)
-    { maxLevel: 6, hex: '#E2B714' },    // Levels 4-6: Gold/Yellow (Intermediate)
-    { maxLevel: 9, hex: '#98C379' },    // Levels 7-9: Green (Advanced)
-    { maxLevel: 19, hex: '#C678DD' },   // Levels 10-19: Purple (Master)
-    { maxLevel: Infinity, hex: '#61AFEF' } // Levels 20+: Blue/Cyan (Legend)
+    { maxLevel: 3, color: 'var(--tier-1)' },     // Levels 1-3: theme error (Beginner)
+    { maxLevel: 6, color: 'var(--tier-2)' },     // Levels 4-6: theme accent (Intermediate)
+    { maxLevel: 9, color: 'var(--tier-3)' },     // Levels 7-9: theme correct (Advanced)
+    { maxLevel: 19, color: 'var(--tier-4)' },    // Levels 10-19: accent hue +60° (Master)
+    { maxLevel: Infinity, color: 'var(--tier-5)' } // Levels 20+: accent hue +180° (Legend)
 ];
 
 /**
- * Returns a hex color string based on the Level (derived from score).
+ * Returns a CSS color based on the Level (derived from score).
  * Infinite scaling with tiers.
  */
 export function getScoreColor(score: number): string {
-    // 1. Calculate Level from Score
-    // Score 7.45 -> 745 XP -> Level 8 (since 0-99 is L1. Wait. 
-    // Let's stick to the xpUtils logic: 0-0.99 (0-99XP) is L1.
-    // So Score 0 -> L1. Score 1 -> L2.
-    // Formula: floor(score) + 1
-
-    // Handle edge case where score might be negative
+    // Score 0 -> L1, Score 1 -> L2 (matches xpUtils: 0-99 XP is L1)
     const safeScore = Math.max(0, score);
     const level = Math.floor(safeScore) + 1;
 
-    // 2. Find Tier
     const tier = TIER_COLORS.find(t => level <= t.maxLevel) || TIER_COLORS[TIER_COLORS.length - 1];
 
-    return tier.hex;
+    return tier.color;
 }
 
-// Helper to interpolate between two hex colors
-function interpolateColor(color1: string, color2: string, factor: number) {
-    const r1 = parseInt(color1.substring(1, 3), 16);
-    const g1 = parseInt(color1.substring(3, 5), 16);
-    const b1 = parseInt(color1.substring(5, 7), 16);
-
-    const r2 = parseInt(color2.substring(1, 3), 16);
-    const g2 = parseInt(color2.substring(3, 5), 16);
-    const b2 = parseInt(color2.substring(5, 7), 16);
-
-    const r = Math.round(r1 + factor * (r2 - r1));
-    const g = Math.round(g1 + factor * (g2 - g1));
-    const b = Math.round(b1 + factor * (b2 - b1));
-
-    return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+// Helper to blend two CSS colors via color-mix
+function mixColors(color1: string, color2: string, factor: number): string {
+    if (color1 === color2) return color1;
+    const pct = Math.round(factor * 100);
+    if (pct <= 0) return color1;
+    if (pct >= 100) return color2;
+    return `color-mix(in srgb, ${color1} ${100 - pct}%, ${color2})`;
 }
 
 /**
- * Returns a smoothly interpolated color based on fractional level.
+ * Returns a smoothly blended CSS color based on fractional level.
  */
 export function getInterpolatedColor(level: number): string {
-    // Tier boundaries: 1-3 red, 4-6 gold, 7-9 green, 10-19 purple, 20+ blue
+    // Tier boundaries: 1-3 / 4-6 / 7-9 / 10-19 / 20+
     // Use tier centers for smooth transitions
     const points = [
-        { level: 1, color: '#CA4754' },   // Red start
-        { level: 3.5, color: '#CA4754' }, // Red-Gold transition
-        { level: 5, color: '#E2B714' },   // Gold center
-        { level: 6.5, color: '#E2B714' }, // Gold-Green transition
-        { level: 8, color: '#98C379' },   // Green center
-        { level: 9.5, color: '#98C379' }, // Green-Purple transition
-        { level: 14, color: '#C678DD' },  // Purple center
-        { level: 19.5, color: '#C678DD' }, // Purple-Blue transition
-        { level: 30, color: '#61AFEF' }   // Blue
+        { level: 1, color: 'var(--tier-1)' },
+        { level: 3.5, color: 'var(--tier-1)' },
+        { level: 5, color: 'var(--tier-2)' },
+        { level: 6.5, color: 'var(--tier-2)' },
+        { level: 8, color: 'var(--tier-3)' },
+        { level: 9.5, color: 'var(--tier-3)' },
+        { level: 14, color: 'var(--tier-4)' },
+        { level: 19.5, color: 'var(--tier-4)' },
+        { level: 30, color: 'var(--tier-5)' }
     ];
 
     if (level <= points[0].level) return points[0].color;
@@ -77,7 +66,7 @@ export function getInterpolatedColor(level: number): string {
         const end = points[i + 1];
         if (level >= start.level && level <= end.level) {
             const factor = (level - start.level) / (end.level - start.level);
-            return interpolateColor(start.color, end.color, factor);
+            return mixColors(start.color, end.color, factor);
         }
     }
 
@@ -104,8 +93,8 @@ export function getLevelGradient(startLevel: number, endLevel: number): string {
     return `linear-gradient(to right, ${stops.join(', ')})`;
 }
 
-// Keep helper for direct hex access if needed
+// Keep helper for direct tier access if needed
 export function getTierColor(level: number): string {
     const tier = TIER_COLORS.find(t => level <= t.maxLevel) || TIER_COLORS[TIER_COLORS.length - 1];
-    return tier.hex;
+    return tier.color;
 }

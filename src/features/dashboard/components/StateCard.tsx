@@ -10,6 +10,7 @@ import type { StateData } from '../types';
 import { AppIcon } from '../../../components/ui/atoms/AppIcon';
 import { getTierColor } from '../../../utils/colorUtils';
 import { calculateLevel, scoreToXP } from '../../../utils/xpUtils';
+import { resolveEntityColor } from '../../../utils/entityColor';
 
 interface StateCardProps {
     state: StateData;
@@ -86,9 +87,9 @@ export const StateCard = React.memo(function StateCard({
                     <div
                         className="w-10 h-10 rounded-xl flex items-center justify-center text-[1.2rem] shrink-0 relative z-20 transition-colors duration-300"
                         style={{
-                            backgroundColor: `color-mix(in srgb, ${state.color || '#ffffff'} 20%, transparent)`,
-                            color: state.color || '#ffffff',
-                            boxShadow: `0 0 15px color-mix(in srgb, ${state.color || '#ffffff'} 8%, transparent)` // Subtle glow to separate from background
+                            backgroundColor: `color-mix(in srgb, ${resolveEntityColor(state.color)} 20%, transparent)`,
+                            color: resolveEntityColor(state.color),
+                            boxShadow: `0 0 15px color-mix(in srgb, ${resolveEntityColor(state.color)} 8%, transparent)` // Subtle glow to separate from background
                         }}
                     >
                         <AppIcon id={state.icon || 'question'} />

@@ -2,7 +2,7 @@ interface ProgressBarProps {
     current: number;
     max: number;
     colorClass?: string;
-    customColor?: string; // For hex values
+    customColor?: string; // Any CSS color (hex, var(), color-mix)
     className?: string;
     heightClass?: string;
     trackColorClass?: string;
@@ -27,7 +27,7 @@ export function ProgressBar({
                     width: `${percentage}%`,
                     ...(customColor ? {
                         backgroundColor: customColor,
-                        boxShadow: `0 0 8px ${customColor}60`
+                        boxShadow: `0 0 8px color-mix(in srgb, ${customColor} 38%, transparent)`
                     } : {})
                 }}
             />

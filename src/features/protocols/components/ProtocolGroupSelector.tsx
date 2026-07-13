@@ -7,6 +7,7 @@ import { Input } from '../../../components/ui/molecules/Input';
 import { getIcon } from '../../../config/iconRegistry';
 import { DEFAULT_GROUPS_ORDER, PRESET_COLORS, getGroupConfig } from '../../../constants/common';
 import { IconPicker } from '../../../components/ui/molecules/IconPicker';
+import { DEFAULT_ENTITY_COLOR } from '../../../utils/entityColor';
 
 interface ProtocolGroupSelectorProps {
     group: string;
@@ -213,7 +214,7 @@ export function ProtocolGroupSelector({
                                         setEditingGroupColor('NEW');
                                         setPopupAnchor(e.currentTarget as HTMLElement);
                                         setIsGroupColorPickerOpen(true);
-                                        if (!tempGroupColor) setTempGroupColor('#e2b714');
+                                        if (!tempGroupColor) setTempGroupColor(DEFAULT_ENTITY_COLOR);
                                     }
                                 }}
                                 onMouseDown={(e) => e.preventDefault()}

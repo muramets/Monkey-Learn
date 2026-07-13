@@ -10,6 +10,7 @@ import type { Protocol } from '../../protocols/types';
 import type { HistoryRecord } from '../../../types/history';
 import type { PlanningGoal } from '../../planning/types';
 import type { Innerface } from '../../innerfaces/types';
+import { resolveEntityColor } from '../../../utils/entityColor';
 
 const ITEMS_PER_PAGE = 4;
 const DAY_LABELS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
@@ -84,9 +85,9 @@ function WeeklyFocusRow({
                                 ${completed > 0 ? '' : 'grayscale opacity-50'}
                             `}
                             style={{
-                                backgroundColor: `color-mix(in srgb, ${protocol.color || '#ffffff'} 20%, transparent)`,
-                                color: protocol.color || 'var(--text-color)',
-                                boxShadow: `0 0 10px color-mix(in srgb, ${protocol.color || '#ffffff'} 8%, transparent)`
+                                backgroundColor: `color-mix(in srgb, ${resolveEntityColor(protocol.color)} 20%, transparent)`,
+                                color: resolveEntityColor(protocol.color),
+                                boxShadow: `0 0 10px color-mix(in srgb, ${resolveEntityColor(protocol.color)} 8%, transparent)`
                             }}
                         >
                             <AppIcon id={protocol.icon} />

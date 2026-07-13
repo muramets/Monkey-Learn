@@ -4,6 +4,7 @@ import { faChevronDown, faChevronRight, faCog, faPlus } from '@fortawesome/free-
 import { getIcon } from '../../../../config/iconRegistry';
 import type { Team, TeamRole, RoleMember } from '../../../../types/team';
 import { RoleItem } from './RoleItem';
+import { resolveEntityColor } from '../../../../utils/entityColor';
 
 interface TeamItemProps {
     team: Team;
@@ -72,7 +73,7 @@ export const TeamItem = ({
                 <div
                     className="w-[1em] h-[1em] flex items-center justify-center shrink-0 transition-colors opacity-80 group-hover/item:opacity-100"
                     style={{
-                        color: team.iconColor || 'inherit',
+                        color: team.iconColor ? resolveEntityColor(team.iconColor) : 'inherit',
                         marginRight: '0.7em'
                     }}
                 >

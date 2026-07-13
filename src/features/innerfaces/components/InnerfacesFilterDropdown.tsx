@@ -4,6 +4,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { getGroupConfig } from '../../../constants/common';
 import { getIcon } from '../../../config/iconRegistry';
+import { resolveEntityColor } from '../../../utils/entityColor';
 
 interface InnerfacesFilterDropdownProps {
     activeFilters: string[];
@@ -28,7 +29,7 @@ export function InnerfacesFilterDropdown({
         const storeMeta = groupsMetadata[groupName];
 
         let icon = staticConfig ? getIcon(staticConfig.icon) : getIcon('circle');
-        let color = staticConfig?.color || '#d1d0c5';
+        let color = staticConfig?.color || 'var(--text-color)';
 
         if (storeMeta) {
             if (storeMeta.icon) {
@@ -37,6 +38,8 @@ export function InnerfacesFilterDropdown({
             }
             if (storeMeta.color) color = storeMeta.color;
         }
+
+        color = resolveEntityColor(color);
 
         return { icon, color };
     };
@@ -71,7 +74,7 @@ export function InnerfacesFilterDropdown({
                         <div className="w-4 flex items-center justify-center opacity-70">
                             <FontAwesomeIcon icon={faFilter} className="text-[10px]" />
                         </div>
-                        <span className="text-xs font-mono lowercase text-text-primary">all powers</span>
+                        <span className="text-xs font-mono lowercase text-text-primary">all skills</span>
                         {/* Индикатор активности */}
                         {activeFilters.length === 0 && (
                             <div className="ml-auto w-1.5 h-1.5 rounded-full bg-main shadow-[0_0_8px_rgba(226,183,20,0.5)]"></div>

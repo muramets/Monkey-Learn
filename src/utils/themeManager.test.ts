@@ -10,7 +10,7 @@ vi.mock('../styles/allThemes', () => ({
   }
 }));
 
-import { hexToRgb, hexToHSL } from './themeManager';
+import { hexToRgb, hexToHSL, hslToHex, shiftHue } from './themeManager';
 
 describe('hexToRgb', () => {
   it('returns 255 255 255 for #ffffff (white)', () => {
@@ -90,5 +90,58 @@ describe('hexToHSL', () => {
     expect(result.h).toBe(0);
     expect(result.s).toBe(0);
     expect(result.l).toBeCloseTo(50.2, 1);
+  });
+});
+
+describe('hslToHex', () => {
+  it('round-trips pure red', () => {
+    expect(hslToHex(0, 100, 50)).toBe('#ff0000');
+  });
+
+  it('round-trips pure green', () => {
+    expect(hslToHex(120, 100, 50)).toBe('#00ff00');
+  });
+
+  it('round-trips pure blue', () => {
+    expect(hslToHex(240, 100, 50)).toBe('#0000ff');
+  });
+
+  it('round-trips black and white', () => {
+    expect(hslToHex(0, 0, 0)).toBe('#000000');
+    expect(hslToHex(0, 0, 100)).toBe('#ffffff');
+  });
+
+  it('round-trips serika_dark main color within rounding tolerance', () => {
+    const { h, s, l } = hexToHSL('#e2b714');
+    const back = hexToHSL(hslToHex(h, s, l));
+    expect(back.h).toBeCloseTo(h, -1);
+    expect(back.s).toBeCloseTo(s, 0);
+    expect(back.l).toBeCloseTo(l, 0);
+  });
+});
+
+describe('shiftHue', () => {
+  it('rotates red by 120° to green', () => {
+    expect(shiftHue('#ff0000', 120)).toBe('#00ff00');
+  });
+
+  it('rotating by 360° is identity for primary colors', () => {
+    expect(shiftHue('#ff0000', 360)).toBe('#ff0000');
+  });
+
+  it('handles negative rotation', () => {
+    expect(shiftHue('#00ff00', -120)).toBe('#ff0000');
+  });
+
+  it('preserves saturation and lightness', () => {
+    const original = hexToHSL('#e2b714');
+    const shifted = hexToHSL(shiftHue('#e2b714', 60));
+    expect(shifted.s).toBeCloseTo(original.s, 0);
+    expect(shifted.l).toBeCloseTo(original.l, 0);
+    expect(shifted.h).toBeCloseTo((original.h + 60) % 360, -1);
+  });
+
+  it('keeps grayscale colors gray (no hue to rotate)', () => {
+    expect(shiftHue('#808080', 90)).toBe('#808080');
   });
 });

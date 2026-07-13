@@ -4,6 +4,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { getGroupConfig } from '../../../constants/common';
 import { getIcon } from '../../../config/iconRegistry';
+import { resolveEntityColor } from '../../../utils/entityColor';
 
 interface ProtocolsFilterDropdownProps {
     activeFilters: string[];
@@ -28,7 +29,7 @@ export function ProtocolsFilterDropdown({
         const storeMeta = groupsMetadata[groupName];
 
         let icon = staticConfig ? getIcon(staticConfig.icon) : getIcon('circle');
-        let color = staticConfig?.color || '#d1d0c5';
+        let color = staticConfig?.color || 'var(--text-color)';
 
         if (storeMeta) {
             if (storeMeta.icon) {
@@ -37,6 +38,8 @@ export function ProtocolsFilterDropdown({
             }
             if (storeMeta.color) color = storeMeta.color;
         }
+
+        color = resolveEntityColor(color);
 
         return { icon, color };
     };

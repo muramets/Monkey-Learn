@@ -8,6 +8,7 @@ import type { HistoryRecord } from '../../../types/history';
 import type { Innerface } from '../../innerfaces/types';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../components/ui/atoms/Tooltip';
 import { motion, useAnimation, type PanInfo, useMotionValue, useTransform } from 'framer-motion';
+import { resolveEntityColor } from '../../../utils/entityColor';
 
 interface HistoryEventProps {
     event: HistoryRecord;
@@ -58,16 +59,16 @@ export const HistoryEvent = React.memo(function HistoryEvent({ event, innerfaces
     // System events use neutral gray
     const effectiveColor = isSystem
         ? 'var(--sub-color)'
-        : (protocolColor || (isPositive ? 'var(--correct-color)' : 'var(--error-color)'));
+        : (protocolColor ? resolveEntityColor(protocolColor) : (isPositive ? 'var(--correct-color)' : 'var(--error-color)'));
 
     // Replicate ProtocolRow style: color with 0.15 opacity for base gradient
     const gradientColor = isSystem
         ? 'transparent'
-        : (isPositive ? 'rgba(152,195,121,0.15)' : 'rgba(202,71,84,0.15)');
+        : (isPositive ? 'color-mix(in srgb, var(--correct-color) 15%, transparent)' : 'color-mix(in srgb, var(--error-color) 15%, transparent)');
 
     const hoverGradientColor = isSystem
-        ? 'rgba(255,255,255,0.05)'
-        : (isPositive ? 'rgba(152,195,121,0.25)' : 'rgba(202,71,84,0.25)');
+        ? 'color-mix(in srgb, var(--text-color) 5%, transparent)'
+        : (isPositive ? 'color-mix(in srgb, var(--correct-color) 25%, transparent)' : 'color-mix(in srgb, var(--error-color) 25%, transparent)');
 
     return (
         <div className="relative group overflow-hidden rounded-2xl">
@@ -147,7 +148,7 @@ export const HistoryEvent = React.memo(function HistoryEvent({ event, innerfaces
                             <div className="relative z-10 group-hover:scale-105 transition-transform duration-500">
                                 <PowerIcon
                                     icon={event.protocolIcon}
-                                    color={targetInnerface?.color || effectiveColor}
+                                    color={targetInnerface?.color ? resolveEntityColor(targetInnerface.color) : effectiveColor}
                                     category={targetInnerface?.category}
                                     size="w-14 h-14"
                                     glowSize="20px"
@@ -232,7 +233,7 @@ export const HistoryEvent = React.memo(function HistoryEvent({ event, innerfaces
                                             >
                                                 <div
                                                     className="w-1.5 h-1.5 rounded-full shadow-[0_0_8px_rgba(0,0,0,0.5)]"
-                                                    style={{ backgroundColor: iface?.color || 'gray', boxShadow: `0 0 10px ${iface?.color || 'gray'}40` }}
+                                                    style={{ backgroundColor: iface ? resolveEntityColor(iface.color) : 'var(--sub-color)', boxShadow: `0 0 10px color-mix(in srgb, ${iface ? resolveEntityColor(iface.color) : 'var(--sub-color)'} 25%, transparent)` }}
                                                 />
                                                 <span className="text-[10px] font-mono font-bold text-text-primary uppercase tracking-tight opacity-70 group-hover/iface:opacity-100 transition-opacity">
                                                     {iface ? iface.name : innerfaceId}
@@ -250,7 +251,7 @@ export const HistoryEvent = React.memo(function HistoryEvent({ event, innerfaces
                                                 {isHistorical
                                                     ? `Archived: This entry belonged to a previous "Starting Point".`
                                                     : iface?.deletedAt
-                                                        ? `This power has been deleted, but its history contributes to your score.`
+                                                        ? `This skill has been deleted, but its history contributes to your score.`
                                                         : `Filter by ${iface?.name || innerfaceId}`}
                                             </span>
                                         </TooltipContent>

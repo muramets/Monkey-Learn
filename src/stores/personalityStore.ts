@@ -14,6 +14,7 @@ import {
 import type { Personality } from '../types/personality';
 import { GROUP_CONFIG, DEFAULT_GROUPS_ORDER } from '../constants/common';
 import { writeBatch } from 'firebase/firestore';
+import { DEFAULT_ENTITY_COLOR } from '../utils/entityColor';
 
 export type ActiveContext =
     | { type: 'personality'; uid: string; pid: string }
@@ -345,7 +346,7 @@ export const usePersonalityStore = create<PersonalityState>((set, get) => ({
                 id: defaultId,
                 name: 'Main',
                 description: 'My primary self',
-                iconColor: '#e2b714', // Serika gold/yellow
+                iconColor: DEFAULT_ENTITY_COLOR, // Serika gold/yellow
                 createdAt: Date.now(),
                 lastActiveAt: Date.now()
             });

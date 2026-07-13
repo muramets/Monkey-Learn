@@ -165,7 +165,7 @@ export function PlanningModal(props: PlanningModalProps) {
                                 style={{
                                     width: `${targetPercent}%`,
                                     background: scoreGradient,
-                                    boxShadow: `0 0 10px ${targetColor}40`
+                                    boxShadow: `0 0 10px color-mix(in srgb, ${targetColor} 25%, transparent)`
                                 }}
                             />
 

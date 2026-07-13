@@ -36,7 +36,7 @@ html {
   --main-color-rgb: 226 183 20;
   --main-color: rgb(var(--main-color-rgb) / 1);
 
-  --caret-color: #e2b714;
+  --caret-color: var(--main-color);
 
   --sub-color-rgb: 101 102 105;
   --sub-color: rgb(var(--sub-color-rgb) / 1);
@@ -52,6 +52,18 @@ html {
   --colorful-error-color: #ca4754;
   --colorful-error-extra-color: #7e2a33;
   --correct-color: #98c379;
+
+  /* Derived tier ladder fallbacks (recomputed from theme tokens in themeManager.applyTheme) */
+  --tier-1: #ca4754;
+  --tier-1-rgb: 202 71 84;
+  --tier-2: #e2b714;
+  --tier-2-rgb: 226 183 20;
+  --tier-3: #98c379;
+  --tier-3-rgb: 152 195 121;
+  --tier-4: #41e214;
+  --tier-4-rgb: 65 226 20;
+  --tier-5: #1441e2;
+  --tier-5-rgb: 20 65 226;
 
   /* UI Colors mapped to Tailwind vars - using same format as Tailwind for consistency */
   --bg-primary: rgb(var(--bg-color-rgb) / 1);

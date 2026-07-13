@@ -9,6 +9,7 @@ import type { Protocol } from '../../protocols/types';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, TooltipPortal } from '../../../components/ui/atoms/Tooltip';
 import { AppIcon } from '../../../components/ui/atoms/AppIcon';
 import { useTouchDevice } from '../../../hooks/useTouchDevice';
+import { resolveEntityColor } from '../../../utils/entityColor';
 
 export const QuickActionCard = React.memo(function QuickActionCard({ action, onAction, onDelete, isDisabled, isDragging }: { action: Protocol; onAction?: (direction: '+' | '-') => void; onDelete?: () => void; isDisabled?: boolean; isDragging?: boolean }) {
     const isTouchDevice = useTouchDevice();
@@ -87,8 +88,8 @@ export const QuickActionCard = React.memo(function QuickActionCard({ action, onA
     const getButtonColor = (side: 'left' | 'right') => {
         const isPlus = side === 'right';
         const feedbackMatch = isPlus ? effectiveFeedbackType === 'plus' : effectiveFeedbackType === 'minus';
-        const failColor = '#ca4754';
-        const successColor = '#98c379';
+        const failColor = 'var(--error-color)';
+        const successColor = 'var(--correct-color)';
 
         if (feedbackMatch) return isPlus ? successColor : failColor;
 
@@ -163,7 +164,7 @@ export const QuickActionCard = React.memo(function QuickActionCard({ action, onA
                             <div className={`${!isDragging ? 'transition-transform duration-300' : ''} transform ${effectiveFeedbackType === 'minus' ? 'scale-150' : ''} ${isTouchDevice && !isDisabled && !isDragging ? 'animate-pulse-soft' : ''}`}>
                                 <FontAwesomeIcon
                                     icon={faMinus}
-                                    className={`text-sm ${!isDragging ? 'transition-colors duration-300' : ''} ${effectiveFeedbackType === 'minus' ? 'text-[#ca4754]' : ''}`}
+                                    className={`text-sm ${!isDragging ? 'transition-colors duration-300' : ''} ${effectiveFeedbackType === 'minus' ? 'text-error' : ''}`}
                                     // Remove mouse events from icon to prevent double firing, let button handle it
                                     pointerEvents="none"
                                 />
@@ -182,7 +183,7 @@ export const QuickActionCard = React.memo(function QuickActionCard({ action, onA
                             <div className={`${!isDragging ? 'transition-transform duration-300' : ''} transform ${effectiveFeedbackType === 'plus' ? 'scale-150' : ''} ${isTouchDevice && !isDisabled && !isDragging ? 'animate-pulse-soft' : ''}`}>
                                 <FontAwesomeIcon
                                     icon={faPlus}
-                                    className={`text-sm ${!isDragging ? 'transition-colors duration-300' : ''} ${effectiveFeedbackType === 'plus' ? 'text-[#98c379]' : ''}`}
+                                    className={`text-sm ${!isDragging ? 'transition-colors duration-300' : ''} ${effectiveFeedbackType === 'plus' ? 'text-correct' : ''}`}
                                     pointerEvents="none"
                                 />
                             </div>
@@ -206,9 +207,9 @@ export const QuickActionCard = React.memo(function QuickActionCard({ action, onA
                             <motion.div
                                                                 initial={false}
                                 animate={{
-                                    backgroundColor: `color-mix(in srgb, ${action.color || '#ffffff'} 20%, transparent)`,
-                                    boxShadow: `0 0 10px color-mix(in srgb, ${action.color || '#ffffff'} 8%, transparent)`,
-                                    color: action.color || 'var(--text-primary)'
+                                    backgroundColor: `color-mix(in srgb, ${resolveEntityColor(action.color)} 20%, transparent)`,
+                                    boxShadow: `0 0 10px color-mix(in srgb, ${resolveEntityColor(action.color)} 8%, transparent)`,
+                                    color: resolveEntityColor(action.color)
                                 }}
                                 transition={{
                                     type: "spring",
@@ -247,7 +248,7 @@ export const QuickActionCard = React.memo(function QuickActionCard({ action, onA
                                             animate={{ opacity: 1, y: 0 }}
                                             exit={{ opacity: 0, y: -5 }}
                                             transition={{ duration: 0.2 }}
-                                            className={`font-bold ${effectiveContentFeedbackType === 'plus' ? 'text-[#98c379]' : 'text-[#ca4754]'}`}
+                                            className={`font-bold ${effectiveContentFeedbackType === 'plus' ? 'text-correct' : 'text-error'}`}
                                         >
                                             {effectiveContentFeedbackType === 'plus' ? '+' : ''}{Math.round(action.weight * 100)} XP
                                         </motion.span>

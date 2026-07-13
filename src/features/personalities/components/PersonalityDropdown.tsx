@@ -8,6 +8,7 @@ import { Avatar } from '../../../components/ui/atoms/Avatar';
 
 import { useRoleStore } from '../../../stores/team';
 import type { TeamRole } from '../../../types/team';
+import { resolveEntityColor } from '../../../utils/entityColor';
 
 export function PersonalityDropdown() {
     const { user } = useAuth();
@@ -170,7 +171,7 @@ export function PersonalityDropdown() {
                                         style={{
                                             marginLeft: '0.9em',
                                             marginRight: '0.7em',
-                                            '--hover-color': p.iconColor || 'inherit'
+                                            '--hover-color': p.iconColor ? resolveEntityColor(p.iconColor) : 'inherit'
                                         } as React.CSSProperties}
                                     >
                                         <Avatar

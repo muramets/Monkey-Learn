@@ -16,6 +16,7 @@ import { faTrash, faExclamationTriangle, faUsers } from '@fortawesome/free-solid
 import { ColorPicker } from '../../../components/ui/molecules/ColorPicker';
 import { IconPicker } from '../../../components/ui/molecules/IconPicker';
 import { getIcon } from '../../../config/iconRegistry';
+import { DEFAULT_ENTITY_COLOR } from '../../../utils/entityColor';
 
 interface TeamSettingsModalProps {
     isOpen: boolean;
@@ -37,7 +38,7 @@ export function TeamSettingsModal({ isOpen, onClose, teamId }: TeamSettingsModal
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [icon, setIcon] = useState('users');
-    const [color, setColor] = useState('#e2b714');
+    const [color, setColor] = useState(DEFAULT_ENTITY_COLOR);
 
     const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -50,13 +51,13 @@ export function TeamSettingsModal({ isOpen, onClose, teamId }: TeamSettingsModal
             setName(team.name);
             setDescription(team.description || '');
             setIcon(team.icon || 'users');
-            setColor(team.iconColor || '#e2b714');
+            setColor(team.iconColor || DEFAULT_ENTITY_COLOR);
         } else if (isOpen && !teamId) {
             // Create mode
             setName('');
             setDescription('');
             setIcon('users');
-            setColor('#e2b714');
+            setColor(DEFAULT_ENTITY_COLOR);
         }
         setIsConfirmingDelete(false);
     }, [isOpen, teamId, team]);

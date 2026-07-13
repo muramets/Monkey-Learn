@@ -1,7 +1,9 @@
+import { DEFAULT_ENTITY_COLOR } from '../utils/entityColor';
+
 export const GROUP_CONFIG: Record<string, { icon: string; color: string }> = {
     Body: { icon: 'person-walking', color: '#98c379' },
     Mind: { icon: 'yin-yang', color: '#e6934a' },
-    Growth: { icon: 'chart-line', color: '#e2b714' },
+    Growth: { icon: 'chart-line', color: DEFAULT_ENTITY_COLOR },
     Rest: { icon: 'umbrella-beach', color: '#7fb3d3' },
     Substances: { icon: 'smoking', color: '#ca4754' },
     Ungrouped: { icon: 'circle', color: '#d1d0c5' },
@@ -25,7 +27,7 @@ export const getGroupConfig = (name?: string | null) => {
 };
 
 export const PRESET_COLORS = [
-    '#e2b714', // Yellow
+    DEFAULT_ENTITY_COLOR, // Theme accent (stored as legacy serika yellow, rendered as var(--main-color))
     '#ca4754', // Red
     '#98c379', // Green
     '#7fb3d3', // Blue 

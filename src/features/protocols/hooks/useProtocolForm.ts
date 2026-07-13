@@ -4,6 +4,7 @@ import { useMetadataStore } from '../../../stores/metadataStore';
 import { usePersonalityStore } from '../../../stores/personalityStore';
 import { useHistoryStore } from '../../../stores/historyStore';
 import { useUIStore } from '../../../stores/uiStore';
+import { DEFAULT_ENTITY_COLOR } from '../../../utils/entityColor';
 
 
 interface UseProtocolFormProps {
@@ -37,7 +38,7 @@ export function useProtocolForm({ protocolId, onClose, isOpen }: UseProtocolForm
     const [icon, setIcon] = useState('check');
     const [xp, setXp] = useState('1');
     const [targets, setTargets] = useState<(string | number)[]>([]);
-    const [color, setColor] = useState('#e2b714');
+    const [color, setColor] = useState(DEFAULT_ENTITY_COLOR);
     const [instruction, setInstruction] = useState('');
     const [hasInstruction, setHasInstruction] = useState(false);
 
@@ -57,7 +58,7 @@ export function useProtocolForm({ protocolId, onClose, isOpen }: UseProtocolForm
                 const derivedXp = Math.round(protocol.weight * 100);
                 setXp(derivedXp.toString());
                 setTargets(protocol.targets);
-                setColor(protocol.color || '#e2b714');
+                setColor(protocol.color || DEFAULT_ENTITY_COLOR);
                 setInstruction(protocol.instruction || '');
                 setHasInstruction(!!protocol.instruction);
             }
@@ -70,7 +71,7 @@ export function useProtocolForm({ protocolId, onClose, isOpen }: UseProtocolForm
             setIcon('check');
             setXp('1');
             setTargets([]);
-            setColor('#e2b714');
+            setColor(DEFAULT_ENTITY_COLOR);
             setInstruction('');
             setHasInstruction(false);
         }
@@ -113,7 +114,7 @@ export function useProtocolForm({ protocolId, onClose, isOpen }: UseProtocolForm
                     targets.forEach(tid => {
                         if (!oldTargets.has(String(tid))) {
                             const iface = innerfaces.find(i => i.id.toString() === tid.toString());
-                            useHistoryStore.getState().addSystemEvent(uid, pid, `Linked Action "${title}" to Power "${iface?.name || 'Unknown'}"`, { protocolId, innerfaceId: tid, type: 'link' });
+                            useHistoryStore.getState().addSystemEvent(uid, pid, `Linked Action "${title}" to Skill "${iface?.name || 'Unknown'}"`, { protocolId, innerfaceId: tid, type: 'link' });
                         }
                     });
 
@@ -121,7 +122,7 @@ export function useProtocolForm({ protocolId, onClose, isOpen }: UseProtocolForm
                     currentProtocol.targets.forEach(tid => {
                         if (!newTargets.has(String(tid))) {
                             const iface = innerfaces.find(i => i.id.toString() === tid.toString());
-                            useHistoryStore.getState().addSystemEvent(uid, pid, `Unlinked Action "${title}" from Power "${iface?.name || 'Unknown'}"`, { protocolId, innerfaceId: tid, type: 'unlink' });
+                            useHistoryStore.getState().addSystemEvent(uid, pid, `Unlinked Action "${title}" from Skill "${iface?.name || 'Unknown'}"`, { protocolId, innerfaceId: tid, type: 'unlink' });
                         }
                     });
                 }
@@ -134,7 +135,7 @@ export function useProtocolForm({ protocolId, onClose, isOpen }: UseProtocolForm
                     const { uid, pid } = activeContext;
                     targets.forEach(tid => {
                         const iface = innerfaces.find(i => i.id.toString() === tid.toString());
-                        useHistoryStore.getState().addSystemEvent(uid, pid, `Linked Action "${title}" to Power "${iface?.name || 'Unknown'}"`, { protocolId: newId || 'new', innerfaceId: tid, type: 'link' });
+                        useHistoryStore.getState().addSystemEvent(uid, pid, `Linked Action "${title}" to Skill "${iface?.name || 'Unknown'}"`, { protocolId: newId || 'new', innerfaceId: tid, type: 'link' });
                     });
                 }
             }

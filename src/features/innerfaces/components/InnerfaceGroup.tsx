@@ -10,6 +10,7 @@ import { getGroupConfig } from '../../../constants/common';
 import { getIcon } from '../../../config/iconRegistry';
 import type { Innerface } from '../types';
 import type { PlanningGoal } from '../../planning/types';
+import { resolveEntityColor } from '../../../utils/entityColor';
 
 const EmptyGroupDropZone = React.memo(({ isDragOver, groupName }: { isDragOver: boolean; groupName: string }) => {
     return (
@@ -57,7 +58,7 @@ export const InnerfaceGroup = React.memo(({
     const storeMeta = groupsMetadata[groupName];
 
     let icon = staticConfig ? getIcon(staticConfig.icon) : getIcon('circle');
-    let color = staticConfig?.color || '#d1d0c5';
+    let color = staticConfig?.color || 'var(--text-color)';
 
     if (storeMeta) {
         if (storeMeta.icon) {
@@ -66,6 +67,8 @@ export const InnerfaceGroup = React.memo(({
         }
         if (storeMeta.color) color = storeMeta.color;
     }
+
+    color = resolveEntityColor(color);
 
     const itemIds = useMemo(() => innerfaces.map(i => String(i.id)), [innerfaces]);
 

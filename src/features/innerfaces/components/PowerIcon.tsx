@@ -1,4 +1,5 @@
 import { AppIcon } from '../../../components/ui/atoms/AppIcon';
+import { resolveEntityColor } from '../../../utils/entityColor';
 import type { PowerCategory } from '../types';
 
 interface PowerIconProps {
@@ -18,6 +19,7 @@ export function PowerIcon({
     className = '',
     glowSize = '15px'
 }: PowerIconProps) {
+    const resolvedColor = resolveEntityColor(color);
     const shapeClass = category === 'foundation'
         ? 'rounded-[30%_70%_70%_30%/30%_30%_70%_70%]' // Squircle for Foundations
         : category === 'skill'
@@ -28,20 +30,20 @@ export function PowerIcon({
         <div
             className={`relative flex items-center justify-center text-lg shrink-0 transition-[box-shadow] duration-300 bg-sub-alt overflow-hidden ${size} ${shapeClass} ${className}`}
             style={{
-                boxShadow: `0 0 ${glowSize} color-mix(in srgb, ${color || '#ffffff'} 8%, transparent)`
+                boxShadow: `0 0 ${glowSize} color-mix(in srgb, ${resolvedColor} 8%, transparent)`
             }}
         >
             {/* Colored overlay */}
             <div
                 className="absolute inset-0 transition-colors duration-300"
                 style={{
-                    backgroundColor: `color-mix(in srgb, ${color || '#ffffff'} 20%, transparent)`
+                    backgroundColor: `color-mix(in srgb, ${resolvedColor} 20%, transparent)`
                 }}
             />
             {/* Icon */}
             <div
                 className="relative z-10 transition-colors duration-300"
-                style={{ color: color || '#ffffff' }}
+                style={{ color: resolvedColor }}
             >
                 <AppIcon id={icon} />
             </div>

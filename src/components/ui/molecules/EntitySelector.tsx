@@ -4,6 +4,7 @@ import { CollapsibleSection } from '../molecules/CollapsibleSection';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '../atoms/Tooltip';
 import { Input } from '../molecules/Input';
 import { RichTextViewer } from '../RichTextEditor/RichTextViewer';
+import { resolveEntityColor } from '../../../utils/entityColor';
 
 export interface EntityItem {
     id: string | number;
@@ -101,7 +102,7 @@ export function EntitySelector({
                                 <div className="flex flex-wrap gap-2 pt-1">
                                     {filteredAndGroupedItems.data[groupName].map(item => {
                                         const isActive = selectedIds.has(item.id.toString());
-                                        const itemColor = item.color || 'var(--text-primary)';
+                                        const itemColor = resolveEntityColor(item.color);
 
                                         return (
                                             <div key={item.id} className="relative group/item">

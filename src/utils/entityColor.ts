@@ -1,0 +1,32 @@
+/**
+ * Resolves user-assigned entity colors (protocols, innerfaces, states,
+ * groups, teams, personalities) into CSS colors that respect the active
+ * theme.
+ *
+ * Historically every entity defaulted to serika_dark's accent (#e2b714),
+ * which was stored in Firestore as a literal hex — so "default" entities
+ * stayed yellow in every theme. We keep that hex as the stored default
+ * (data model unchanged) but render it — and any missing color — as the
+ * theme accent. Deliberately picked non-default colors pass through as-is.
+ */
+
+/** Stored default entity color (serika_dark accent). Kept for data compatibility. */
+export const DEFAULT_ENTITY_COLOR = '#e2b714';
+
+/** The CSS expression the default resolves to at render time. */
+export const THEME_ACCENT_COLOR = 'var(--main-color)';
+
+/** True when the stored color is the legacy default that should follow the theme. */
+export function isDefaultEntityColor(color?: string | null): boolean {
+    return !color || color.toLowerCase() === DEFAULT_ENTITY_COLOR;
+}
+
+/**
+ * Returns a CSS color for an entity: the user's explicit pick, or the theme
+ * accent when the color is missing / the legacy default. Output is a CSS
+ * expression (may be `var(...)`) — not suitable for canvas APIs.
+ */
+export function resolveEntityColor(color?: string | null): string {
+    if (!color || color.toLowerCase() === DEFAULT_ENTITY_COLOR) return THEME_ACCENT_COLOR;
+    return color;
+}

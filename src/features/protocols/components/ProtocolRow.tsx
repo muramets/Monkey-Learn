@@ -13,6 +13,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../../../components/ui/atoms/Tooltip';
 import { useTouchDevice } from '../../../hooks/useTouchDevice';
 import { useTruncation } from '../../../hooks/useTruncation';
+import { resolveEntityColor } from '../../../utils/entityColor';
 import { ProtocolInstructionViewer } from './ProtocolInstructionViewer';
 
 // Set to true to visualize layout containers during development/debugging
@@ -200,10 +201,10 @@ export const ProtocolRow = React.memo(function ProtocolRow({ protocol, innerface
     const renderActionIndicators = () => (
         <>
             <div className="absolute inset-y-0 left-0 w-8 flex items-center justify-center pointer-events-none z-20">
-                <FontAwesomeIcon icon={faMinus} className={`transition-[opacity,transform,color] duration-300 ${isTouchDevice && !isDisabled && !isReadOnly ? 'animate-pulse-soft' : ''} ${effectiveFeedbackType === 'minus' ? 'opacity-100 text-[#ca4754] scale-150' : (effectiveHoverSide === 'left' || (isTouchDevice && !isDisabled && !isReadOnly)) ? 'opacity-100 -translate-x-0 text-[#ca4754]' : 'opacity-0 -translate-x-4'}`} />
+                <FontAwesomeIcon icon={faMinus} className={`transition-[opacity,transform,color] duration-300 ${isTouchDevice && !isDisabled && !isReadOnly ? 'animate-pulse-soft' : ''} ${effectiveFeedbackType === 'minus' ? 'opacity-100 text-error scale-150' : (effectiveHoverSide === 'left' || (isTouchDevice && !isDisabled && !isReadOnly)) ? 'opacity-100 -translate-x-0 text-error' : 'opacity-0 -translate-x-4'}`} />
             </div>
             <div className="absolute inset-y-0 right-0 w-8 flex items-center justify-center pointer-events-none z-20">
-                <FontAwesomeIcon icon={faPlus} className={`transition-[opacity,transform,color] duration-300 ${isTouchDevice && !isDisabled && !isReadOnly ? 'animate-pulse-soft' : ''} ${effectiveFeedbackType === 'plus' ? 'opacity-100 text-[#98c379] scale-150' : (effectiveHoverSide === 'right' || (isTouchDevice && !isDisabled && !isReadOnly)) ? 'opacity-100 translate-x-0 text-[#98c379]' : 'opacity-0 translate-x-4'}`} />
+                <FontAwesomeIcon icon={faPlus} className={`transition-[opacity,transform,color] duration-300 ${isTouchDevice && !isDisabled && !isReadOnly ? 'animate-pulse-soft' : ''} ${effectiveFeedbackType === 'plus' ? 'opacity-100 text-correct scale-150' : (effectiveHoverSide === 'right' || (isTouchDevice && !isDisabled && !isReadOnly)) ? 'opacity-100 translate-x-0 text-correct' : 'opacity-0 translate-x-4'}`} />
             </div>
         </>
     );
@@ -222,9 +223,9 @@ export const ProtocolRow = React.memo(function ProtocolRow({ protocol, innerface
                     animate={{ marginLeft: (isHovered || (isTouchDevice && !isDisabled && !isReadOnly)) ? 16 : 0 }}
                     transition={{ duration: 0.3, ease: "easeOut" }}
                     style={{
-                        backgroundColor: `color-mix(in srgb, ${protocol.color || '#ffffff'} 20%, transparent)`,
-                        color: protocol.color || 'var(--text-color)',
-                        boxShadow: `0 0 15px color-mix(in srgb, ${protocol.color || '#ffffff'} 8%, transparent)`
+                        backgroundColor: `color-mix(in srgb, ${resolveEntityColor(protocol.color)} 20%, transparent)`,
+                        color: resolveEntityColor(protocol.color),
+                        boxShadow: `0 0 15px color-mix(in srgb, ${resolveEntityColor(protocol.color)} 8%, transparent)`
                     }}
                 >
                     <AppIcon id={protocol.icon} />
@@ -235,7 +236,7 @@ export const ProtocolRow = React.memo(function ProtocolRow({ protocol, innerface
                             <div className="flex items-center gap-2 max-w-full">
                                 <h3
                                     ref={titleRef}
-                                    className={`font-lexend text-base font-medium truncate transition-colors duration-300 ${effectiveFeedbackType === 'plus' ? 'text-[#98c379]' : effectiveFeedbackType === 'minus' ? 'text-[#ca4754]' : effectiveHoverSide === 'right' ? 'text-[#98c379]' : effectiveHoverSide === 'left' ? 'text-[#ca4754]' : 'text-text-primary'}`}
+                                    className={`font-lexend text-base font-medium truncate transition-colors duration-300 ${effectiveFeedbackType === 'plus' ? 'text-correct' : effectiveFeedbackType === 'minus' ? 'text-error' : effectiveHoverSide === 'right' ? 'text-correct' : effectiveHoverSide === 'left' ? 'text-error' : 'text-text-primary'}`}
                                 >
                                     {protocol.title}
                                 </h3>
@@ -278,7 +279,7 @@ export const ProtocolRow = React.memo(function ProtocolRow({ protocol, innerface
 
             {/* Weight Indicator */}
             <motion.div /* layout removed for perf */ className={`flex flex-col items-center justify-center pointer-events-none gap-1 ${DEBUG_LAYOUT ? 'border border-yellow-500' : ''}`}>
-                <span className={`font-lexend text-xs font-bold tracking-wider transition-[opacity,transform,color] duration-300 ${effectiveFeedbackType === 'plus' ? 'text-[#98c379] opacity-100 scale-125' : effectiveFeedbackType === 'minus' ? 'text-[#ca4754] opacity-100 scale-125' : effectiveHoverSide === 'right' ? 'text-[#98c379] opacity-100 scale-110' : effectiveHoverSide === 'left' ? 'text-[#ca4754] opacity-100 scale-110' : isHovered ? 'text-text-primary opacity-100' : 'text-sub opacity-30'}`}>
+                <span className={`font-lexend text-xs font-bold tracking-wider transition-[opacity,transform,color] duration-300 ${effectiveFeedbackType === 'plus' ? 'text-correct opacity-100 scale-125' : effectiveFeedbackType === 'minus' ? 'text-error opacity-100 scale-125' : effectiveHoverSide === 'right' ? 'text-correct opacity-100 scale-110' : effectiveHoverSide === 'left' ? 'text-error opacity-100 scale-110' : isHovered ? 'text-text-primary opacity-100' : 'text-sub opacity-30'}`}>
                     {Math.round(protocol.weight * 100)} XP
                 </span>
                 {protocol.instruction && (
@@ -323,9 +324,9 @@ export const ProtocolRow = React.memo(function ProtocolRow({ protocol, innerface
                                         className={`rounded-md flex items-center justify-center shrink-0 transition-[transform,width,height] hover:scale-110 duration-200 pointer-events-auto
                                             ${isCompact ? 'w-[18px] h-[18px]' : 'w-6 h-6'}`}
                                         style={{
-                                            backgroundColor: `color-mix(in srgb, ${innerface.color || '#ffffff'} 10%, transparent)`,
-                                            color: innerface.color || '#ffffff',
-                                            boxShadow: `0 0 10px color-mix(in srgb, ${innerface.color || '#ffffff'} 5%, transparent)`
+                                            backgroundColor: `color-mix(in srgb, ${resolveEntityColor(innerface.color)} 10%, transparent)`,
+                                            color: resolveEntityColor(innerface.color),
+                                            boxShadow: `0 0 10px color-mix(in srgb, ${resolveEntityColor(innerface.color)} 5%, transparent)`
                                         }}
                                     >
                                         <div className={`transition-[font-size] duration-200 ${isCompact ? "text-[0.55rem]" : "text-[0.7rem]"}`}> <AppIcon id={innerface.icon} /> </div>
