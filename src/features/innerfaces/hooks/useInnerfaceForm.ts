@@ -238,7 +238,7 @@ export function useInnerfaceForm({ innerfaceId, onClose, isOpen }: UseInnerfaceF
 
         } catch (error) {
             console.error('Failed to save innerface:', error);
-            showToast('Failed to save power', 'error'); // Ensure user gets feedback
+            showToast('Failed to save skill', 'error'); // Ensure user gets feedback
         } finally {
             // setIsSubmitting(false);
         }
@@ -261,7 +261,7 @@ export function useInnerfaceForm({ innerfaceId, onClose, isOpen }: UseInnerfaceF
 
             // Show undo toast
             showToast(
-                'Power deleted',
+                'Skill deleted',
                 'success',
                 'Undo',
                 async () => {

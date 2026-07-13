@@ -104,14 +104,14 @@ export function Navigation() {
                     {/* Powers Main Link */}
                     <Link
                         draggable={false}
-                        to="/powers"
-                        className={`${baseItemClasses} z-20 relative ${isActive('/powers') ? activeClasses : inactiveClasses}`}
+                        to="/skills"
+                        className={`${baseItemClasses} z-20 relative ${isActive('/skills') ? activeClasses : inactiveClasses}`}
                     >
                         <BarChart2
                             className="w-3.5 h-3.5"
-                            strokeWidth={isActive('/powers') ? 3 : 2}
+                            strokeWidth={isActive('/skills') ? 3 : 2}
                         />
-                        <span>powers</span>
+                        <span>skills</span>
                     </Link>
 
                     {/* Expand Arrow - Integrated */}

@@ -280,7 +280,7 @@ export function PlanningActionList({
         return (
             <div className="group py-8 text-center border border-dashed border-sub/30 hover:border-sub rounded-xl cursor-default select-none">
                 <span className="text-sm font-mono text-sub opacity-70 group-hover:opacity-100 group-hover:text-text-primary transition-opacity">
-                    <span className="font-bold text-main/80 group-hover:text-main">Tip:</span> link actions in Power Settings
+                    <span className="font-bold text-main/80 group-hover:text-main">Tip:</span> link actions in Skill Settings
                 </span>
             </div>
         );

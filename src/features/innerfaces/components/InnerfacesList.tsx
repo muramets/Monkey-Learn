@@ -342,7 +342,7 @@ export function InnerfacesList() {
     );
 
     if (isLoading) {
-        return <div className="text-center text-sub dark:text-gray-400 py-10">Loading powers...</div>;
+        return <div className="text-center text-sub dark:text-gray-400 py-10">Loading skills...</div>;
     }
 
     return (
@@ -350,7 +350,7 @@ export function InnerfacesList() {
             <div className="flex flex-col gap-6 w-full">
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                     <div>
-                        <h1 className="text-2xl font-lexend text-text-primary">Powers</h1>
+                        <h1 className="text-2xl font-lexend text-text-primary">Skills</h1>
                         <p className="text-text-secondary font-mono text-sm mt-1">
                             Track skills and foundations you're developing
                         </p>
@@ -376,7 +376,7 @@ export function InnerfacesList() {
                                     </TooltipTrigger>
                                     {!isModalOpen && (
                                         <TooltipContent side="top">
-                                            <span className="font-mono text-xs">Add power</span>
+                                            <span className="font-mono text-xs">Add skill</span>
                                         </TooltipContent>
                                     )}
                                 </Tooltip>
@@ -397,7 +397,7 @@ export function InnerfacesList() {
                             <div className="flex-grow md:flex-grow-0 ml-1">
                                 <Input
                                     icon={faSearch}
-                                    placeholder="Search powers..."
+                                    placeholder="Search skills..."
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                     className="md:w-64"
@@ -451,11 +451,11 @@ export function InnerfacesList() {
                                 className="w-full min-h-[120px] border border-dashed border-sub/30 hover:border-sub rounded-xl flex flex-col items-center justify-center gap-3 text-sub hover:text-text-primary transition-colors duration-200 group bg-sub-alt/5 hover:bg-sub-alt/10 py-6"
                             >
                                 <FontAwesomeIcon icon={faPlus} className="text-2xl" />
-                                <span className="font-mono text-xs">Add your first power</span>
+                                <span className="font-mono text-xs">Add your first skill</span>
                             </button>
                         ) : (
                             <div className="col-span-full flex flex-col items-center justify-center py-12 text-center">
-                                <span className="font-mono text-sm text-sub">No powers matching your filter</span>
+                                <span className="font-mono text-sm text-sub">No skills matching your filter</span>
                                 <button
                                     onClick={() => toggleFilter('all')}
                                     className="mt-3 font-mono text-xs text-main hover:text-text-primary transition-colors"

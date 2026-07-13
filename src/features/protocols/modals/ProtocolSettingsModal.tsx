@@ -195,13 +195,13 @@ export function ProtocolSettingsModal({ isOpen, onClose, protocolId }: ProtocolS
                 </div>
 
                 <div className="flex flex-col gap-2">
-                    <InputLabel label="Affects Powers" />
+                    <InputLabel label="Affects Skills" />
                     <EntitySelector
                         items={entitySelectItems}
                         selectedIds={new Set(targets.map(t => t.toString()))}
                         onToggle={onToggleTarget}
-                        searchPlaceholder="Search powers..."
-                        emptyMessage="Created powers will be visible here"
+                        searchPlaceholder="Search skills..."
+                        emptyMessage="Created skills will be visible here"
                         height="h-[300px]"
                     />
                 </div>

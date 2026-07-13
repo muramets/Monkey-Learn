@@ -125,7 +125,9 @@ export const AnimatedRoutes = () => {
         <Routes location={location} key={location.pathname}>
             <Route path="/" element={page('Dashboard', Dashboard)} />
             <Route path="/actions" element={page('Actions', ProtocolsList)} />
-            <Route path="/powers" element={page('Powers', InnerfacesPage)} />
+            <Route path="/skills" element={page('Skills', InnerfacesPage)} />
+            {/* Legacy URL — powers were renamed to skills in the UI */}
+            <Route path="/powers" element={<Navigate to="/skills" replace />} />
             <Route path="/stats" element={page('Stats', StatsPage)} />
             <Route path="/history" element={page('History', HistoryPage)} />
             <Route path="/settings" element={page('Settings', SettingsPage)} />

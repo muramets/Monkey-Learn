@@ -80,7 +80,7 @@ export function InnerfaceSettingsModal({ isOpen, onClose, innerfaceId }: Innerfa
         <Modal
             isOpen={isOpen}
             onClose={onClose}
-            title={innerfaceId ? 'Edit Power' : 'New Power'}
+            title={innerfaceId ? 'Edit Skill' : 'New Skill'}
             onSubmit={handleSubmit}
             footer={
                 <>

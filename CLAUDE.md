@@ -98,11 +98,11 @@ User Action → Hook (e.g., useScores.applyProtocol)
 | `/invite/:code` | JoinInvitePage | Public |
 | `/` | Dashboard | Private |
 | `/actions` | ProtocolsList | Private |
-| `/powers` | InnerfacesPage | Private |
+| `/skills` | InnerfacesPage | Private (legacy `/powers` redirects) |
 | `/history` | HistoryPage | Private |
 | `/settings` | SettingsPage | Private (no nav) |
 
-Page order for swipe navigation: `['/', '/actions', '/powers', '/history', '/settings']`
+Page order for swipe navigation: `['/', '/actions', '/stats', '/skills', '/history', '/settings']`
 
 Touch devices get Framer Motion slide animations (tween, 450ms). Desktop renders instantly.
 

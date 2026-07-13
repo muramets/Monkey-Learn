@@ -160,14 +160,14 @@ export function StateSettingsModal({ isOpen, onClose, stateId }: StateSettingsMo
 
                 {/* Composition Area */}
                 <div className="flex flex-col gap-2">
-                    <InputLabel label="Composition (Powers)" />
+                    <InputLabel label="Composition (Skills)" />
 
                     <EntitySelector
                         items={innerfaceItems}
                         selectedIds={innerfaceIdsSet}
                         onToggle={toggleInnerface}
-                        searchPlaceholder="Search powers..."
-                        emptyMessage="Created powers will be visible here"
+                        searchPlaceholder="Search skills..."
+                        emptyMessage="Created skills will be visible here"
                         height="h-[300px]"
                     />
                 </div>

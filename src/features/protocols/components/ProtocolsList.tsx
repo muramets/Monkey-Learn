@@ -155,7 +155,7 @@ export function ProtocolsList() {
                     <div>
                         <h1 className="text-2xl font-lexend text-text-primary">Actions</h1>
                         <p className="text-text-secondary font-mono text-sm mt-1">
-                            Complete actions and watch your powers grow
+                            Complete actions and watch your skills grow
                         </p>
                     </div>
 
