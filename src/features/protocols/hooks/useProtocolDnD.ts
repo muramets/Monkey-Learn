@@ -4,7 +4,6 @@ import {
     useSensors,
     MouseSensor,
     TouchSensor,
-    KeyboardSensor,
     type DragStartEvent,
     type DragEndEvent,
     type DragOverEvent,
@@ -14,6 +13,7 @@ import {
 } from '@dnd-kit/sortable';
 import type { Protocol } from '../types';
 import { DND_SENSORS_CONFIG } from '../../../constants/dnd';
+import { SafeKeyboardSensor } from '../../../utils/safeKeyboardSensor';
 
 interface UseProtocolDnDProps {
     groupedProtocols: [string, Protocol[]][];
@@ -81,7 +81,7 @@ export const useProtocolDnD = ({
     const sensors = useSensors(
         useSensor(MouseSensor, DND_SENSORS_CONFIG.mouse),
         useSensor(TouchSensor, DND_SENSORS_CONFIG.touch),
-        useSensor(KeyboardSensor, DND_SENSORS_CONFIG.keyboard)
+        useSensor(SafeKeyboardSensor, DND_SENSORS_CONFIG.keyboard)
     );
 
     const handleDragStart = useCallback((event: DragStartEvent) => {
@@ -188,6 +188,15 @@ export const useProtocolDnD = ({
         }
     }, [localProtocols]);
 
+    const handleDragCancel = useCallback(() => {
+        console.debug('[ProtocolDnD] Drag Cancel');
+        isDraggingRef.current = false;
+        setActive({ id: null, protocol: null, group: null });
+        // Revert any optimistic reorder applied during dragOver
+        setLocalProtocols(groupedProtocols.flatMap(([, ps]) => ps));
+        setLocalGroupOrder(groupedProtocols.map(([g]) => g));
+    }, [groupedProtocols]);
+
     const handleDragEnd = useCallback((event: DragEndEvent) => {
         const { active: dndActive, over } = event;
         const activeIdStr = String(dndActive.id);
@@ -247,6 +256,7 @@ export const useProtocolDnD = ({
         handleDragStart,
         handleDragOver,
         handleDragEnd,
+        handleDragCancel,
         // Return optimistic groups
         optimisticGroupedProtocols
     };

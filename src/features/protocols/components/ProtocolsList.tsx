@@ -134,6 +134,7 @@ export function ProtocolsList() {
         handleDragStart,
         handleDragOver,
         handleDragEnd,
+        handleDragCancel,
         optimisticGroupedProtocols
     } = useProtocolDnD({
         groupedProtocols,
@@ -236,6 +237,7 @@ export function ProtocolsList() {
                         handleDragStart={handleDragStart}
                         handleDragOver={handleDragOver}
                         handleDragEnd={handleDragEnd}
+                        handleDragCancel={handleDragCancel}
                         interactionValue={interactionValue}
                     />
                 </>

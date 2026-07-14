@@ -25,6 +25,7 @@ interface ProtocolsContentProps {
     handleDragStart: (event: DragStartEvent) => void;
     handleDragOver: (event: DragOverEvent) => void;
     handleDragEnd: (event: DragEndEvent) => void;
+    handleDragCancel: () => void;
     interactionValue: {
         justDroppedId: string | null;
         isDragging: boolean;
@@ -64,6 +65,7 @@ export const ProtocolsContent = forwardRef<HTMLDivElement, ProtocolsContentProps
     handleDragStart,
     handleDragOver,
     handleDragEnd,
+    handleDragCancel,
     interactionValue,
 }, ref) {
     return (
@@ -74,6 +76,7 @@ export const ProtocolsContent = forwardRef<HTMLDivElement, ProtocolsContentProps
                 onDragStart={handleDragStart}
                 onDragOver={handleDragOver}
                 onDragEnd={handleDragEnd}
+                onDragCancel={handleDragCancel}
             >
                 {/* Встроенные стили для отключения transitions во время drag */}
                 <style>{`

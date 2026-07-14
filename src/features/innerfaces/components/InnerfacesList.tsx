@@ -263,6 +263,14 @@ export function InnerfacesList() {
         }
     }, [dnd]);
 
+    const handleDragCancel = useCallback(() => {
+        dnd.handleDragCancel();
+        setDragMinHeight(null);
+        if (contentRef.current) {
+            contentRef.current.style.minHeight = '';
+        }
+    }, [dnd]);
+
     const {
         sensors,
         activeId,
@@ -472,6 +480,7 @@ export function InnerfacesList() {
                         onDragStart={handleDragStart}
                         onDragEnd={handleDragEnd}
                         onDragOver={handleDragOver}
+                        onDragCancel={handleDragCancel}
                     >
                         <div
                             ref={contentRef}

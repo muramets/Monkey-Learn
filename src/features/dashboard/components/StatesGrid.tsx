@@ -36,7 +36,7 @@ export function StatesGrid({ states, onAddState, onEdit, onHistory, hasProtocols
 
     const visibleStates = states.filter(s => !s.deletedAt);
 
-    const { sensors, activeId, handleDragStart, handleDragEnd } = useSortableList({
+    const { sensors, activeId, handleDragStart, handleDragEnd, handleDragCancel } = useSortableList({
         items: visibleStates,
         onReorder: reorderStates
     });
@@ -78,6 +78,7 @@ export function StatesGrid({ states, onAddState, onEdit, onHistory, hasProtocols
                 collisionDetection={closestCenter}
                 onDragStart={handleDragStart}
                 onDragEnd={handleDragEnd}
+                onDragCancel={handleDragCancel}
             >
                 <DragOverlay dropAnimation={null}>
                     {activeId ? (

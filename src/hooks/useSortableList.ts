@@ -4,12 +4,12 @@ import {
     useSensors,
     MouseSensor, // Changed from PointerSensor for better control
     TouchSensor, // Added TouchSensor for mobile support
-    KeyboardSensor,
     type DragEndEvent,
     type DragStartEvent,
 } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import { DND_SENSORS_CONFIG } from '../constants/dnd';
+import { SafeKeyboardSensor } from '../utils/safeKeyboardSensor';
 
 interface UseSortableListProps<T> {
     items: T[];
@@ -26,7 +26,7 @@ export const useSortableList = <T extends { id: string | number }>({
     const sensors = useSensors(
         useSensor(MouseSensor, DND_SENSORS_CONFIG.mouse),
         useSensor(TouchSensor, DND_SENSORS_CONFIG.touch),
-        useSensor(KeyboardSensor, DND_SENSORS_CONFIG.keyboard)
+        useSensor(SafeKeyboardSensor, DND_SENSORS_CONFIG.keyboard)
     );
 
     const handleDragStart = useCallback((event: DragStartEvent) => {
@@ -48,10 +48,15 @@ export const useSortableList = <T extends { id: string | number }>({
         }
     }, [items, onReorder]);
 
+    const handleDragCancel = useCallback(() => {
+        setActiveId(null);
+    }, []);
+
     return {
         sensors,
         activeId,
         handleDragStart,
-        handleDragEnd
+        handleDragEnd,
+        handleDragCancel
     };
 };

@@ -44,7 +44,7 @@ export function QuickActionsGrid({
     const [localOpen, setLocalOpen] = useState(false);
     const suppressTooltip = useTooltipSuppression(isModalOpen);
 
-    const { sensors, activeId, handleDragStart, handleDragEnd } = useSortableList({
+    const { sensors, activeId, handleDragStart, handleDragEnd, handleDragCancel } = useSortableList({
         items: actions,
         onReorder: reorderQuickActions
     });
@@ -84,6 +84,7 @@ export function QuickActionsGrid({
                 collisionDetection={closestCenter}
                 onDragStart={handleDragStart}
                 onDragEnd={handleDragEnd}
+                onDragCancel={handleDragCancel}
             >
                 <DragOverlay dropAnimation={null}>
                     {activeId ? (

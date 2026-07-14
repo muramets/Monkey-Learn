@@ -4,7 +4,6 @@ import {
     useSensors,
     MouseSensor,
     TouchSensor,
-    KeyboardSensor,
     type DragStartEvent,
     type DragOverEvent,
     type DragEndEvent,
@@ -15,6 +14,7 @@ import {
 import type { Innerface, PowerCategory } from '../types';
 import { DND_SENSORS_CONFIG } from '../../../constants/dnd';
 import { useMetadataStore } from '../../../stores/metadataStore';
+import { SafeKeyboardSensor } from '../../../utils/safeKeyboardSensor';
 
 interface UseInnerfaceDnDProps {
     innerfaces: Innerface[];
@@ -75,7 +75,7 @@ export const useInnerfaceDnD = ({
     const sensors = useSensors(
         useSensor(MouseSensor, DND_SENSORS_CONFIG.mouse),
         useSensor(TouchSensor, DND_SENSORS_CONFIG.touch),
-        useSensor(KeyboardSensor, DND_SENSORS_CONFIG.keyboard)
+        useSensor(SafeKeyboardSensor, DND_SENSORS_CONFIG.keyboard)
     );
 
 
@@ -450,6 +450,26 @@ export const useInnerfaceDnD = ({
         });
     }, [innerfaces, onReorderGroups, onReorderCategories, onMoveInnerface, categoryOrder, groupOrder, setHasPendingWrites]);
 
+    // Cancelled drags (Escape, focus loss) must fully unwind the optimistic
+    // state — otherwise the page stays in "dragging" mode with dead hovers.
+    const handleDragCancel = useCallback(() => {
+        console.debug('[DnD] Drag Cancel');
+        if (pendingSaveRef.current) {
+            clearTimeout(pendingSaveRef.current);
+            pendingSaveRef.current = null;
+        }
+        setHasPendingWrites(false);
+        setItems(innerfaces);
+        setLocalCategoryOrder(categoryOrder);
+        setLocalGroupOrder(groupOrder || {});
+        isDraggingRef.current = false;
+        setActiveId(null);
+        setActiveItem(null);
+        setActiveGroup(null);
+        setActiveCategory(null);
+        setIsValidDrop(true);
+    }, [innerfaces, categoryOrder, groupOrder, setHasPendingWrites]);
+
     return {
         items,
         sensors,
@@ -461,6 +481,7 @@ export const useInnerfaceDnD = ({
         handleDragStart,
         handleDragOver,
         handleDragEnd,
+        handleDragCancel,
         innerfacesByCategory,
         getGroupsForCategory,
         categoryIds,
