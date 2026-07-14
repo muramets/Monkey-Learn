@@ -65,6 +65,9 @@ html {
   --tier-5: #1441e2;
   --tier-5-rgb: 20 65 226;
 
+  /* Guide layer (onboarding tours): deliberately theme-independent blue */
+  --tour-accent: #7fb3d3;
+
   /* UI Colors mapped to Tailwind vars - using same format as Tailwind for consistency */
   --bg-primary: rgb(var(--bg-color-rgb) / 1);
   --bg-secondary: rgb(var(--sub-alt-color-rgb) / 1);

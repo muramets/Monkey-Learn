@@ -32,6 +32,7 @@ export const DraggableProtocolItem = React.memo(({
             {({ setNodeRef, listeners, attributes, style, isDragging }) => (
                 <div
                     ref={setNodeRef}
+                    data-tour="actions-row"
                     style={{
                         ...style,
                         opacity: isDragging ? 0 : 1,

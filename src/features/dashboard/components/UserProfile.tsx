@@ -58,7 +58,7 @@ export function UserProfile() {
             {/* Desktop: Group User Info + Separator closely */}
             <div className="flex md:flex-row items-center gap-6 w-full md:w-auto">
                 {/* User Info Section */}
-                <div className="flex md:flex-row items-center gap-4 w-full md:w-auto">
+                <div data-tour="profile" className="flex md:flex-row items-center gap-4 w-full md:w-auto">
                     {/* Avatar */}
                     <div className="relative shrink-0 group/avatar">
                         {/* Premium Glow Effects */}
@@ -168,7 +168,7 @@ export function UserProfile() {
 
                 {/* Weekly Focus Widget (Replaces simple separator) */}
                 <div className="hidden md:flex flex-col items-center justify-center px-6 shrink-0">
-                    <WeeklyFocus />
+                    <div data-tour="weekly-focus"><WeeklyFocus /></div>
                 </div>
             </div>
 

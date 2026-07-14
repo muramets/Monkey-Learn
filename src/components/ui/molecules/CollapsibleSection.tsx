@@ -13,6 +13,8 @@ interface CollapsibleSectionProps {
     isOpen?: boolean;
     onToggle?: () => void;
     icon?: IconDefinition;
+    /** Anchor for onboarding tours (rendered as data-tour on the root). */
+    'data-tour'?: string;
 }
 
 export function CollapsibleSection({
@@ -25,7 +27,8 @@ export function CollapsibleSection({
     variant = 'default',
     isOpen: controlledIsOpen,
     onToggle,
-    icon
+    icon,
+    'data-tour': dataTour
 }: CollapsibleSectionProps & { dragHandle?: React.ReactNode }) {
     const [internalIsOpen, setInternalIsOpen] = useState(defaultOpen);
     const [isOverflowVisible, setOverflowVisible] = useState(defaultOpen);
@@ -60,7 +63,7 @@ export function CollapsibleSection({
     };
 
     return (
-        <div className={`w-full ${className}`}>
+        <div className={`w-full ${className}`} data-tour={dataTour}>
             <div className={`flex items-center ${mbClass} group`}>
                 {dragHandle && (
                     <div className="mr-2">

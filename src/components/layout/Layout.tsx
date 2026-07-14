@@ -4,6 +4,7 @@ import { Navigation } from './Navigation';
 import { ViewerBanner } from '../../features/teams/components/ViewerBanner';
 import { PersonalityMottoBanner } from '../../features/personalities/components/PersonalityMottoBanner';
 import { useSwipeNavigation } from '../../hooks/useSwipeNavigation';
+import { OnboardingRoot } from '../../features/onboarding/OnboardingRoot';
 
 export function Layout({ children }: { children: React.ReactNode }) {
     useSwipeNavigation();
@@ -24,6 +25,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                     </div>
                 </main>
             </div>
+            <OnboardingRoot />
         </>
     );
 }

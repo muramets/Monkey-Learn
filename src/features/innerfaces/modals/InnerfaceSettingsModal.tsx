@@ -255,7 +255,7 @@ export function InnerfaceSettingsModal({ isOpen, onClose, innerfaceId }: Innerfa
                                     : 'text-sub hover:text-text-primary'
                                     }`}
                             >
-                                Foundation
+                                Core
                             </button>
                         </div>
                     </div>

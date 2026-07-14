@@ -59,7 +59,7 @@ export default function StatsPage() {
                 onChange={setFilters}
             />
 
-            <div>
+            <div data-tour="stats-growth">
                 <FilterSummary filters={filters} today={stats.today} />
                 <GrowthChart series={shownSeries} beginAtZero={beginAtZero} />
                 <HistoryChartFooter
@@ -71,13 +71,13 @@ export default function StatsPage() {
                 />
             </div>
 
-            <DailyXpBars daily={stats.dailyXp} />
+            <div data-tour="stats-daily"><DailyXpBars daily={stats.dailyXp} /></div>
 
-            <StatsTiles stats={stats} />
+            <div data-tour="stats-tiles"><StatsTiles stats={stats} /></div>
 
             <GrewFellPanel grew={stats.grew} fell={stats.fell} />
 
-            <CheckinsTable checkins={checkins} />
+            <div data-tour="stats-table"><CheckinsTable checkins={checkins} /></div>
         </div>
     );
 }

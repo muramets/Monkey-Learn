@@ -51,6 +51,7 @@ export function QuickActionsGrid({
 
     return (
         <CollapsibleSection
+            data-tour="quick-actions"
             title="Quick Actions"
             trailing={
                 <TooltipProvider delayDuration={1000}>

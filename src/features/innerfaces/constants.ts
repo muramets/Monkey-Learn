@@ -7,7 +7,7 @@ export const CATEGORY_CONFIG = {
         hoverColor: 'group-hover/category:text-blue-400'
     },
     foundation: {
-        label: 'Foundations',
+        label: 'Core',
         icon: Layers,
         hoverColor: 'group-hover/category:text-green-400'
     },

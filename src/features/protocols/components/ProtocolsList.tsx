@@ -150,7 +150,7 @@ export function ProtocolsList() {
     }), [justDroppedId, active.id, clearJustDropped]);
 
     return (
-        <div className="flex flex-col gap-6 w-full">
+        <div data-tour="actions-list" className="flex flex-col gap-6 w-full">
             <div className="flex flex-col gap-4">
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                     <div>
@@ -161,6 +161,7 @@ export function ProtocolsList() {
                     </div>
 
                     {/* Toolbar: Add button, Filter dropdown, Search */}
+                    <div data-tour="actions-add">
                     <ProtocolsToolbar
                         onAddProtocol={() => {
                             setSelectedProtocolId(null);
@@ -177,6 +178,7 @@ export function ProtocolsList() {
                         hasUngrouped={protocols.some(p => !p.group)}
                         hasProtocols={protocols.length > 0}
                     />
+                    </div>
                 </div>
 
                 <ActiveFiltersList

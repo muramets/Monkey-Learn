@@ -127,7 +127,7 @@ export function HistoryFilter({
     };
 
     const getStateLabel = (ids: string[]) => {
-        if (ids.length === 0) return 'All dimensions';
+        if (ids.length === 0) return 'All doors';
         if (ids.length === 1) return states.find(s => s.id === ids[0])?.name || ids[0];
         return `${ids.length} selected`;
     };
@@ -177,7 +177,7 @@ export function HistoryFilter({
                     <FilterDropdown.Section title="Specifics" icon={faLayerGroup}>
                         <div className="flex flex-col gap-1 px-1">
                             <FilterDropdown.NavButton
-                                title="Dimension"
+                                title="Door"
                                 icon={faMap} // Using faMap for State/Territory metaphor
                                 value={getStateLabel(selectedStateIds)}
                                 onClick={() => changeView('states')}
@@ -411,7 +411,7 @@ export function HistoryFilter({
             {view === 'states' && (
                 <div className="animate-in slide-in-from-right-4 duration-200">
                     <FilterDropdown.SearchHeader
-                        title="Select Dimension"
+                        title="Select Door"
                         showSearch={states.length > 10}
                         searchQuery={searchQuery}
                         onSearchChange={setSearchQuery}
@@ -419,7 +419,7 @@ export function HistoryFilter({
                     />
 
                     <FilterDropdown.Item
-                        label="ALL DIMENSIONS"
+                        label="ALL DOORS"
                         isActive={selectedStateIds.length === 0}
                         onClick={() => { setSelectedStateIds([]); changeView('root'); }}
                         className="mx-1 mt-1 font-bold tracking-wider"
@@ -445,7 +445,7 @@ export function HistoryFilter({
                                 );
                             })}
                         {states.length === 0 && (
-                            <div className="p-4 text-center text-sub/50 text-xs font-mono">No dimensions found</div>
+                            <div className="p-4 text-center text-sub/50 text-xs font-mono">No doors found</div>
                         )}
                     </div>
                 </div>

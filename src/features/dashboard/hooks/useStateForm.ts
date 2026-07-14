@@ -87,7 +87,7 @@ export function useStateForm({ stateId, onClose, isOpen }: UseStateFormProps) {
                                 const iface = innerfaces.find(i => i.id.toString() === ifaceId.toString());
                                 useHistoryStore.getState().addSystemEvent(
                                     user.uid, activePersonalityId,
-                                    `Added Skill "${iface?.name || 'Unknown'}" to Dimension "${name}"`,
+                                    `Added Skill "${iface?.name || 'Unknown'}" to Door "${name}"`,
                                     { stateId, innerfaceId: String(ifaceId), type: 'linkState' }
                                 );
                             }
@@ -98,7 +98,7 @@ export function useStateForm({ stateId, onClose, isOpen }: UseStateFormProps) {
                                 const iface = innerfaces.find(i => i.id.toString() === ifaceId.toString());
                                 useHistoryStore.getState().addSystemEvent(
                                     user.uid, activePersonalityId,
-                                    `Removed Skill "${iface?.name || 'Unknown'}" from Dimension "${name}"`,
+                                    `Removed Skill "${iface?.name || 'Unknown'}" from Door "${name}"`,
                                     { stateId, innerfaceId: String(ifaceId), type: 'unlinkState' }
                                 );
                             }
@@ -114,7 +114,7 @@ export function useStateForm({ stateId, onClose, isOpen }: UseStateFormProps) {
                         const iface = innerfaces.find(i => i.id.toString() === ifaceId.toString());
                         useHistoryStore.getState().addSystemEvent(
                             user.uid, activePersonalityId,
-                            `Added Skill "${iface?.name || 'Unknown'}" to Dimension "${name}"`,
+                            `Added Skill "${iface?.name || 'Unknown'}" to Door "${name}"`,
                             { stateId: 'new', innerfaceId: String(ifaceId), type: 'linkState' }
                         );
                     });
@@ -122,7 +122,7 @@ export function useStateForm({ stateId, onClose, isOpen }: UseStateFormProps) {
             }
         } catch (error) {
             console.error('Failed to save state:', error);
-            showToast('Failed to save dimension', 'error');
+            showToast('Failed to save door', 'error');
         } finally {
             // setIsSubmitting(false);
         }
@@ -150,7 +150,7 @@ export function useStateForm({ stateId, onClose, isOpen }: UseStateFormProps) {
 
             // Show undo toast
             showToast(
-                'Dimension deleted',
+                'Door deleted',
                 'success',
                 'Undo',
                 async () => {

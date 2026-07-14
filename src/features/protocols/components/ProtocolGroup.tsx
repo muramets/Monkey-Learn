@@ -96,6 +96,7 @@ export const ProtocolGroup = React.memo(({
                     className="mb-4"
                 >
                     <CollapsibleSection
+                        data-tour="actions-groups"
                         key={groupName}
                         isOpen={!isCollapsed}
                         onToggle={onToggleCollapse}

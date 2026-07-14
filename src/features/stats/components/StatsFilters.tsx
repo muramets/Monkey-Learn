@@ -40,7 +40,7 @@ export function StatsFilters({ filters, availableGroups, onChange }: Props) {
     };
 
     return (
-        <div className="text-xs">
+        <div data-tour="stats-filters" className="text-xs">
             <StatsSectionTitle icon={faFilter} text="filters" />
             <div className="grid gap-2 sm:grid-cols-2 lg:flex lg:justify-evenly [&>button]:w-full">
                 {RANGE_OPTIONS.map((option) => (

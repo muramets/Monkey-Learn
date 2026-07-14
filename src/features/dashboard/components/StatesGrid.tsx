@@ -43,7 +43,8 @@ export function StatesGrid({ states, onAddState, onEdit, onHistory, hasProtocols
 
     return (
         <CollapsibleSection
-            title="Dimensions"
+            data-tour="doors"
+            title="Doors"
             isOpen={!isDimensionsCollapsed}
             onToggle={() => setDimensionsCollapsed(!isDimensionsCollapsed)}
             trailing={
@@ -66,7 +67,7 @@ export function StatesGrid({ states, onAddState, onEdit, onHistory, hasProtocols
                         </TooltipTrigger>
                         {!isModalOpen && (
                             <TooltipContent side="top">
-                                <span className="font-mono text-xs">Add new dimension</span>
+                                <span className="font-mono text-xs">Add new door</span>
                             </TooltipContent>
                         )}
                     </Tooltip>
@@ -123,7 +124,7 @@ export function StatesGrid({ states, onAddState, onEdit, onHistory, hasProtocols
                                 className="col-span-full md:col-span-1 min-h-[180px] border border-dashed border-sub/30 hover:border-sub rounded-2xl flex flex-col items-center justify-center gap-3 text-sub hover:text-text-primary transition-colors duration-200 group bg-sub-alt/5 hover:bg-sub-alt/10 py-6"
                             >
                                 <Plus className="w-8 h-8" />
-                                <span className="font-mono text-xs">Add your first dimension</span>
+                                <span className="font-mono text-xs">Add your first door</span>
                             </button>
                         )
                     )}

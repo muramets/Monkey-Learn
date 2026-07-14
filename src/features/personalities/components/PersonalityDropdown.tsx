@@ -55,6 +55,7 @@ export function PersonalityDropdown() {
             <div className="relative group z-50 font-mono lowercase">
                 {/* Trigger Button - Exact MonkeyType Account Button Replica */}
                 <button
+                    data-tour="personality"
                     className="grid grid-flow-col items-center gap-[0.33em] outline-none leading-none transition-colors duration-150 text-[1rem]"
                     style={{ color: 'var(--sub-color)' }}
                 >

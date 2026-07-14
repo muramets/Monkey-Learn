@@ -45,7 +45,7 @@ export function Navigation() {
     const inactiveClasses = "text-text-secondary hover:text-text-primary";
 
     return (
-        <nav className="flex justify-center w-full select-none">
+        <nav data-tour="nav" className="flex justify-center w-full select-none">
             {/* Main container: Fixed 39px height, gap-2 for spacing between items/spacers */}
             {/* draggable={false} prevents the "ghost image" when dragging nav items, ensuring a native app feel */}
             <div className="flex items-stretch h-[39px] bg-sub-alt rounded-lg overflow-visible shadow-sm">

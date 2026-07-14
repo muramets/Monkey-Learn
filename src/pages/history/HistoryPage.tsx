@@ -84,7 +84,7 @@ export default function HistoryPage() {
     const combinedHasActiveFilters = hasActiveFilters || searchQuery.trim() !== '';
 
     return (
-        <div className="flex flex-col gap-8 w-full pb-12">
+        <div data-tour="history-feed" className="flex flex-col gap-8 w-full pb-12">
             {/* Header Mirroring ProtocolsList */}
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                 <div>
@@ -95,7 +95,7 @@ export default function HistoryPage() {
                     </p>
                 </div>
 
-                <div className="flex items-center gap-2 w-full md:w-auto">
+                <div data-tour="history-filter" className="flex items-center gap-2 w-full md:w-auto">
                     <div className="flex items-center gap-0">
                         <HistoryFilter
                             timeFilter={timeFilter}

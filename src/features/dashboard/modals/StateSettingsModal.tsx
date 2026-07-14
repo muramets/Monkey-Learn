@@ -64,7 +64,7 @@ export function StateSettingsModal({ isOpen, onClose, stateId }: StateSettingsMo
         <Modal
             isOpen={isOpen}
             onClose={onClose}
-            title={stateId ? 'Edit Dimension' : 'Add Dimension'}
+            title={stateId ? 'Edit Door' : 'Add Door'}
             onSubmit={handleSubmit}
             footer={
                 <>

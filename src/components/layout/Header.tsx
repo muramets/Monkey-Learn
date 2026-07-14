@@ -5,6 +5,7 @@ import { TeamsDropdown } from '../../features/teams/components/TeamsDropdown';
 
 import { LogOut, Settings } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { TourButton } from '../../features/onboarding/components/TourButton';
 
 export function Header() {
     const { user, logout } = useAuth();
@@ -56,6 +57,7 @@ export function Header() {
                     <Link to="/settings" className="text-text-secondary hover:text-text-primary transition-colors p-2">
                         <Settings className="w-4 h-4" />
                     </Link>
+                    <TourButton />
                 </div>
 
                 <div className="flex items-center gap-4 relative">

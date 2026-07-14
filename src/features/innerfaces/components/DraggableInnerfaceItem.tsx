@@ -19,6 +19,7 @@ export const DraggableInnerfaceItem = React.memo(({
             {({ setNodeRef, listeners, attributes, style, isDragging }) => (
                 <div
                     ref={setNodeRef}
+                    data-tour="skills-card"
                     style={{
                         ...style,
                         opacity: isDragging ? 0 : 1,

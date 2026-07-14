@@ -65,6 +65,7 @@ const CategorySection = React.memo(({
                         willChange: 'transform'
                     }}
                     className={`w-full mb-4 ${isDragging ? 'dragging-instant-collapse' : ''}`}
+                    data-tour={category === 'foundation' ? 'skills-category' : undefined}
                 >
                     {/* Category Header */}
                     <div className="flex items-center mb-4 group/category">
@@ -358,9 +359,9 @@ export function InnerfacesList() {
             <div className="flex flex-col gap-6 w-full">
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                     <div>
-                        <h1 className="text-2xl font-lexend text-text-primary">Skills</h1>
+                        <h1 data-tour="skills-list" className="text-2xl font-lexend text-text-primary">Skills</h1>
                         <p className="text-text-secondary font-mono text-sm mt-1">
-                            Track skills and foundations you're developing
+                            Track your skills and the core beneath them
                         </p>
                     </div>
 
@@ -373,6 +374,7 @@ export function InnerfacesList() {
                                 >
                                     <TooltipTrigger asChild>
                                         <button
+                                            data-tour="skills-add"
                                             onClick={() => {
                                                 setLocalOpen(false);
                                                 handleCreate();
