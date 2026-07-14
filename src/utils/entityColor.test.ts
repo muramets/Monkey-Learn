@@ -35,3 +35,15 @@ describe('resolveEntityColor', () => {
     expect(resolveEntityColor('#ca4754')).toBe('#ca4754');
   });
 });
+
+describe('legacy var() colors stored in Firestore', () => {
+  it('treats the stored CSS expression as default', () => {
+    expect(isDefaultEntityColor('var(--main-color)')).toBe(true);
+    expect(isDefaultEntityColor('VAR(--MAIN-COLOR)')).toBe(true);
+    expect(isDefaultEntityColor('var( --main-color )')).toBe(true);
+  });
+
+  it('resolves the stored CSS expression to the theme accent', () => {
+    expect(resolveEntityColor('var(--main-color)')).toBe(THEME_ACCENT_COLOR);
+  });
+});

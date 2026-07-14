@@ -18,7 +18,12 @@ export const THEME_ACCENT_COLOR = 'var(--main-color)';
 
 /** True when the stored color is the legacy default that should follow the theme. */
 export function isDefaultEntityColor(color?: string | null): boolean {
-    return !color || color.toLowerCase() === DEFAULT_ENTITY_COLOR;
+    if (!color) return true;
+    const normalized = color.toLowerCase().replace(/\s+/g, '');
+    // Some documents were saved with the literal CSS expression as the color
+    // (old skill-form default) — canvas contexts can't parse it, so treat it
+    // as "default" and let callers substitute a concrete theme color.
+    return normalized === DEFAULT_ENTITY_COLOR || normalized === THEME_ACCENT_COLOR;
 }
 
 /**
@@ -27,6 +32,5 @@ export function isDefaultEntityColor(color?: string | null): boolean {
  * expression (may be `var(...)`) — not suitable for canvas APIs.
  */
 export function resolveEntityColor(color?: string | null): string {
-    if (!color || color.toLowerCase() === DEFAULT_ENTITY_COLOR) return THEME_ACCENT_COLOR;
-    return color;
+    return isDefaultEntityColor(color) ? THEME_ACCENT_COLOR : (color as string);
 }

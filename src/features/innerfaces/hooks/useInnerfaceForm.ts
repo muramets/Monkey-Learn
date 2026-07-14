@@ -5,6 +5,7 @@ import { useUIStore } from '../../../stores/uiStore';
 import { getGroupConfig } from '../../../constants/common';
 import { useHistoryStore } from '../../../stores/historyStore';
 import type { PowerCategory } from '../types';
+import { DEFAULT_ENTITY_COLOR } from '../../../utils/entityColor';
 
 interface UseInnerfaceFormProps {
     innerfaceId?: number | string | null;
@@ -49,7 +50,7 @@ export function useInnerfaceForm({ innerfaceId, onClose, isOpen }: UseInnerfaceF
     const [description, setDescription] = useState('');
     const [group, setGroup] = useState('');
     const [initialScore, setInitialScore] = useState('0');
-    const [color, setColor] = useState('var(--main-color)');
+    const [color, setColor] = useState(DEFAULT_ENTITY_COLOR);
     const [icon, setIcon] = useState('bullseye');
     const [hover, setHover] = useState('');
     const [protocolIds, setProtocolIds] = useState<string[]>([]);
@@ -87,7 +88,7 @@ export function useInnerfaceForm({ innerfaceId, onClose, isOpen }: UseInnerfaceF
                 setDescription(currentInnerface.description || '');
                 setGroup(currentInnerface.group || '');
                 setInitialScore((currentInnerface.initialScore || 0).toString());
-                setColor(currentInnerface.color || 'var(--main-color)');
+                setColor(currentInnerface.color || DEFAULT_ENTITY_COLOR);
                 setIcon(currentInnerface.icon || 'bullseye');
                 setHover(currentInnerface.hover || '');
                 setProtocolIds(initialProtocolIds);
@@ -112,7 +113,7 @@ export function useInnerfaceForm({ innerfaceId, onClose, isOpen }: UseInnerfaceF
                 setDescription('');
                 setGroup('');
                 setInitialScore('0');
-                setColor('var(--main-color)');
+                setColor(DEFAULT_ENTITY_COLOR);
                 setIcon('bullseye');
                 setHover('');
                 setProtocolIds([]);
