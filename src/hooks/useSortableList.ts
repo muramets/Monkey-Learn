@@ -9,7 +9,6 @@ import {
 } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import { DND_SENSORS_CONFIG } from '../constants/dnd';
-import { SafeKeyboardSensor } from '../utils/safeKeyboardSensor';
 
 interface UseSortableListProps<T> {
     items: T[];
@@ -25,8 +24,7 @@ export const useSortableList = <T extends { id: string | number }>({
 
     const sensors = useSensors(
         useSensor(MouseSensor, DND_SENSORS_CONFIG.mouse),
-        useSensor(TouchSensor, DND_SENSORS_CONFIG.touch),
-        useSensor(SafeKeyboardSensor, DND_SENSORS_CONFIG.keyboard)
+        useSensor(TouchSensor, DND_SENSORS_CONFIG.touch)
     );
 
     const handleDragStart = useCallback((event: DragStartEvent) => {

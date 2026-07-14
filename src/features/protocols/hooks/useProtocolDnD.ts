@@ -13,7 +13,6 @@ import {
 } from '@dnd-kit/sortable';
 import type { Protocol } from '../types';
 import { DND_SENSORS_CONFIG } from '../../../constants/dnd';
-import { SafeKeyboardSensor } from '../../../utils/safeKeyboardSensor';
 
 interface UseProtocolDnDProps {
     groupedProtocols: [string, Protocol[]][];
@@ -80,8 +79,7 @@ export const useProtocolDnD = ({
 
     const sensors = useSensors(
         useSensor(MouseSensor, DND_SENSORS_CONFIG.mouse),
-        useSensor(TouchSensor, DND_SENSORS_CONFIG.touch),
-        useSensor(SafeKeyboardSensor, DND_SENSORS_CONFIG.keyboard)
+        useSensor(TouchSensor, DND_SENSORS_CONFIG.touch)
     );
 
     const handleDragStart = useCallback((event: DragStartEvent) => {

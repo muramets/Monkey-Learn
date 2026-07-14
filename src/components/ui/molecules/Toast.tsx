@@ -33,14 +33,19 @@ export function Toast({
 
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'Enter') {
+                // Capture phase + stopPropagation: while an actionable toast is
+                // visible, Enter belongs to the toast. Without this the same
+                // keydown reaches the focused sortable card first and dnd-kit
+                // starts a keyboard drag that nothing ever finishes.
                 e.preventDefault();
+                e.stopPropagation();
                 onAction();
                 onClose();
             }
         };
 
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
+        window.addEventListener('keydown', handleKeyDown, { capture: true });
+        return () => window.removeEventListener('keydown', handleKeyDown, { capture: true });
     }, [isVisible, onAction, actionLabel, onClose]);
 
     useEffect(() => {

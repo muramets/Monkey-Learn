@@ -1,5 +1,3 @@
-import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
-
 export const DND_SENSORS_CONFIG = {
     mouse: {
         activationConstraint: {
@@ -11,8 +9,5 @@ export const DND_SENSORS_CONFIG = {
             delay: 250, // Press and hold for 250ms to start drag
             tolerance: 5 // If moved more than 5px during delay, cancel drag (it's a scroll)
         }
-    },
-    keyboard: {
-        coordinateGetter: sortableKeyboardCoordinates
     }
 } as const;

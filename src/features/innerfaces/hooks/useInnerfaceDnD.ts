@@ -14,7 +14,6 @@ import {
 import type { Innerface, PowerCategory } from '../types';
 import { DND_SENSORS_CONFIG } from '../../../constants/dnd';
 import { useMetadataStore } from '../../../stores/metadataStore';
-import { SafeKeyboardSensor } from '../../../utils/safeKeyboardSensor';
 
 interface UseInnerfaceDnDProps {
     innerfaces: Innerface[];
@@ -74,8 +73,7 @@ export const useInnerfaceDnD = ({
 
     const sensors = useSensors(
         useSensor(MouseSensor, DND_SENSORS_CONFIG.mouse),
-        useSensor(TouchSensor, DND_SENSORS_CONFIG.touch),
-        useSensor(SafeKeyboardSensor, DND_SENSORS_CONFIG.keyboard)
+        useSensor(TouchSensor, DND_SENSORS_CONFIG.touch)
     );
 
 
